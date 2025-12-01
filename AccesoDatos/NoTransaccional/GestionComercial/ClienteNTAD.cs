@@ -18,8 +18,8 @@ namespace AccesoDatos.NoTransaccional.GestionComercial
 {
     public class ClienteNTAD : BaseAD, IMantenimientoNTAD
     {
-        string sComercial = ConfigurationManager.AppSettings["E_COMERCIAL"];
-        string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
+        readonly string sComercial = ConfigurationManager.AppSettings["E_COMERCIAL"];
+        readonly string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
 
         public DataTable ListarClientes(string N_OPCION, string V_FILTRO, string V_CEO, string V_UND_OPER,
             string UserName, string V_AMBIENTE = "T")

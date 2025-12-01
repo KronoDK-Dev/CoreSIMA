@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AccesoDatos.NoTransaccional.GestionGobernanza;
 using AccesoDatos.Transaccional.GestionGobernanza;
 
 namespace Controladora.GestionGobernanza

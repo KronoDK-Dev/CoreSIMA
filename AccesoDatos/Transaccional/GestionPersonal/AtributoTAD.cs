@@ -62,19 +62,19 @@ namespace AccesoDatos.Transaccional.GestionPersonal
 
                 Params[0] = new OracleParameter("cod_emp", OracleDbType.Int32);
                 Params[0].Direction = ParameterDirection.Input;
-                Params[0].Value = (object)atributoBe.cod_emp;
+                Params[0].Value = (object)atributoBe.Cod_emp;
 
                 Params[1] = new OracleParameter("rol", OracleDbType.Int32);
                 Params[1].Direction = ParameterDirection.Input;
-                Params[1].Value = (object)atributoBe.rol;
+                Params[1].Value = (object)atributoBe.Rol;
 
                 Params[2] = new OracleParameter("Tipo", OracleDbType.Varchar2);
                 Params[2].Direction = ParameterDirection.Input;
-                Params[2].Value = (object)atributoBe.tipo;
+                Params[2].Value = (object)atributoBe.Tipo;
 
                 Params[3] = new OracleParameter("Valor", OracleDbType.Int32);
                 Params[3].Direction = ParameterDirection.Input;
-                Params[3].Value = (object)atributoBe.valor;
+                Params[3].Value = (object)atributoBe.Valor;
 
                 Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Params);
 

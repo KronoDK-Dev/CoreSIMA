@@ -47,6 +47,10 @@
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -95,16 +99,188 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Default.aspx" />
+    <Content Include="General\Busquedas.asmx" />
+    <Content Include="General\General.asmx" />
+    <Content Include="GestionActivoFijo\ActivoFijo.asmx" />
+    <Content Include="GestionCalidad\ControlInspecciones.asmx" />
+    <Content Include="GestionComercial\Cliente.asmx" />
+    <Content Include="GestionComercial\Solicitud.asmx" />
+    <Content Include="GestionContabilidad\Contabilidad.asmx" />
+    <Content Include="GestionCostos\Costos.asmx" />
+    <Content Include="GestionFinanciera\Tesoreria\FactElectronica.asmx" />
+    <Content Include="GestionFinanciera\Tesoreria\FactElectronicaR.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\Interbancario.asmx" />
+    <Content Include="GestionGobernanza\Indicadores.asmx" />
+    <Content Include="GestionLogistica\logistica.asmx" />
+    <Content Include="GestionPersonal\Contabilizacion\Planilla.asmx" />
+    <Content Include="GestionPersonal\ODPs\OrdenesdePago.asmx" />
+    <Content Include="GestionPersonal\Personal.asmx" />
+    <Content Include="GestionPresupuesto\Presupuesto.asmx" />
+    <Content Include="GestionProduccion\ManodeObra.asmx" />
+    <Content Include="GestionProduccion\Mantenimiento.asmx" />
+    <Content Include="GestionProduccion\Produccion.asmx" />
+    <Content Include="GestionProduccion\Proyectos.asmx" />
+    <Content Include="GestionProyecto\Proyecto.asmx" />
+    <Content Include="GestionReportes\AdministrarReportes.asmx" />
+    <Content Include="GestionTesoreria\Tesoreria.asmx" />
+    <Content Include="HelpDesk\AdministrarHD.asmx" />
+    <Content Include="HelpDesk\ChatBot\IChatBotManager.asmx" />
+    <Content Include="HelpDesk\ITIL\GestiondeConfiguracion.asmx" />
+    <Content Include="HelpDesk\Sistemas\GestionSistemas.asmx" />
+    <Content Include="Produccion\Produccion.asmx" />
+    <Content Include="Recursos\ActivoFijo.png" />
+    <Content Include="Recursos\Comercial.png" />
+    <Content Include="Recursos\Comercial1.png" />
+    <Content Include="Recursos\Contabilidad.jpg" />
+    <Content Include="Recursos\Contabilidad.png" />
+    <Content Include="Recursos\Costo.png" />
+    <Content Include="Recursos\Costos.png" />
+    <Content Include="Recursos\general.png" />
+    <Content Include="Recursos\inspeccion.png" />
+    <Content Include="Recursos\logistica.png" />
+    <Content Include="Recursos\manoobra.png" />
+    <Content Include="Recursos\marcaciones.png" />
+    <Content Include="Recursos\personal.png" />
+    <Content Include="Recursos\produccion.png" />
+    <Content Include="Recursos\proyectos.png" />
+    <Content Include="Recursos\reportes.png" />
+    <Content Include="Recursos\seguridad.png" />
+    <Content Include="Recursos\style.css" />
+    <Content Include="Recursos\Tesoreria.png" />
+    <Content Include="Seguridad\Seguridad.asmx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="General\Busquedas.asmx.cs">
+      <DependentUpon>Busquedas.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="General\ExtendBE.cs" />
+    <Compile Include="General\General.asmx.cs">
+      <DependentUpon>General.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionActivoFijo\ActivoFijo.asmx.cs">
+      <DependentUpon>ActivoFijo.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionCalidad\ControlInspecciones.asmx.cs">
+      <DependentUpon>ControlInspecciones.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionComercial\Cliente.asmx.cs">
+      <DependentUpon>Cliente.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionComercial\Solicitud.asmx.cs">
+      <DependentUpon>Solicitud.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionContabilidad\Contabilidad.asmx.cs">
+      <DependentUpon>Contabilidad.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionCostos\Costos.asmx.cs">
+      <DependentUpon>Costos.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionFinanciera\Tesoreria\FactElectronica.asmx.cs">
+      <DependentUpon>FactElectronica.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionFinanciera\Tesoreria\FactElectronicaR.asmx.cs">
+      <DependentUpon>FactElectronicaR.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GestionFinanciera\Tesoreria\Interbancario.asmx.cs">
       <DependentUpon>Interbancario.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GestionGobernanza\Indicadores.asmx.cs">
+      <DependentUpon>Indicadores.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionLogistica\logistica.asmx.cs">
+      <DependentUpon>logistica.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionPersonal\Contabilizacion\Planilla.asmx.cs">
+      <DependentUpon>Planilla.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionPersonal\ODPs\OrdenesdePago.asmx.cs">
+      <DependentUpon>OrdenesdePago.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionPersonal\Personal.asmx.cs">
+      <DependentUpon>Personal.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionPresupuesto\Presupuesto.asmx.cs">
+      <DependentUpon>Presupuesto.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionProduccion\ManodeObra.asmx.cs">
+      <DependentUpon>ManodeObra.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionProduccion\Mantenimiento.asmx.cs">
+      <DependentUpon>Mantenimiento.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionProduccion\Produccion.asmx.cs">
+      <DependentUpon>Produccion.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionProduccion\Proyectos.asmx.cs">
+      <DependentUpon>Proyectos.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionProyecto\Proyecto.asmx.cs">
+      <DependentUpon>Proyecto.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionReportes\AdministrarReportes.asmx.cs">
+      <DependentUpon>AdministrarReportes.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionTesoreria\Tesoreria.asmx.cs">
+      <DependentUpon>Tesoreria.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\AdministrarHD.asmx.cs">
+      <DependentUpon>AdministrarHD.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\ChatBot\IChatBotManager.asmx.cs">
+      <DependentUpon>IChatBotManager.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\ITIL\GestiondeConfiguracion.asmx.cs">
+      <DependentUpon>GestiondeConfiguracion.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelpDesk\Sistemas\GestionSistemas.asmx.cs">
+      <DependentUpon>GestionSistemas.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Produccion\Produccion.asmx.cs">
+      <DependentUpon>Produccion.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Seguridad\Seguridad.asmx.cs">
+      <DependentUpon>Seguridad.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -116,6 +292,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj">
+      <Project>{C6A0AF1C-48F1-4C59-B743-6ECF6A95DF6B}</Project>
+      <Name>AccesoDatos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Controladora\Controladora.csproj">
       <Project>{7969AA53-C0AB-4AD4-BF7F-F3425E4D91F7}</Project>
       <Name>Controladora</Name>
@@ -123,6 +303,14 @@
     <ProjectReference Include="..\EntidadNegocio\EntidadNegocio.csproj">
       <Project>{F5DBA14F-FD14-423E-81FE-FC4C83E8DF33}</Project>
       <Name>EntidadNegocio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Log\Log.csproj">
+      <Project>{62B1E3D8-0709-4AC6-9934-307F2E258C48}</Project>
+      <Name>Log</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ManejadorException\ManejadorException.csproj">
+      <Project>{60FB700C-440A-45CE-B0FB-41AA2954815E}</Project>
+      <Name>ManejadorException</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utilitario\Utilitario.csproj">
       <Project>{DD7E1E84-5A5E-4FF9-A582-555E76E4D089}</Project>

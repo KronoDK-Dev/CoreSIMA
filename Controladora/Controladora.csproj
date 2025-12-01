@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,15 +42,152 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GestionProyecto\CAdquisiciones.cs" />
+    <Compile Include="General\CBuscar.cs" />
+    <Compile Include="General\cCentroCosto.cs" />
     <Compile Include="General\cClaseExtend.cs" />
+    <Compile Include="General\CCliente.cs" />
+    <Compile Include="General\CEmpresa.cs" />
+    <Compile Include="General\cGeneral.cs" />
+    <Compile Include="General\cGeneralParam.cs" />
+    <Compile Include="General\CItemTablaGeneral.cs" />
+    <Compile Include="GestionActivoFijo\cActivoFijo.cs" />
+    <Compile Include="GestionCalidad\CInspeccionAnexo.cs" />
+    <Compile Include="GestionCalidad\Cinspecciones.cs" />
+    <Compile Include="GestionCalidad\CInspeccionUsuarioFirmante.cs" />
+    <Compile Include="GestionCalidad\CInspectores.cs" />
+    <Compile Include="GestionCalidad\CInspectorInspecciones.cs" />
+    <Compile Include="GestionCalidad\CProyectoActividad.cs" />
+    <Compile Include="GestionCalidad\CResponsableArea.cs" />
+    <Compile Include="GestionCalidad\CResponsableAreaDetalle.cs" />
+    <Compile Include="GestionComercial\cCliente.cs" />
+    <Compile Include="GestionComercial\cEmbarcaciones.cs" />
+    <Compile Include="GestionComercial\cSolicitud.cs" />
+    <Compile Include="GestionContabilidad\CBalance.cs" />
+    <Compile Include="GestionContabilidad\CCobros.cs" />
+    <Compile Include="GestionContabilidad\CEstados.cs" />
+    <Compile Include="GestionContabilidad\CGeneral.cs" />
+    <Compile Include="GestionContabilidad\COperaciones.cs" />
+    <Compile Include="GestionContabilidad\CPagos.cs" />
+    <Compile Include="GestionCostos\CCostos.cs" />
+    <Compile Include="GestionCostos\CPagos.cs" />
+    <Compile Include="GestionCostos\CVentas.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CAnticipo.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComponenteO7AtributoObligatorio.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComponenteO7Atributos.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComponenteO7Catalogo.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobante.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteAdicional.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteCargo.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteCuota.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteDetalle.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteDetraccion.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CComprobanteRetencion.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\CControl.cs" />
     <Compile Include="GestionFinanciera\Tesoreria\CInterbancario.cs" />
+    <Compile Include="GestionGobernanza\CAccionIndicador.cs" />
+    <Compile Include="GestionGobernanza\CAccionResponsable.cs" />
+    <Compile Include="GestionGobernanza\CActividad.cs" />
+    <Compile Include="GestionGobernanza\CAreaIndicadorPlazo.cs" />
+    <Compile Include="GestionGobernanza\CAreaInfoComplementa.cs" />
+    <Compile Include="GestionGobernanza\CIndicadorConfigCondicion.cs" />
+    <Compile Include="GestionGobernanza\CObjetivo.cs" />
+    <Compile Include="GestionGobernanza\CObjetivosAcciones.cs" />
+    <Compile Include="GestionLogistica\cAlmacen.cs" />
+    <Compile Include="GestionLogistica\cBienes.cs" />
+    <Compile Include="GestionLogistica\cGeneral.cs" />
+    <Compile Include="GestionLogistica\cMateriales.cs" />
+    <Compile Include="GestionLogistica\cOrdenes.cs" />
+    <Compile Include="GestionLogistica\cProveedores.cs" />
+    <Compile Include="GestionLogistica\cProyectos.cs" />
+    <Compile Include="GestionLogistica\cRequerimientos.cs" />
+    <Compile Include="GestionLogistica\cServicios.cs" />
+    <Compile Include="GestionLogistica\cStock.cs" />
+    <Compile Include="GestionPersonal\CAtributo.cs" />
+    <Compile Include="GestionPersonal\CDatosFijos.cs" />
+    <Compile Include="GestionPersonal\Contabilizacion\CCBDetalleAD.cs" />
+    <Compile Include="GestionPersonal\Contabilizacion\CCostoPlanilla.cs" />
+    <Compile Include="GestionPersonal\Contabilizacion\CDetalleAD.cs" />
+    <Compile Include="GestionPersonal\Contabilizacion\CEncabAD.cs" />
+    <Compile Include="GestionPersonal\CPersonal.cs" />
+    <Compile Include="GestionPersonal\CVacaciones.cs" />
+    <Compile Include="GestionPersonal\CZKFinger.cs" />
+    <Compile Include="GestionPersonal\Pagos\COrdendePago.cs" />
+    <Compile Include="GestionPersonal\Pagos\COrdendePagoCtaCtable.cs" />
+    <Compile Include="GestionPresupuesto\cPresupuesto.cs" />
+    <Compile Include="GestionProduccion\CActividad.cs" />
+    <Compile Include="GestionProduccion\CGeneral.cs" />
+    <Compile Include="GestionProduccion\CMantenimiento.cs" />
+    <Compile Include="GestionProduccion\CMateriales.cs" />
+    <Compile Include="GestionProduccion\CMob.cs" />
+    <Compile Include="GestionProduccion\COrdenes.cs" />
+    <Compile Include="GestionProduccion\COt.cs" />
+    <Compile Include="GestionProduccion\COtsValorizacion.cs" />
+    <Compile Include="GestionProduccion\CProyectos.cs" />
+    <Compile Include="GestionProduccion\CSubmarinos.cs" />
+    <Compile Include="GestionProduccion\CValorizacion.cs" />
+    <Compile Include="GestionProyecto\CBalance.cs" />
+    <Compile Include="GestionProyecto\CFacturacion.cs" />
+    <Compile Include="GestionProyecto\CMateriales.cs" />
+    <Compile Include="GestionProyecto\CMob.cs" />
+    <Compile Include="GestionProyecto\COrdenes.cs" />
+    <Compile Include="GestionProyecto\COt.cs" />
+    <Compile Include="GestionProyecto\CPagos.cs" />
+    <Compile Include="GestionProyecto\CProyecto.cs" />
+    <Compile Include="GestionReportes\CArchivoCompartido.cs" />
+    <Compile Include="GestionReportes\CExploradorReporte.cs" />
+    <Compile Include="GestionReportes\CObjeto.cs" />
+    <Compile Include="GestionReportes\CObjetoConfigAttr.cs" />
+    <Compile Include="GestionReportes\CObjetoMapeoExport.cs" />
+    <Compile Include="GestionReportes\CObjetoPrivilegio.cs" />
+    <Compile Include="GestionReportes\CObjetoReporteCompartido.cs" />
+    <Compile Include="GestionReportes\CUsuarioReporte.cs" />
+    <Compile Include="GestionTesoreria\cBalance.cs" />
+    <Compile Include="GestionTesoreria\cCobros.cs" />
+    <Compile Include="GestionTesoreria\cPagos.cs" />
+    <Compile Include="HelpDesk\CActividadesAtendidas.cs" />
+    <Compile Include="HelpDesk\CAprobador.cs" />
+    <Compile Include="HelpDesk\CBandejadeEntrada.cs" />
+    <Compile Include="HelpDesk\CFileRequerimiento.cs" />
+    <Compile Include="HelpDesk\ChatBot\CCBContactoGrupo.cs" />
+    <Compile Include="HelpDesk\ChatBot\CCBHistorialMsg.cs" />
+    <Compile Include="HelpDesk\ChatBot\CCBMensajeContendido.cs" />
+    <Compile Include="HelpDesk\ChatBot\CCBResponse.cs" />
+    <Compile Include="HelpDesk\CPlanCronogramaActividadTarea.cs" />
+    <Compile Include="HelpDesk\CPlandeTrabajo.cs" />
+    <Compile Include="HelpDesk\CPlanTrabajoActividad.cs" />
+    <Compile Include="HelpDesk\CPlanTrabajoActividadTareaHistorial.cs" />
+    <Compile Include="HelpDesk\CPlanTrabajoTareas.cs" />
+    <Compile Include="HelpDesk\CRequerimientoResponsable.cs" />
+    <Compile Include="HelpDesk\CRequerimientoResponsableATencion.cs" />
+    <Compile Include="HelpDesk\CRequerimientoResponsableEstado.cs" />
+    <Compile Include="HelpDesk\CRequerimientosAtencion.cs" />
+    <Compile Include="HelpDesk\CRequerimientoSprint.cs" />
+    <Compile Include="HelpDesk\CRequermiento.cs" />
+    <Compile Include="HelpDesk\CTaskHistoryParticipante.cs" />
+    <Compile Include="HelpDesk\ITIL\CProcedimiento.cs" />
+    <Compile Include="HelpDesk\ITIL\CProcedimientoNota.cs" />
+    <Compile Include="HelpDesk\ITIL\CServicios.cs" />
+    <Compile Include="HelpDesk\Sistemas\CActividadDocumentacion.cs" />
+    <Compile Include="HelpDesk\Sistemas\CActividadDocumentacionReaccion.cs" />
+    <Compile Include="HelpDesk\Sistemas\CActividadElementos.cs" />
+    <Compile Include="HelpDesk\Sistemas\CSistemaProcesoSubProceso.cs" />
+    <Compile Include="HelpDesk\Sistemas\CStakeHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Seguridad\CUsuario.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj">
       <Project>{C6A0AF1C-48F1-4C59-B743-6ECF6A95DF6B}</Project>
       <Name>AccesoDatos</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EntidadNegocio\EntidadNegocio.csproj">
+      <Project>{F5DBA14F-FD14-423E-81FE-FC4C83E8DF33}</Project>
+      <Name>EntidadNegocio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

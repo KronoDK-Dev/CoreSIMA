@@ -68,6 +68,9 @@
       <HintPath>..\packages\MySql.Data.9.5.0\lib\net462\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ClienteOracle\product\11.2.0\client_1\ODP.NET\bin\4\Oracle.DataAccess.dll</HintPath>
@@ -83,6 +86,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.IO.FileSystem.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.AccessControl.5.0.0\lib\net461\System.IO.FileSystem.AccessControl.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Pipelines, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.5.0.2\lib\net461\System.IO.Pipelines.dll</HintPath>
       <Private>True</Private>
@@ -100,6 +107,12 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -121,12 +134,184 @@
     <Compile Include="AccesoDatosBaseExtended.cs" />
     <Compile Include="ADHelper.cs" />
     <Compile Include="BaseAD.cs" />
+    <Compile Include="ConnectionHelper.cs" />
     <Compile Include="General\ClaseExtendNTAD.cs" />
+    <Compile Include="IMantenimientoNTAD.cs" />
     <Compile Include="IMantenimientoTAD.cs" />
     <Compile Include="InfoMetodoBE.cs" />
+    <Compile Include="NoTransaccional\General\BuscarNTAD.cs" />
+    <Compile Include="NoTransaccional\General\ClienteNTAD.cs" />
+    <Compile Include="NoTransaccional\General\EmpresaNTAD.cs" />
+    <Compile Include="NoTransaccional\General\InformacionGeneralNTAD.cs" />
+    <Compile Include="NoTransaccional\General\ItemTablaGeneralNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionActivoFijo\ActivoFijoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\InspeccionAnexoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\InspeccionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\InspeccionUsuarioFirmanteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\InspectoresNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\InspectorInspeccionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\ProyectoActividadNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\ResponsableAreaDetalleNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCalidad\ResponsableAreaNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionComercial\ClienteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionComercial\EmbarcacionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionComercial\SolicitudNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\BalanceNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\CobrosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\EstadosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\GeneralNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\OperacionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionContabilidad\PagosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCostos\CostosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCostos\PagosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionCostos\VentasNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\AnticipoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributoObligatorioNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7CatalogoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteCargoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteCuotaNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteDetraccionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteAdicionalNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteDetalleNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteRetencionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ControlNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\InterbancarioNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\AccionIndicadorNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\AccionResponsableNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\AreaIndicadorPlazoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\IndicadorConfigCondicionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\ObjetivosAccionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\AlmacenNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\BienesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\GeneralNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\MaterialesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\OrdenesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\ProveedoresNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\ProyectosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\RequerimientosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\ServiciosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionLogistica\StockNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionPersonal\PersonalNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionPresupuesto\OrdenesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\GeneralNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\MantenimientoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\MaterialesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\MobNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\OrdenesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\OtNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\OtsValorizacionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\ProyectosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\SubNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProduccion\ValorizacionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\AdquisicionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\BalanceNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\FacturacionNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\MaterialesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\MobNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\OrdenesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\OtNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\PagosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionProyecto\ProyectoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\ArchivoCompartidoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\ExploradorReporteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\ObjetoConfigAttrNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\ObjetoMapeoExportNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\ObjetoReporteCompartidoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionReportes\UsuarioReporteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionTesoreria\BalanceNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionTesoreria\CobrosNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionTesoreria\PagosNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\AprobadoresNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\BandejadeEntradaNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ChatBot\CBContactoGrupoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ChatBot\CBHistorialMsgNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ChatBot\CBResponseNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\FileRequerimientoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ITIL\ProcedimientoNotaNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ITIL\ProcedimientoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\ITIL\ServiciosNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\PlandeTrabajoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\PlanTrabajoActividadNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\PlanTrabajoActividadTareaHistorialNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\PlanTrabajoTareasNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientoResponsableAtencionNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientoResponsableEstadoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientoResponsableNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientosAtencionNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\RequerimientoSprintNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\Sistemas\ActividadDocumentacionNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\Sistemas\ActividadDocumentacionReaccionNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\Sistemas\ActividadElementosNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\Sistemas\SistemaProcesoSubProcesoNTAD.cs" />
+    <Compile Include="NoTransaccional\HelpDesk\Sistemas\StakeHolderNTAD.cs" />
+    <Compile Include="NoTransaccional\Seguridad\AD.cs" />
+    <Compile Include="NoTransaccional\Seguridad\UsuarioNTAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transaccional\General\ItemTablaGeneralTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\InspeccionAnexoTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\InspeccionTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\InspeccionUsuarioFirmanteTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\InspectorDetalleTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\InspectoresTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\ProyectoActividadTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\ResponsableAreaDetalleTAD.cs" />
+    <Compile Include="Transaccional\GestionCalidad\ResponsableAreaTAD.cs" />
+    <Compile Include="Transaccional\GestionComercial\ClienteTAD.cs" />
+    <Compile Include="Transaccional\GestionComercial\SolicitudTAD.cs" />
+    <Compile Include="Transaccional\GestionFinanciera\Tesoreria\ComprobanteTAD.cs" />
+    <Compile Include="Transaccional\GestionFinanciera\Tesoreria\ControlTAD.cs" />
     <Compile Include="Transaccional\GestionFinanciera\Tesoreria\InterbancarioTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\AccionResponsableTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\AccionTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\AreaIndicadorPlazoTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\AreaInfoComplementaTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\IndicadorConfigCondicionTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\IndicadorTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\ObjetivoTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\AtributoTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Contabilizacion\CBDetalleADTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Contabilizacion\CostoPlanillaTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Contabilizacion\DetalleADTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Contabilizacion\EncabADTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\DatosFijosTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Pagos\OrdendePagoCtaCtableTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\Pagos\OrdendePagoTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\VacacionesTAD.cs" />
+    <Compile Include="Transaccional\GestionPersonal\ZKFingerTAD.cs" />
+    <Compile Include="Transaccional\GestionProduccion\ActividadTAD.cs" />
+    <Compile Include="Transaccional\GestionProduccion\OtTAD.cs" />
+    <Compile Include="Transaccional\GestionProduccion\ProyectosTAD.cs" />
+    <Compile Include="Transaccional\GestionProyecto\ProyectoTAD.cs" />
+    <Compile Include="Transaccional\GestionReportes\ArchivoCompartidoTAD.cs" />
+    <Compile Include="Transaccional\GestionReportes\ObjetoConfigAttrTAD.cs" />
+    <Compile Include="Transaccional\GestionReportes\ObjetoMapeoExportTAD.cs" />
+    <Compile Include="Transaccional\GestionReportes\ObjetoPrivilegioTAD.cs" />
+    <Compile Include="Transaccional\GestionReportes\ObjetoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ActividadesAtendidasTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\AprobadorTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ArchivoAdjuntoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ChatBot\CBContactoGrupoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ChatBot\CBMensajeContendidoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ITIL\ProcedimientoNotaTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ITIL\ProcedimientoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\ITIL\ServiciosTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\PlanCronogramaActividadTareaTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\PlandeTrabajoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\PlanTrabajoActividadTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\PlanTrabajoActividadTareaHistorialTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\RequerimientoResponsableATencionTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\RequerimientoResponsableEstadoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\RequerimientoResponsableTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\RequerimientoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\Sistemas\ActividadComentarioTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\Sistemas\ActividadElementosTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\Sistemas\SistemaProcesoSubProcesoTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\Sistemas\StakeHolderTAD.cs" />
+    <Compile Include="Transaccional\HelpDesk\TaskHistoryParticipanteTAD.cs" />
+    <Compile Include="Transaccional\Seguridad\UsuarioTAD.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntidadNegocio\EntidadNegocio.csproj">
@@ -143,7 +328,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -29,5 +29,10 @@ namespace Controladora.GestionPersonal
         {
             return (new PersonalNTAD()).DetalleO7(IdPersonal, UserName);
         }
+
+        public DataTable Buscar_Colaborador_xCod(string V_CEO, string V_CODIGO)
+        {
+            return (new PersonalNTAD()).Buscar_Colaborador_xCod(V_CEO, V_CODIGO);
+        }
     }
 }

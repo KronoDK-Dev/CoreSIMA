@@ -21,6 +21,10 @@ namespace EntidadNegocio
 
         public string NombreEstado { get; set; } = string.Empty;
 
+        public string Sucursal { get; set; }
+
+        public string Estacion { get; set; }
+
         public string UserName { get; set; } = string.Empty;
 
         public string IdCodigo { get; set; }
@@ -32,6 +36,8 @@ namespace EntidadNegocio
         public string ambiente { get; set; } = string.Empty;
 
         public DateTime Fecha { get; set; }
+
+        public string Email { get; set; }
 
         public override string ToString()
         {

@@ -1023,9 +1023,8 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
                 return null;
             }
         }
-
-        public DataTable Listar_detalle_ots_recursos_pryc(string N_CEO, string V_CODATV, string V_CODDIV,
-            string V_CODPROY, string V_NROOTS, string V_TIPRCS, string UserName)
+        // 28. DETALLE_OTS_RECURSOS_PRY
+        public DataTable Listar_detalle_ots_recursos_pryc(string N_CEO, string V_CODATV, string V_CODDIV, string V_CODPROY, string V_NROOTS, string V_TIPRCS, string UserName)
         {
             try
             {
@@ -1100,6 +1099,89 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
             }
         }
 
+        // 28. DETALLE_OTS_RECURSOS_PRY x fechas
+        public DataTable Listar_Detalle_Ot_Recursos_Pry_fec(string N_CEO, string V_CODATV, string V_CODDIV, string V_CODPROY, string V_NROOTS, string V_TIPRCS, string D_FECHAINI_EMI, string D_FECHAFIN_EMI, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo);
+
+                string PackageName = sConsulta + ".Pkg_PRODUCCION.SP_Detalle_Ot_Recursos_Pry_fec";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , oInfoMetodoBE.VoidParams
+                    , ""
+                    , Helper.MensajesIngresarMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                OracleParameter[] Param = new OracleParameter[9];
+                Param[0] = new OracleParameter("N_CEO", OracleDbType.Varchar2);
+                Param[0].Direction = ParameterDirection.Input;
+                Param[0].Value = N_CEO;
+
+                Param[1] = new OracleParameter("V_CODDIV", OracleDbType.Varchar2);
+                Param[1].Direction = ParameterDirection.Input;
+                Param[1].Value = V_CODDIV;
+
+                Param[2] = new OracleParameter("V_CODPROY", OracleDbType.Varchar2);
+                Param[2].Direction = ParameterDirection.Input;
+                Param[2].Value = V_CODPROY;
+
+                Param[3] = new OracleParameter("V_NROOTS", OracleDbType.Varchar2);
+                Param[3].Direction = ParameterDirection.Input;
+                Param[3].Value = V_NROOTS;
+
+                Param[4] = new OracleParameter("D_FECHAINI_EMI", OracleDbType.Varchar2);
+                Param[4].Direction = ParameterDirection.Input;
+                Param[4].Value = D_FECHAINI_EMI;
+
+                Param[5] = new OracleParameter("D_FECHAFIN_EMI", OracleDbType.Varchar2);
+                Param[5].Direction = ParameterDirection.Input;
+                Param[5].Value = D_FECHAFIN_EMI;
+
+                Param[6] = new OracleParameter("V_CODATV", OracleDbType.Varchar2);
+                Param[6].Direction = ParameterDirection.Input;
+                Param[6].Value = V_CODATV;
+
+                Param[7] = new OracleParameter("V_TIPRCS", OracleDbType.Varchar2);
+                Param[7].Direction = ParameterDirection.Input;
+                Param[7].Value = V_TIPRCS;
+
+                Param[8] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                Param[8].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , ""
+                    , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                    , Helper.MensajesSalirMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return ds.Tables[0];
+            }
+            catch (OracleException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
         public DataTable Listar_detalle_ots_recursos(string N_CEO, string V_CATVCRV, string V_CODDIV, string V_NROOTS,
             string V_TIPRCS, string UserName)
         {

@@ -36,13 +36,13 @@ namespace WSCore.General
         {
             return ((new cCentroCosto()).BuscarCentrosCosto(N_COD_EMP, V_NOMBRE_CC, UserName));
         }
-        /* repetido
-        [WebMethod(Description = "lista Centros de Costo por nombre o código")]
+        
+        [WebMethod(Description = "xxlista Centros de Costo por nombre o código xxxx.")]
         public DataTable ListarCentrosCosto(string NombreCC, string UserName)
         {
             return ((new cCentroCosto()).BuscarCentrosCosto(NombreCC, UserName));
         }
-        */
+        
         [WebMethod]
         public DataTable ListarItemTablas(string IdTablaGeneral, string UserName)
         {

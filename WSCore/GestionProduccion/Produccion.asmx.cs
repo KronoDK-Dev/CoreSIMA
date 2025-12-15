@@ -652,6 +652,54 @@ namespace WSCore.GestionProduccion
             }
         }
 
+        [WebMethod(Description = "Lista Actividades que incluyen Servicios en Ordenes de Trabajo  - string xml")]
+        public string Listar_Detalle_Ot_Recursos_Pry_fec(string N_CEO, string V_CODATV, string V_CODDIV, string V_CODPROY, string V_NROOTS, string V_TIPRCS, string D_FECHAINI_EMI, string D_FECHAFIN_EMI, string UserName)
+        {
+            try
+            {
+                DataTable dt = (new COt()).Listar_Detalle_Ot_Recursos_Pry_fec(N_CEO, V_CODATV, V_CODDIV, V_CODPROY, V_NROOTS, V_TIPRCS, D_FECHAINI_EMI, D_FECHAFIN_EMI, UserName);
+
+                if (dt == null)
+                {
+                    dt = new DataTable("Listar_Detalle_Ot_Recursos_Pry_fec");
+                    dt.Columns.Add("Detalle  :", typeof(string));
+                    dt.Rows.Add("El método Listar_detalle_ots_recursos_pryc devolvió null");
+                }
+
+                DataTable dtCopy = dt.Copy();
+                dtCopy.TableName = "Listar_Detalle_Ot_Recursos_Pry_fec";
+
+                DataSet dset = new DataSet();
+                dset.Tables.Add(dtCopy);
+
+                using (StringWriter sw = new StringWriter())
+                {
+                    using (XmlWriter writer = XmlWriter.Create(sw))
+                    {
+                        dset.WriteXml(writer, XmlWriteMode.IgnoreSchema);
+                        return sw.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DataTable dtError = new DataTable("Listar_Detalle_Ot_Recursos_Pry_fec");
+                dtError.Columns.Add("Detalle  :", typeof(string));
+                dtError.Rows.Add(ex.Message);
+
+                DataSet dset = new DataSet();
+                dset.Tables.Add(dtError);
+
+                using (StringWriter sw = new StringWriter())
+                using (XmlWriter writer = XmlWriter.Create(sw))
+                {
+                    dset.WriteXml(writer, XmlWriteMode.IgnoreSchema);
+                    return sw.ToString();
+                }
+            }
+        }
+
+
         [WebMethod(Description = "Informacion de actividades por Ordenes de Trabajo")]
         public DataTable Listar_indicadores(string V_CO, string V_DIVISION, string D_FECHAINI, string D_FECHAFIN, string UserName)
         {

@@ -165,6 +165,7 @@
     <Compile Include="NoTransaccional\GestionCostos\CostosNTAD.cs" />
     <Compile Include="NoTransaccional\GestionCostos\PagosNTAD.cs" />
     <Compile Include="NoTransaccional\GestionCostos\VentasNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Reportes.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\AnticipoNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributoObligatorioNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributosNTAD.cs" />

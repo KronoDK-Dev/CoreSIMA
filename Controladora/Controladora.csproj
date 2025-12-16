@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GestionFinanciera\cReporte.cs" />
     <Compile Include="GestionProyecto\CAdquisiciones.cs" />
     <Compile Include="General\CBuscar.cs" />
     <Compile Include="General\cCentroCosto.cs" />

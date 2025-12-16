@@ -36,7 +36,13 @@ namespace WSCore.General
         {
             return ((new cCentroCosto()).BuscarCentrosCosto(N_COD_EMP, V_NOMBRE_CC, UserName));
         }
-
+        
+        [WebMethod(Description = "xxlista Centros de Costo por nombre ")]
+        public DataTable ListarCentrosCosto(string NombreCC, string UserName)
+        {
+            return ((new cCentroCosto()).BuscarCentrosCosto(NombreCC, UserName));
+        }
+        
         [WebMethod]
         public DataTable ListarItemTablas(string IdTablaGeneral, string UserName)
         {
@@ -745,10 +751,5 @@ namespace WSCore.General
             return (new CItemTablaGeneral()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
         }
 
-        [WebMethod(Description = "lista Centros de Costo por nombre o código")]
-        public DataTable ListarCentrosCosto(string NombreCC, string UserName)
-        {
-            return ((new cCentroCosto()).BuscarCentrosCosto(NombreCC, UserName));
-        }
     }
 }

@@ -109,6 +109,7 @@
     <Content Include="GestionComercial\Solicitud.asmx" />
     <Content Include="GestionContabilidad\Contabilidad.asmx" />
     <Content Include="GestionCostos\Costos.asmx" />
+    <Content Include="GestionFinanciera\Reportes.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronica.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronicaR.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\Interbancario.asmx" />
@@ -191,6 +192,10 @@
     </Compile>
     <Compile Include="GestionCostos\Costos.asmx.cs">
       <DependentUpon>Costos.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionFinanciera\Reportes.asmx.cs">
+      <DependentUpon>Reportes.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GestionFinanciera\Tesoreria\FactElectronica.asmx.cs">
@@ -333,9 +338,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>49701</DevelopmentServerPort>
+          <DevelopmentServerPort>62996</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44351/</IISUrl>
+          <IISUrl>http://localhost:62996/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

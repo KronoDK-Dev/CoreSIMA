@@ -338,9 +338,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>62996</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:62996/</IISUrl>
+          <DevelopmentServerPort>90</DevelopmentServerPort>
+          <DevelopmentServerVPath>/Core</DevelopmentServerVPath>
+          <IISUrl>http://localhost:90/Core</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

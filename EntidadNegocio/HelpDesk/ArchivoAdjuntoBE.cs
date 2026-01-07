@@ -9,7 +9,7 @@ namespace EntidadNegocio.HelpDesk
     public class ArchivoAdjuntoBE : BaseBE
     {
         public ArchivoAdjuntoBE() { }
-        public string IdFile { get; set; }
+        public string IdFile{ get; set; }
         public string IdRequerimiento { get; set; }
         public string Nombre { get; set; }
     }

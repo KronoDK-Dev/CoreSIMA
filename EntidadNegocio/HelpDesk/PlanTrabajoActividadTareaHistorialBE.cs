@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Utilitario.Constante.Formato;
 
 namespace EntidadNegocio.HelpDesk
 {
@@ -12,9 +13,12 @@ namespace EntidadNegocio.HelpDesk
         public string IdHistorial { get; set; }
         public string IdTarea { get; set; }
 
-        public string Nombre { get; set; }
+        public string Nombre{ get; set; }
         public int IdTipoAccion { get; set; }
         public int IdTipoTiempo { get; set; }
         public double valTipoTime { get; set; }
+
+
+        
     }
 }

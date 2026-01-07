@@ -1,4 +1,5 @@
-﻿using System;
+using EntidadNegocio.GestionPersonal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.GestionGobernanza
 {
-    public class ObjAccIndRecBE : BaseBE
+    public  class ObjAccIndRecBE:BaseBE
     {
-        public int IdTabla { get; set; }
+        public int IdTabla  { get; set; }
         public int IdItemTabla { get; set; }
-        public string Codigo { get; set; }
+        public string  Codigo { get; set; }
         public string Nombre { get; set; }
         public int IdTblRelacion { get; set; }
         public int IdItemRelacion { get; set; }
@@ -22,5 +23,6 @@ namespace EntidadNegocio.GestionGobernanza
         public string Val6 { get; set; }
         public string Val7 { get; set; }
         public string Val8 { get; set; }
+        public string Descripcion2 { get; set; }
     }
 }

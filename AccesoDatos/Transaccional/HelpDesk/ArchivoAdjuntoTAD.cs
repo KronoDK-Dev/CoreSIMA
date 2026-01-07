@@ -1,15 +1,15 @@
 ﻿using EntidadNegocio;
+using EntidadNegocio.HelpDesk;
 using Log;
 using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EntidadNegocio.HelpDesk;
 using Utilitario;
 
 namespace AccesoDatos.Transaccional.HelpDesk
@@ -36,7 +36,12 @@ namespace AccesoDatos.Transaccional.HelpDesk
             throw new NotImplementedException();
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +54,6 @@ namespace AccesoDatos.Transaccional.HelpDesk
         public string ModificaInserta(BaseBE oBaseBE)
         {
             ArchivoAdjuntoBE oArchivoAdjuntoBE = (ArchivoAdjuntoBE)oBaseBE;
-
             try
             {
                 StackTrace stack = new StackTrace();
@@ -68,6 +72,7 @@ namespace AccesoDatos.Transaccional.HelpDesk
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[7];
+
                 Param[0] = new OracleParameter("oModo", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = 3;
@@ -76,9 +81,12 @@ namespace AccesoDatos.Transaccional.HelpDesk
                 Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = oArchivoAdjuntoBE.IdFile;
 
+
                 Param[2] = new OracleParameter("ID_REQU", OracleDbType.Varchar2);
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = oArchivoAdjuntoBE.IdRequerimiento;
+
+
 
                 Param[3] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
@@ -88,16 +96,20 @@ namespace AccesoDatos.Transaccional.HelpDesk
                 Param[4].Direction = ParameterDirection.Input;
                 Param[4].Value = oArchivoAdjuntoBE.Descripcion;
 
+
                 Param[5] = new OracleParameter("USU_AD", OracleDbType.Varchar2);
                 Param[5].Direction = ParameterDirection.Input;
                 Param[5].Value = oArchivoAdjuntoBE.IdUsuario;
+
 
                 Param[6] = new OracleParameter("IdOut", OracleDbType.Varchar2);
                 Param[6].Direction = ParameterDirection.Output;
                 Param[6].Size = 15;
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
+              
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oArchivoAdjuntoBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -107,8 +119,13 @@ namespace AccesoDatos.Transaccional.HelpDesk
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oArchivoAdjuntoBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -121,17 +138,12 @@ namespace AccesoDatos.Transaccional.HelpDesk
             }
         }
 
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
         public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }

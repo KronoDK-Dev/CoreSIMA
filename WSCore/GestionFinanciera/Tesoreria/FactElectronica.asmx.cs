@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.Services;
-using System.Web.UI;
-using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
 using Controladora.General;
 using Controladora.GestionFinanciera.Tesoreria;
 
 namespace WSCore.GestionFinanciera.Tesoreria
 {
     /// <summary>
-    /// Descripción breve de FactElectronica
+    /// Descripción breve de FacturacionElectronica
     /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
@@ -22,23 +17,22 @@ namespace WSCore.GestionFinanciera.Tesoreria
     public class FactElectronica : System.Web.Services.WebService
     {
 
-        [WebMethod(Description = "Consulta de Comprobantes")]
+       [WebMethod(Description = "Consulta de Comprobantes")]
         public DataSet ConsultarComprobantes(string Ind_Org, int CentroOperativo)
         {
             return (new CComprobante()).ConsultarComprobantes(Ind_Org, CentroOperativo);
         }
-
         [WebMethod(Description = "Lista los Comprobantes según el estado solicitado")]
         public DataSet ConsultarComprobatesPorEstado(string Ind_Org, int IdEstado, int CentroOperativo)
         {
             return (new CComprobante()).ConsultarComprobatesPorEstado(Ind_Org, IdEstado, CentroOperativo);
         }
-
-        [WebMethod(Description = "Consulta de Comprobantes x Estado tipo y Nro de serie")]
+       [WebMethod(Description = "Consulta de Comprobantes x Estado tipo y Nro de serie")]
         public DataSet ConsultarComprobantesXNro(string Ind_Org, int idEstado, string TipoDoc, string NroSerie, int CentroOperativo)
         {
             return (new CComprobante()).ConsultarComprobantesXNro(Ind_Org, idEstado, TipoDoc, NroSerie, CentroOperativo);
         }
+ 
 
         [WebMethod(Description = "Consulta Info adicional de Comprobantes")]
         public DataSet ConsultarInfoAdicinalComprobantes(string TipoDoc, string NroSer, int CentroOperativo)
@@ -46,13 +40,13 @@ namespace WSCore.GestionFinanciera.Tesoreria
             return (new CComprobanteAdicional()).ConsultarInfoAdicinalComprobantes(TipoDoc, NroSer, CentroOperativo);
         }
 
-        [WebMethod(Description = "Consulta de Comprobantes - Detalle")]
+       [WebMethod(Description = "Consulta de Comprobantes - Detalle")]
         public DataSet ConsultarComprobantesDetalle(string TipoDoc, string NroSer, int CentroOperativo)
         {
             return (new CComprobanteDetalle()).ConsultarComprobantesDetalle(TipoDoc, NroSer, CentroOperativo);
         }
 
-        [WebMethod(Description = "Consulta de Comprobantes -Detalle Detracción")]
+       [WebMethod(Description = "Consulta de Comprobantes -Detalle Detracción")]
         public DataSet ConsultarComprobantesDetraccion(string TipoDoc, string NroSer, int CentroOperativo)
         {
             return (new CComprobanteDetraccion()).ConsultarComprobantesDetraccion(TipoDoc, NroSer, CentroOperativo);
@@ -64,13 +58,13 @@ namespace WSCore.GestionFinanciera.Tesoreria
             return (new CAnticipo()).ConsultarComprobantesAnticipo(TipoDoc, NroSer, CentroOperativo);
         }
 
-        [WebMethod(Description = "Consulta de Comprobantes - Cargo del Anticipo")]
+         [WebMethod(Description = "Consulta de Comprobantes - Cargo del Anticipo")]
         public DataSet ConsultarComprobantesCargo(string TipoDoc, string NroSer, int CentroOperativo)
         {
             return (new CComprobanteCargo()).ConsultarComprobantesCargo(TipoDoc, NroSer, CentroOperativo);
         }
 
-        [WebMethod(Description = "Consulta Info Comprobante cuota")]
+         [WebMethod(Description = "Consulta Info Comprobante cuota")]
         public DataSet ConsultarComprobanteCuota(string TipoDoc, string NroSer, int CentroOperativo)
         {
             return (new CComprobanteCuota()).ConsultarComprobanteCuota(TipoDoc, NroSer, CentroOperativo);
@@ -79,14 +73,15 @@ namespace WSCore.GestionFinanciera.Tesoreria
         [WebMethod(Description = "Consulta de Clientes")]
         public DataSet ConsultarClientes(string CodCli, int CentroOperativo)
         {
-            return (new Controladora.GestionComercial.cCliente()).Consultar(CodCli, CentroOperativo);
+            return (new Controladora.GestionComercial.CCliente()).Consultar(CodCli, CentroOperativo);
         }
-
+   
         [WebMethod]
         public DataTable ObtenerCredencialEMP(string IdEmp)
         {
             return (new CEmpresa()).ObtenerCredencialEMP(IdEmp);
         }
+
 
         [WebMethod(Description = "Listar Atributos de Componente")]
         public DataSet ListarAtributosComponente(int IdComponente)
@@ -99,6 +94,8 @@ namespace WSCore.GestionFinanciera.Tesoreria
         {
             return (new CControl()).VerificaFacturaNueva(Fec_Ope, CentroOperativo);
         }
+
+       // #region Transaccionales
 
         [WebMethod(Description = "Actualiza Estado de Comprobante")]
         public int ActualizarEstadoComprobante(string TipoDoc, string NroSer, int Estado, int CentroOperativo)
@@ -117,12 +114,14 @@ namespace WSCore.GestionFinanciera.Tesoreria
         {
             return (new CComponenteO7AtributoObligatorio()).ConsultarComponentesAtributosObligatorios();
         }
-
+     
         [WebMethod(Description = "Consulta Listado del Catalogo de valores SUNAT")]
         public DataSet ConsultarCatalogos()
         {
             return (new CComponenteO7Catalogo()).ConsultarCatalogos();
         }
+     
+
 
         [WebMethod]
         public DataTable TestDataSet()
@@ -144,5 +143,9 @@ namespace WSCore.GestionFinanciera.Tesoreria
 
             return dt;
         }
+
+
+      //  #endregion
+
     }
 }

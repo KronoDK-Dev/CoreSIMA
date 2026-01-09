@@ -107,6 +107,13 @@ namespace Controladora.GestionProduccion
             return (new OtNTAD()).Listar_detalle_ots_recursos_pryc(N_CEO, V_CODATV, V_CODDIV, V_CODPROY, V_NROOTS, V_TIPRCS, UserName);
         }
 
+        public DataTable Listar_Detalle_Ot_Recursos_Pry_fec(string N_CEO, string V_CODATV, string V_CODDIV, string V_CODPROY, string V_NROOTS, string V_TIPRCS, string D_FECHAINI_EMI, string D_FECHAFIN_EMI, string UserName)
+        {
+            return (new OtNTAD()).Listar_Detalle_Ot_Recursos_Pry_fec(N_CEO, V_CODATV, V_CODDIV, V_CODPROY, V_NROOTS, V_TIPRCS, D_FECHAINI_EMI, D_FECHAFIN_EMI, UserName);
+        }
+
+
+
         public DataTable SP_LISTA_PLANILAxTpxDvxAuxFech(string sTipo, string sDivision, string sAreaU, string sFecha, string sAmbiente, string UserName)
         {
             return (new OtNTAD()).SP_LISTA_PLANILAxTpxDvxAuxFech(sTipo, sDivision, sAreaU, sFecha, sAmbiente, UserName);

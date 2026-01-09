@@ -1,16 +1,13 @@
-﻿using Oracle.DataAccess.Client;
+﻿using Log;
 using System;
-using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Utilitario;
-using static AccesoDatos.BaseAD;
-
+using Oracle.DataAccess.Client;
 namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 {
-    public class ComprobanteCuotaNTAD : BaseAD
+    public class ComprobanteCuotaNTAD:BaseAD
     {
         public DataSet Consultar(string TipoDoc, string NroSer, int CentroOperativo)
         {
@@ -19,8 +16,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                 DataSet ds = new DataSet();
 
                 string PackagName = "";
-                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao))
-                {
+                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao)){
                     PackagName = "O7INVOICE.PD_COMPROBANTE_VENTA_PKG.ComprobanteCuota";
 
                     OracleParameter[] Param = new OracleParameter[3];
@@ -37,13 +33,11 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
-                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)){ 
                     PackagName = "SP_ComprobanteCuota";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
-                else
-                {
+                else{ 
                     PackagName = "SP_ComprobanteCuota";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
@@ -60,11 +54,11 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             {
                 ;
             }
+
             catch (Exception ex)
             {
                 ;
             }
-
             return null;
         }
     }

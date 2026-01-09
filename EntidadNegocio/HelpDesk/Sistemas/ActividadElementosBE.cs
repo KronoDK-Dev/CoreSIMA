@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk.Sistemas
 {
-    public class ActividadElementosBE : BaseBE
+    public class ActividadElementosBE:BaseBE
     {
-        public string IdActElemento { get; set; }
+        public string IdActElemento { get; set; }        
         public string IdActividad { get; set; }
         public string IdActividadElemOrg { get; set; }
         public string Nombre { get; set; }

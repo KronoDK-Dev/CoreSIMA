@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Controladora.GestionFinanciera.Tesoreria;
+using EntidadNegocio.GestionFinanciera.Tesoreria.Pagos;
+using EntidadNegocio.GestionReportes;
+using SIMANET_W22R.Controles;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Web;
 using System.Web.Services;
 using Utilitario;
-using Controladora.GestionFinanciera.Tesoreria;
-using EntidadNegocio.GestionFinanciera.Tesoreria.Pagos;
 using WSCore.General;
+using static Utilitario.Helper;
+using static WSCore.Test.CnsumirApiRest;
+
 
 namespace WSCore.GestionFinanciera.Tesoreria
 {
@@ -19,166 +21,195 @@ namespace WSCore.GestionFinanciera.Tesoreria
     /// </summary>
     [WebService(Namespace = "http://sima.com.pe/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [ToolboxItem(false)]
-    public class Interbancario : WebService
+    [System.ComponentModel.ToolboxItem(false)]
+    //Convertir json a entity  https://www.site24x7.com/tools/json-to-csharp.html
+    public class Interbancario : System.Web.Services.WebService
     {
-        private string cmll = Constante.Caracteres.ComillasDobles;
+        string cmll = Utilitario.Constante.Caracteres.ComillasDobles;
 
         [WebMethod]
-        public void IniciarTransferencia(string NroLote, string UserName)
+        public void IniciarTransferencia(string CodigoBanco, string NroLote,string UserName)
         {
             try
             {
-                string Resultado = "";
-                JsonSerializerOptions options = new JsonSerializerOptions()
+                string strOperacionBE = "";
+                ResposeBE oresposeBE = null;
+                var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco, NroLote, "0", UserName);
+                if (dt != null)
                 {
-                    PropertyNameCaseInsensitive = true
-                };
-                DataTable dataTable1 = new CInterbancario().CabeceraLotePago(NroLote, "0", UserName);
-                if (dataTable1 != null)
-                {
-                    DataRow row1 = dataTable1.Rows[0];
-                    PlanCabProv planCabProv = new PlanCabProv().SetAttrValue(row1);
-                    List<PlanDetProv> planDetProvList = new List<PlanDetProv>();
-                    DataTable dataTable2 = new CInterbancario().DetalleLotePago(NroLote, UserName);
-                    if (dataTable2.Rows.Count > 0)
+                    DataRow dr = dt.Rows[0];
+                    PlanCabProv oPlanCabProv = (new PlanCabProv()).SetAttrValue(dr);
+                    //Cargar Detella 
+                    List<PlanDetProv> oLstPlanDetProv = new List<PlanDetProv>();
+                    DataTable dtdet = (new CInterbancario()).DetalleLotePago(CodigoBanco, NroLote, UserName);
+                    if (dtdet.Rows.Count > 0)
                     {
-                        foreach (DataRow row2 in (InternalDataCollectionBase)dataTable2.Rows)
+                        foreach (DataRow drd in dtdet.Rows)
                         {
-                            PlanDetProv planDetProv = new PlanDetProv().SetAttrValue(row2);
-                            planDetProv.detDocBenef = new DetDocBenef();
-                            planDetProvList.Add(planDetProv);
+                            PlanDetProv oPlanDetProv = (new PlanDetProv()).SetAttrValue(drd);
+                            //Aqui INstanciar la clase DetDocBenef
+                            oPlanDetProv.detDocBenef = (new DetDocBenef());
+                            oLstPlanDetProv.Add(oPlanDetProv);
                         }
-                        planCabProv.listPlanDetProv = (IList<PlanDetProv>)planDetProvList;
-                        EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo archivo = new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", row1["nombrePlanilla"].ToString(), ".txt");
-                        object EntityBE = (object)new PlanillaPagos()
-                        {
-                            datos = planCabProv,
-                            archivo = archivo
-                        };
-                        ResposeBE resposeBe = Helper.WebAppi.Post(Helper.Archivo.Configuracion.getKey("Tesoreria", "WSServerH2H") + Helper.Archivo.Configuracion.getKey("Tesoreria", "EnviaPago"), EntityBE);
-                        if (resposeBe.Status == HttpStatusCode.OK)
-                        {
-                            StringOperationResult stringOperationResult = JsonSerializer.Deserialize<StringOperationResult>(resposeBe.ObjResult, options);
-                            if (stringOperationResult.messageTech.ToString().ToUpper().Equals("OK"))
-                                Resultado = $"{{Id:1,Mensaje:{this.cmll}{stringOperationResult.message}{this.cmll}}}";
-                            else
-                                Resultado = $"{{Id:-11,Mensaje:{this.cmll}{stringOperationResult.message}{this.cmll}}}";
-                        }
-                        else
-                        {
-                            string objResult = resposeBe.ObjResult;
-                            string[] _Cc = Helper.Archivo.Configuracion.getKey("H2H", "LstSoporte").Split(',');
-                            new Mail(Helper.Archivo.Configuracion.getKey("H2H", "UserSend"), Helper.Archivo.Configuracion.getKey("H2H", "AdmServer"), _Cc, "Servidor H2H dormido", "Levantar el srv").enviaMail();
-                            Resultado = $"{{Id:1,Mensaje:{this.cmll}{objResult}{this.cmll}}}";
-                        }
-                    }
-                    else
-                        Resultado = $"{{Id:3,Mensaje:{this.cmll}No existe datos de proveedores a procesar..{this.cmll}}}";
-                }
-                Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(Resultado);
-            }
-            catch (Exception ex)
-            {
-                Helper.Archivo.XMLinURL.TransaccionalAccesoDatos($"{{Id:-98,Mensaje:{this.cmll}{ex.Message.Replace(",", " ")}{this.cmll}}}");
-            }
-        }
+                        oPlanCabProv.listPlanDetProv = oLstPlanDetProv;
+                        //Setear el Arvhivo
+                        EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo oArchivo = new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", dr["nombrePlanilla"].ToString(), ".txt");
 
-        [WebMethod]
-        public void LeerTransferencia(string LotePago, string Estado = "1", string UserName = "Banco")
-        {
-            try
-            {
-                string Resultado = $"{{Id:2,Mensaje:{this.cmll}No existe envios que procesar..{this.cmll}}}";
-                JsonSerializerOptions options = new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                DataTable dataTable1 = new CInterbancario().CabeceraLotePago(LotePago, Estado, UserName);
-                if (dataTable1 != null)
-                {
-                    foreach (DataRow row in (InternalDataCollectionBase)dataTable1.Rows)
-                    {
-                        PlanCabProv planCabProv = new PlanCabProv().SetAttrValue(row);
-                        object EntityBE = (object)new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", planCabProv.cCodPlanilla, ".txt");
-                        ResposeBE resposeBe = Helper.WebAppi.Get(Helper.Archivo.Configuracion.getKey("Tesoreria", "WSServerH2H") + Helper.Archivo.Configuracion.getKey("Tesoreria", "LeerPago"), EntityBE);
-                        switch (resposeBe.Status)
+                        PlanillaPagos oPlanillaPagos = new PlanillaPagos();
+                        oPlanillaPagos.BANCO = CodigoBanco;
+                        oPlanillaPagos.datos = oPlanCabProv;
+                        oPlanillaPagos.archivo = oArchivo;
+
+                        
+                        //Llamar al servicio
+                        object objBE = oPlanillaPagos;
+
+                        var HttpServer = Utilitario.Helper.Archivo.Configuracion.getKey("Tesoreria", "WSServerH2H");
+                        var Metodo = Utilitario.Helper.Archivo.Configuracion.getKey("Tesoreria", "EnviaPago");
+                        var url = HttpServer + Metodo;
+
+                        var rpt = Utilitario.Helper.WebAppi.Post(url, objBE);
+                        oresposeBE = (ResposeBE)rpt;
+
+                        switch (oresposeBE.Status)
                         {
                             case HttpStatusCode.OK:
-                                StringOperationResult stringOperationResult = JsonSerializer.Deserialize<StringOperationResult>(resposeBe.ObjResult, options);
-                                string[] strArray = new string[5]
+                                var oStringOperationResult = JsonSerializer.Deserialize<StringOperationResult>(oresposeBE.ObjResult, jsonSerializerOptions);
+                                if (oStringOperationResult.messageTech.ToString().ToUpper().Equals("OK"))
                                 {
-                                    "{Id:'",
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                };
-                                int resultType = stringOperationResult.resultType;
-                                strArray[1] = resultType.ToString();
-                                strArray[2] = "',Mensaje:'";
-                                strArray[3] = stringOperationResult.message;
-                                strArray[4] = "'}";
-                                Resultado = string.Concat(strArray);
-                                //string str1 = planCabProv.cNroPlanilla.ToString().Replace(" ", "");
-                                string str1 = LotePago;
+                                    strOperacionBE = "{Id:1,Mensaje:" + cmll + oStringOperationResult.message + cmll + "}";
+                                }
+                                else
+                                {
+                                    strOperacionBE = "{Id:-11,Mensaje:" + cmll + oStringOperationResult.message + cmll + "}";
+                                }
 
-                                resultType = stringOperationResult.resultType;
-                                if (resultType.Equals(-7))
+                                break;
+
+                            default:
+                                string des = oresposeBE.ObjResult;
+                                //Guardar el Error en la Bse de datos para ser mosrada en el FrontEnd de UNISYS
+                                string[] cc = Utilitario.Helper.Archivo.Configuracion.getKey("H2H", "LstSoporte").Split(',');
+                                Mail oMail = new Mail(Utilitario.Helper.Archivo.Configuracion.getKey("H2H", "UserSend"), Utilitario.Helper.Archivo.Configuracion.getKey("H2H", "AdmServer"), cc, "Servidor H2H dormido", "Levantar el srv", null);
+                                MailResult oMailResult = oMail.enviaMail();
+
+                                strOperacionBE = "{Id:1,Mensaje:" + cmll + des + cmll + "}";
+                                break;
+                        }
+                    }
+                    else {
+                        
+                        strOperacionBE = "{Id:3,Mensaje:" + cmll + "No existe datos de proveedores a procesar.." + cmll + "}";
+                    }
+                }
+                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(strOperacionBE);
+            }
+            catch (Exception e) {
+                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:-98,Mensaje:" + cmll + e.Message.Replace(",", " ") + cmll + "}");
+            }
+        }
+
+
+      
+
+        [WebMethod]
+        public void LeerTransferencia(string CodigoBanco,string LotePago,string Estado="1", string UserName="Banco")
+        {
+            try
+            {
+                string strOperacionBE = "{Id:2,Mensaje:"+ cmll + "No existe envios que procesar.." + cmll+"}";
+                ResposeBE oresposeBE = null;
+                var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco,LotePago, Estado, UserName);
+                if (dt != null)
+                {
+
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        PlanCabProv oPlanCabProv = (new PlanCabProv()).SetAttrValue(dr);
+                        EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo oArchivo = new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", oPlanCabProv.cCodPlanilla, ".txt");
+                        //Llamar al servicio
+                        oArchivo.BANCO = CodigoBanco;
+                        object objBE = oArchivo;
+
+                        var HttpServer = Utilitario.Helper.Archivo.Configuracion.getKey("Tesoreria", "WSServerH2H");
+                        var Metodo = Utilitario.Helper.Archivo.Configuracion.getKey("Tesoreria", "LeerPago");
+                        var url = HttpServer + Metodo;
+
+                        var rpt = Utilitario.Helper.WebAppi.Get(url, objBE);
+                        oresposeBE = (ResposeBE)rpt;
+
+                        switch (oresposeBE.Status)//comunicación con el servicios
+                        {
+                            case HttpStatusCode.OK:
+                                var oStringOperationResult = JsonSerializer.Deserialize<StringOperationResult>(oresposeBE.ObjResult, jsonSerializerOptions);
+                                strOperacionBE = "{Id:'" + oStringOperationResult.resultType.ToString() + "',Mensaje:'" + oStringOperationResult.message + "'}";
+
+                                string NroLote = LotePago.ToString().Replace(" ", "");
+
+                                if (oStringOperationResult.resultType.Equals(-7))//val
                                 {
-                                    PlanillaPagos planillaPagos = JsonSerializer.Deserialize<PlanillaPagos>(stringOperationResult.result.ToString(), options);
-                                    DataTable dataTable2 = new CInterbancario().DetalleLotePago(str1, UserName);
-                                    foreach (LecturaError lecturaError in planillaPagos.error)
+                                    var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
+                                    DataTable dtRegPrv = (new CInterbancario()).DetalleLotePago(CodigoBanco,NroLote, UserName);
+                                    foreach (LecturaError err in cab.error)
                                     {
-                                        DataRow[] dataRowArray = dataTable2.Select("NroLinea=" + lecturaError.linea.ToString());
-                                        if (dataRowArray.Length != 0)
+                                        DataRow[] drs = dtRegPrv.Select("NroLinea=" + err.linea.ToString());
+                                        if (drs.Length > 0)
                                         {
-                                            DataRow dataRow = dataRowArray[0];
+                                            DataRow drErr = drs[0];
+                                          // * (new CInterbancario()).DetActulizaEstado(NroLote, drErr["cNroDocProv"].ToString(), err.mensaje.ToString(), UserName);
                                         }
                                     }
-                                    Resultado = $"{{Id:90,Mensaje:{this.cmll}Proceso exitoso{this.cmll}}}";
-                                    continue;
+                                    strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
                                 }
-                                resultType = stringOperationResult.resultType;
-                                if (resultType.Equals(0))
+                                else if (oStringOperationResult.resultType.Equals(0))//res
                                 {
-                                    PlanillaPagos planillaPagos = JsonSerializer.Deserialize<PlanillaPagos>(stringOperationResult.result.ToString(), options);
-                                    new CInterbancario().CabActulizaEstado(str1, 3, planillaPagos.datos.cEstado, UserName);
-                                    foreach (PlanDetProv planDetProv in (IEnumerable<PlanDetProv>)planillaPagos.datos.listPlanDetProv)
-                                    {
-                                        string str2 = $"{planDetProv.cEstado}-{planDetProv.cObserva.Replace("Ninguna", "")}";
-                                        string str3 = str2.Length <= 80 ? str2 : str2.Substring(0, 79);
+                                    var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
+                                   //* (new CInterbancario()).CabActulizaEstado(NroLote, 3, cab.datos.cEstado, UserName);
+                                    foreach (PlanDetProv opdp in cab.datos.listPlanDetProv) {
+                                        string Obs = opdp.cEstado + '-' + opdp.cObserva.Replace("Ninguna","");
+                                        Obs = ((Obs.Length <= 80) ? Obs : Obs.Substring(0, 79));
 
-                                        (new CInterbancario()).DetActulizaEstado(str1, planDetProv.cNroDocProv, str3,
-                                            UserName);
+                                       //* (new CInterbancario()).DetActulizaEstado(NroLote, opdp.cNroDocProv, Obs, UserName);
                                     }
-                                    Resultado = $"{{Id:90,Mensaje:{this.cmll}Proceso exitoso{this.cmll}}}";
-                                    continue;
+                                    strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
                                 }
-                                string str4 = stringOperationResult.message.Length <= 80 ? stringOperationResult.message : stringOperationResult.message.Substring(1, 79);
-                                Resultado = $"{{Id:91,Mensaje:{this.cmll}Espera para volver a leer{this.cmll}}}";
-                                continue;
+                                else
+                                {//-1 
+
+                                    string msgReturn = ((oStringOperationResult.message.Length <= 80) ? oStringOperationResult.message : oStringOperationResult.message.Substring(1, 79));
+
+                                 //   (new CInterbancario()).CabActulizaEstado(NroLote, 1, oStringOperationResult.message, UserName);
+                                    strOperacionBE = "{Id:91,Mensaje:" + cmll + "Espera para volver a leer" + cmll + "}";
+                                }
+                                //Crea Una Tarea en el paquete rigth
+                                break;
                             case HttpStatusCode.NotFound:
-                                Resultado = $"{{Id:92,Mensaje:{this.cmll}{resposeBe.ObjResult.ToString().Replace(",", " ")}{this.cmll}}}";
-                                continue;
+                                strOperacionBE = "{Id:92,Mensaje:" + cmll + oresposeBE.ObjResult.ToString().Replace(",", " ")+ cmll + "}";
+                                break;
                             default:
-                                Resultado = $"{{Id:93,Mensaje:{this.cmll}{resposeBe.ObjResult.ToString().Replace(",", " ")}{this.cmll}}}";
-                                continue;
+                                strOperacionBE = "{Id:93,Mensaje:" + cmll + oresposeBE.ObjResult.ToString().Replace(",", " ") + cmll + "}";
+                                break;
                         }
                     }
                 }
-                Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(Resultado);
+                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(strOperacionBE);
             }
-            catch (Exception ex)
-            {
-                Helper.Archivo.XMLinURL.TransaccionalAccesoDatos($"{{Id:92,Mensaje:{this.cmll}{ex.Message.Replace(",", " ")}{this.cmll}}}");
+            catch(Exception e){
+                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:92,Mensaje:"+ cmll + e.Message.Replace(","," ") + cmll+ "}");
             }
+            
         }
 
+
         [WebMethod]
-        public void Test(string Valor)
-        {
-            Helper.Archivo.XMLinURL.TransaccionalAccesoDatos($"{{Id:1,Mensaje: {this.cmll}{Valor}{this.cmll}}}");
+        public void Test(string Valor) {
+
+            Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:1,Mensaje: " + cmll + Valor + cmll +"}");
         }
+
+
     }
 }
+ 

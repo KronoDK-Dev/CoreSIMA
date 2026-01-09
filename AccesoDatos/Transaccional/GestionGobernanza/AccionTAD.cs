@@ -36,7 +36,12 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
             throw new NotImplementedException();
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +51,16 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
             throw new NotImplementedException();
         }
 
+      
+
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+        public int ModificarInsertar(BaseBE oBaseBE)
+        {
+            return 0;
+        }
         public string ModificaInserta(BaseBE oBaseBE)
         {
             ObjAccIndRecBE oObjAccIndRecBE = (ObjAccIndRecBE)oBaseBE;
@@ -66,33 +81,40 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
-                OracleParameter[] Param = new OracleParameter[6];
+                OracleParameter[] Param = new OracleParameter[7];
+
                 Param[0] = new OracleParameter("oModo", OracleDbType.Int64);
                 Param[0].Direction = ParameterDirection.Input;
-                Param[0].Value = 3;
+                Param[0].Value = 3;                                                 
 
-                Param[1] = new OracleParameter("IDITEM", OracleDbType.Int64);
+                Param[1] = new OracleParameter("CODIGO", OracleDbType.Varchar2);   
                 Param[1].Direction = ParameterDirection.Input;
-                Param[1].Value = oObjAccIndRecBE.IdItemTabla;
+                Param[1].Value = oObjAccIndRecBE.Codigo;
 
-                Param[2] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
+                Param[2] = new OracleParameter("IDITEM", OracleDbType.Int64);
                 Param[2].Direction = ParameterDirection.Input;
-                Param[2].Value = oObjAccIndRecBE.Nombre;
+                Param[2].Value = oObjAccIndRecBE.IdItemTabla;
 
-                Param[3] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
+                Param[3] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
-                Param[3].Value = oObjAccIndRecBE.Descripcion;
+                Param[3].Value = oObjAccIndRecBE.Nombre;
 
-                Param[4] = new OracleParameter("IDOBJETIVO", OracleDbType.Int64);
+                Param[4] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
                 Param[4].Direction = ParameterDirection.Input;
-                Param[4].Value = oObjAccIndRecBE.IdItemRelacion;
+                Param[4].Value = oObjAccIndRecBE.Descripcion;
 
-                Param[5] = new OracleParameter("IdOut", OracleDbType.Varchar2);
-                Param[5].Direction = ParameterDirection.Output;
-                Param[5].Size = 15;
+
+                Param[5] = new OracleParameter("IDOBJETIVO", OracleDbType.Int64);
+                Param[5].Direction = ParameterDirection.Input;
+                Param[5].Value = oObjAccIndRecBE.IdItemRelacion;
+
+                Param[6] = new OracleParameter("IdOut", OracleDbType.Varchar2);
+                Param[6].Direction = ParameterDirection.Output;
+                Param[6].Size = 15;
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oObjAccIndRecBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -102,9 +124,14 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
-                return Param[5].Value.ToString();
+
+
+
+
+                return Param[6].Value.ToString();
             }
-            catch (OracleException oracleException)
+
+            catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oObjAccIndRecBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
                 return "-1";
@@ -114,21 +141,6 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 LogTransaccional.LanzarSIMAExcepcionDominio(oObjAccIndRecBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
                 return "-1";
             }
-        }
-
-        public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
         }
     }
 }

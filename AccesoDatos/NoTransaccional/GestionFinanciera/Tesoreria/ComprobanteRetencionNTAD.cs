@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Log;
+using System;
+using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using Utilitario;
+using Oracle.DataAccess.Client;
 
 namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 {
-    public class ComprobanteRetencionNTAD : BaseAD
+    public class ComprobanteRetencionNTAD:BaseAD
     {
-        public DataSet Consultar(string Ind_Org, int CentroOperativo)
+
+        public DataSet Consultar(string Ind_Org,int CentroOperativo)
         {
             try
             {
-                return (new ComprobanteNTAD()).Consultar(Ind_Org, CentroOperativo);
+                return (new ComprobanteNTAD()).Consultar(Ind_Org, CentroOperativo); 
             }
             catch (System.Data.SqlClient.SqlException sqlException)
             {
@@ -28,8 +30,9 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             {
                 ;
             }
-
             return null;
         }
+
+       
     }
 }

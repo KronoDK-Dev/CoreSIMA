@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EntidadNegocio.Seguridad;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk.ChatBot
 {
-    public class CBContactoGrupoBE : BaseBE
+    public class CBContactoGrupoBE:BaseBE
     {
         public int IdContacto { get; set; }
         public int IdMiembro { get; set; }

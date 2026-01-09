@@ -6,7 +6,7 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="~/Recursos/style.css"/>
-    <title></title>
+    <title>WebServices</title>
 </head>
 <body>
 <main class="page-content">

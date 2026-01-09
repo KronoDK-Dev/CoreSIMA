@@ -32,6 +32,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -108,6 +109,7 @@
     <Content Include="GestionComercial\Solicitud.asmx" />
     <Content Include="GestionContabilidad\Contabilidad.asmx" />
     <Content Include="GestionCostos\Costos.asmx" />
+    <Content Include="GestionFinanciera\Reportes.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronica.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronicaR.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\Interbancario.asmx" />
@@ -190,6 +192,10 @@
     </Compile>
     <Compile Include="GestionCostos\Costos.asmx.cs">
       <DependentUpon>Costos.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionFinanciera\Reportes.asmx.cs">
+      <DependentUpon>Reportes.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GestionFinanciera\Tesoreria\FactElectronica.asmx.cs">
@@ -284,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\Core_Github.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -333,7 +340,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>90</DevelopmentServerPort>
           <DevelopmentServerVPath>/Core</DevelopmentServerVPath>
-          <IISUrl>http://localhost:90/Core/</IISUrl>
+          <IISUrl>http://localhost:90/Core</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

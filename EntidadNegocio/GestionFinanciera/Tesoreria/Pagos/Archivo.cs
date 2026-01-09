@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,9 @@ namespace EntidadNegocio.GestionFinanciera.Tesoreria.Pagos
         public Archivo()
         {
         }
-
-        public Archivo(string _CodCope, string NombrePlanilla, string Ext)
+        public Archivo(string _CodCope,string NombrePlanilla,string Ext)
         {
+            this.BANCO = "";
             this.codCope = _CodCope;
             this.nombrePlanilla = NombrePlanilla;
             this.nombrePlanillaRpta = "";
@@ -22,19 +23,13 @@ namespace EntidadNegocio.GestionFinanciera.Tesoreria.Pagos
             this.extension = Ext;
             this.msjError = "";
         }
-
+        public string BANCO { get; set; }
         public string codCope { get; set; }
-
         public string nombrePlanilla { get; set; }
-
         public string nombrePlanillaRpta { get; set; }
-
         public string base64StringFilePlanilla { get; set; }
-
         public string base64StringFilePlanillaRpta { get; set; }
-
         public string extension { get; set; }
-
         public string msjError { get; set; }
     }
 }

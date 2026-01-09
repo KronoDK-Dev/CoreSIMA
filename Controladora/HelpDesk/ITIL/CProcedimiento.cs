@@ -1,20 +1,16 @@
-﻿using EntidadNegocio;
-using EntidadNegocio.HelpDesk.ITIL;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.HelpDesk.ITIL;
+﻿using AccesoDatos.NoTransaccional.HelpDesk.ITIL;
 using AccesoDatos.Transaccional.HelpDesk.ITIL;
+using EntidadNegocio;
+using EntidadNegocio.HelpDesk.ITIL;
+using System.Data;
 
 namespace Controladora.HelpDesk.ITIL
 {
-    public class CProcedimiento
+    public  class CProcedimiento
     {
+        public CProcedimiento() { }
         public string ModificarInserta(BaseBE oBaseBE)
-        {
+        { 
             ProcedimientoBE oProcedimientoBE = (ProcedimientoBE)oBaseBE;
             if (oProcedimientoBE.IdAccion == "0")
             {
@@ -25,7 +21,7 @@ namespace Controladora.HelpDesk.ITIL
                 return (new ProcedimientoTAD()).Modifica(oBaseBE);
             }
         }
-        public int Eliminar(string Id1, int IdUsuario, string Id2)
+        public int Eliminar(string Id1, int IdUsuario,string Id2)
         {
             return (new ProcedimientoTAD()).Eliminar(Id1, IdUsuario.ToString(), Id2);
         }

@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk
 {
-    public class ResponsableAtencionBE : BaseBE
+    public class ResponsableAtencionBE:BaseBE
     {
-        public ResponsableAtencionBE() { }
+            public ResponsableAtencionBE() { }
 
-        public string IdResponsable { get; set; }
-        public string IdRequerimiento { get; set; }
-        public string IdPersonal { get; set; }
+            public string IdResponsable { get; set; }
+            public string IdRequerimiento { get; set; }
+            public string IdPersonal{ get; set; }
+       
     }
 }

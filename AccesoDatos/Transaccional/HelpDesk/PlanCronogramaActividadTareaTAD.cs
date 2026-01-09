@@ -4,8 +4,8 @@ using Log;
 using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -42,9 +42,15 @@ namespace AccesoDatos.Transaccional.HelpDesk
             oPlanCronogramaActividadTareaBE.UserName = Id3;
             string Result = ModificaInserta(2, oPlanCronogramaActividadTareaBE);
             return 1;
+
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -53,16 +59,13 @@ namespace AccesoDatos.Transaccional.HelpDesk
         {
             return "";
         }
-
         public string ModificaInserta(BaseBE oBaseBE)
         {
             return ModificaInserta(3, oBaseBE);
         }
-
-        public string ModificaInserta(int Modo, BaseBE oBaseBE)
+        public string ModificaInserta(int Modo,BaseBE oBaseBE)
         {
             PlanCronogramaActividadTareaBE oPlanCronogramaActividadTareaBE = (PlanCronogramaActividadTareaBE)oBaseBE;
-
             try
             {
                 StackTrace stack = new StackTrace();
@@ -81,6 +84,7 @@ namespace AccesoDatos.Transaccional.HelpDesk
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[8];
+
                 Param[0] = new OracleParameter("oModo", OracleDbType.Int64);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Modo;
@@ -116,6 +120,7 @@ namespace AccesoDatos.Transaccional.HelpDesk
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
                 ParamsOut = Param[3].Value.ToString();
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oPlanCronogramaActividadTareaBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -125,8 +130,13 @@ namespace AccesoDatos.Transaccional.HelpDesk
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oPlanCronogramaActividadTareaBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -139,17 +149,12 @@ namespace AccesoDatos.Transaccional.HelpDesk
             }
         }
 
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
         public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }

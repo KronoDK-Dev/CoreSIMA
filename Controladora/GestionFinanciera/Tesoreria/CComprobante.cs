@@ -1,15 +1,16 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
+using AccesoDatos.Transaccional.GestionFinanciera.Tesoreria;
+using Controladora.GestionContabilidad;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
-using AccesoDatos.Transaccional.GestionFinanciera.Tesoreria;
 
 namespace Controladora.GestionFinanciera.Tesoreria
 {
-    public class CComprobante
+    public  class CComprobante
     {
         public CComprobante() { }
 

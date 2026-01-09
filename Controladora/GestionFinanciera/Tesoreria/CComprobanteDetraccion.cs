@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
+namespace Controladora.GestionFinanciera.Tesoreria
 {
     public class CComprobanteDetraccion
     {

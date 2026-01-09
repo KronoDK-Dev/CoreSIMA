@@ -31,7 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64" />
+    <Reference Include="Oracle.DataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\app\client\erosales\product\12.2.0\client_1\odp.net\bin\4\Oracle.DataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="General\CInformacionGeneral.cs" />
     <Compile Include="GestionFinanciera\cReporte.cs" />
     <Compile Include="GestionProyecto\CAdquisiciones.cs" />
     <Compile Include="General\CBuscar.cs" />
@@ -175,6 +179,7 @@
     <Compile Include="HelpDesk\Sistemas\CSistemaProcesoSubProceso.cs" />
     <Compile Include="HelpDesk\Sistemas\CStakeHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeguridadPlanta\CInduccion.cs" />
     <Compile Include="Seguridad\CUsuario.cs" />
   </ItemGroup>
   <ItemGroup>

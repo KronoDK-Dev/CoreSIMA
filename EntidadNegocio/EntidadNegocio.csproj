@@ -115,6 +115,10 @@
     <Compile Include="HelpDesk\TaskHistoryParticipanteBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestBE.cs" />
+    <Compile Include="SeguridadPlanta\data.cs" />
+    <Compile Include="SeguridadPlanta\empresas.cs" />
+    <Compile Include="SeguridadPlanta\MensajeResultBE.cs" />
+    <Compile Include="SeguridadPlanta\personal.cs" />
     <Compile Include="Seguridad\UsuarioBE.cs" />
   </ItemGroup>
   <ItemGroup>

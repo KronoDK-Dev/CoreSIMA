@@ -1,138 +1,256 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using Log;
+using System;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Log;
-using Oracle.DataAccess.Client;
 using Utilitario;
+using Oracle.DataAccess.Client;
 
 namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 {
-    public class InterbancarioNTAD : BaseAD
+    public  class InterbancarioNTAD:BaseAD
     {
+        public InterbancarioNTAD() { }
+
+
         public DataTable CabeceraLotePago(string Estado, string UserName)
         {
             try
             {
-                string name = new StackTrace().GetFrame(0).GetMethod().Name;
-                InfoMetodoBE infoMetodoBe = this.MetodoInfo(name, UserName);
-                string str = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Cabecera";
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, infoMetodoBe.VoidParams, "", Helper.MensajesIngresarMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                OracleParameter[] Params = new OracleParameter[2]
-                {
-                    new OracleParameter("pEst_atl", OracleDbType.Varchar2),
-                    null
-                };
-                Params[0].Direction = ParameterDirection.Input;
-                Params[0].Value = (object)Estado;
-                Params[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Params[1].Direction = ParameterDirection.Output;
-                DataSet dataSet = BaseAD.Oracle(BaseAD.ORACLEVersion.O7).ExecuteDataSet(true, str, Params);
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, "", "rstCount:" + dataSet.Tables[0].Rows.Count.ToString(), Helper.MensajesSalirMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                return dataSet.Tables[0];
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo,  UserName);
+
+                string PackagName = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Cabecera";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+                OracleParameter[] oParam = new OracleParameter[2];
+                oParam[0] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = Estado;
+
+                oParam[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                oParam[1].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, oParam);
+
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                return ds.Tables[0];
             }
-            catch (SqlException ex)
+
+            catch (SqlException oracleException)
             {
-                string user = UserName;
-                string name = this.GetType().Name;
-                string origen = Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString();
-                string str1 = Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString();
-                string ceros = Constante.LogCtrl.CEROS;
-                int number = ex.Number;
-                string str2 = number.ToString();
-                string str3 = Helper.Cadena.CortarTextoDerecha(5, ceros + str2);
-                string codError = str1 + str3;
-                string[] strArray = new string[6];
-                strArray[0] = "Código de Error:";
-                number = ex.Number;
-                strArray[1] = number.ToString();
-                strArray[2] = Constante.Caracteres.SeperadorSimple;
-                strArray[3] = "Número de Línea:1";
-                strArray[4] = Constante.Caracteres.SeperadorSimple;
-                strArray[5] = ex.Message;
-                string excepcion = string.Concat(strArray);
-                LogTransaccional.LanzarSIMAExcepcionDominio(user, name, origen, codError, excepcion);
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), ex.Message);
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
             }
         }
 
-        public DataTable CabeceraLotePago(string LotePago, string Estado, string UserName)
+        public DataTable CabeceraLotePago(string CodigoBanco,string LotePago,string Estado, string UserName)
         {
             try
             {
-                string name = new StackTrace().GetFrame(0).GetMethod().Name;
-                InfoMetodoBE infoMetodoBe = this.MetodoInfo(name, LotePago.ToString(), UserName);
-                string str = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Cabecera";
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, infoMetodoBe.VoidParams, "", Helper.MensajesIngresarMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                OracleParameter[] Params = new OracleParameter[3]
-                {
-                    new OracleParameter("p_nro_lot", OracleDbType.Varchar2),
-                    null,
-                    null
-                };
-                Params[0].Direction = ParameterDirection.Input;
-                Params[0].Value = (object)LotePago;
-                Params[1] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
-                Params[1].Direction = ParameterDirection.Input;
-                Params[1].Value = (object)Estado;
-                Params[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Params[2].Direction = ParameterDirection.Output;
-                DataSet dataSet = BaseAD.Oracle(BaseAD.ORACLEVersion.O7).ExecuteDataSet(true, str, Params);
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, "", "rstCount:" + dataSet.Tables[0].Rows.Count.ToString(), Helper.MensajesSalirMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                return dataSet.Tables[0];
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, CodigoBanco, LotePago.ToString(), UserName);
+
+                string PackagName = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Cabecera";
+                
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+/*
+                
+                OracleParameter[] oParam = new OracleParameter[4];
+
+                oParam[0] = new OracleParameter("p_cod_bco", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = CodigoBanco;
+
+                oParam[1] = new OracleParameter("p_nro_lot", OracleDbType.Varchar2);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = LotePago;
+
+                oParam[2] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
+                oParam[2].Direction = ParameterDirection.Input;
+                oParam[2].Value = Estado;
+
+                oParam[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                oParam[3].Direction = ParameterDirection.Output;
+                */
+                
+                OracleParameter[] oParam = new OracleParameter[3];
+
+                
+                oParam[0] = new OracleParameter("p_nro_lot", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = LotePago;
+
+                oParam[1] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = Estado;
+
+                oParam[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                oParam[2].Direction = ParameterDirection.Output;
+
+                
+
+                DataSet ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, oParam);
+                
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                return ds.Tables[0];
             }
-            catch (SqlException ex)
+
+            catch (SqlException oracleException)
             {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Constante.LogCtrl.CEROS + ex.Number.ToString()), $"Código de Error:{ex.Number.ToString()}{Constante.Caracteres.SeperadorSimple}Número de Línea:1{Constante.Caracteres.SeperadorSimple}{ex.Message}");
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), ex.Message);
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
             }
         }
 
-        public DataTable DetalleLotePago(string LotePago, string UserName)
+        public DataTable DetalleLotePago(string CodigoBanco,string LotePago, string UserName)
         {
             try
             {
-                string name = new StackTrace().GetFrame(0).GetMethod().Name;
-                InfoMetodoBE infoMetodoBe = this.MetodoInfo(name, LotePago.ToString(), UserName);
-                string str = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Detalle";
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, infoMetodoBe.VoidParams, "", Helper.MensajesIngresarMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                OracleParameter[] Params = new OracleParameter[2]
-                {
-        new OracleParameter("p_nro_lot", OracleDbType.Varchar2),
-        null
-                };
-                Params[0].Direction = ParameterDirection.Input;
-                Params[0].Value = (object)LotePago;
-                Params[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Params[1].Direction = ParameterDirection.Output;
-                DataSet dataSet = BaseAD.Oracle(BaseAD.ORACLEVersion.O7).ExecuteDataSet(true, str, Params);
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, infoMetodoBe.FullName, name, str, "", "rstCount:" + dataSet.Tables[0].Rows.Count.ToString(), Helper.MensajesSalirMetodo(), Convert.ToString((object)Enumerados.NivelesErrorLog.I)));
-                return dataSet.Tables[0];
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, CodigoBanco, LotePago.ToString(), UserName);
+
+                string PackagName = "Pkg_Planilla_Proveedores.SP_Planilla_Pago_Detalle";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+                /*
+                    OracleParameter[] oParam = new OracleParameter[4];
+                    oParam[0] = new OracleParameter("p_cod_bco", OracleDbType.Varchar2);
+                    oParam[0].Direction = ParameterDirection.Input;
+                    oParam[0].Value = CodigoBanco;
+
+                    oParam[1] = new OracleParameter("p_nro_lot", OracleDbType.Varchar2);
+                    oParam[1].Direction = ParameterDirection.Input;
+                    oParam[1].Value = LotePago;
+
+                    oParam[2] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
+                    oParam[2].Direction = ParameterDirection.Input;
+                    oParam[2].Value = "0";
+
+                    oParam[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                    oParam[3].Direction = ParameterDirection.Output;
+
+                    */
+
+                   
+                OracleParameter[] oParam = new OracleParameter[3];
+
+                oParam[0] = new OracleParameter("p_nro_lot", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = LotePago;
+
+                oParam[1] = new OracleParameter("pEst_atl", OracleDbType.Varchar2);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = "0";
+
+                oParam[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                oParam[2].Direction = ParameterDirection.Output;
+                
+
+
+                DataSet ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, oParam);
+
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                return ds.Tables[0];
             }
-            catch (SqlException ex)
+
+            catch (SqlException oracleException)
             {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Constante.LogCtrl.CEROS + ex.Number.ToString()), $"Código de Error:{ex.Number.ToString()}{Constante.Caracteres.SeperadorSimple}Número de Línea:1{Constante.Caracteres.SeperadorSimple}{ex.Message}");
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), ex.Message);
-                return (DataTable)null;
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
             }
         }
+
+
     }
 }

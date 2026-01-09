@@ -24,31 +24,38 @@ using System.Xml;
 
 namespace Utilitario
 {
-
-
-    public class ResposeBE
-    {
-        public ResposeBE() { }
-
-        // public string Status { get; set; }
-        public HttpStatusCode Status { get; set; }
-        public string ObjResult { get; set; }
-        public Dictionary<string,string> Mensaje { get; set; }  
-    }
-
     public class Helper
     {
-
-        public struct Configuracion
+        private static DataRow createRowClone(DataRow sourceRow, DataRow newRow, string[] fieldNames)
         {
-            public struct Autenticacion
-            {
-                public static string getLDAP
-                {
+            foreach (string fieldName in fieldNames)
+                newRow[fieldName] = sourceRow[fieldName];
+            return newRow;
+        }
 
-                    get { return BaseConfig("Autenticacion", "CadenaLDAP"); }
+        private static void setLastValues(object[] lastValues, DataRow sourceRow, string[] fieldNames)
+        {
+            for (int index = 0; index < fieldNames.Length; ++index)
+                lastValues[index] = sourceRow[fieldNames[index]];
+        }
 
-                }
+        public static string MensajesIngresarMetodo() => "Ingresó al Metodo.";
+
+        public static string MensajesSalirMetodo() => "Salió del Metodo.";
+
+        public static DataTable CallServiceRestOracle(string Metodo, string oParams)
+        {
+            string xpath = "//Table";
+            string result = Helper.LoadBackGroundWS(Metodo, oParams).Result;
+            XmlDocument node = new XmlDocument();
+            node.LoadXml(result);
+            node.SelectNodes(xpath);
+            DataSet dataSet = new DataSet();
+            int num = (int)dataSet.ReadXml((XmlReader)new XmlNodeReader((XmlNode)node));
+            DataTable table = dataSet.Tables[0];
+            table.TableName = "Table";
+            return table;
+        }
 
                 /*public static string BaseConfig(string Seccion,string Key)
                 {

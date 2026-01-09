@@ -1,4 +1,5 @@
 ﻿using AccesoDatos.NoTransaccional.HelpDesk;
+using AccesoDatos.Transaccional.HelpDesk;
 using AccesoDatos.Transaccional.HelpDesk.Sistemas;
 using EntidadNegocio;
 using System;

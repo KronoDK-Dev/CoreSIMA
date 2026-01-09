@@ -1,5 +1,7 @@
 ﻿using AccesoDatos.NoTransaccional.General;
 using AccesoDatos.Transaccional.General;
+using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
+using AccesoDatos.Transaccional.GestionFinanciera.Tesoreria;
 using System;
 using System.Collections.Generic;
 using System.Data;

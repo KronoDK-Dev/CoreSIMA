@@ -11,8 +11,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;

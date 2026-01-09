@@ -73,7 +73,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
         [WebMethod(Description = "Consulta de Clientes")]
         public DataSet ConsultarClientes(string CodCli, int CentroOperativo)
         {
-            return (new Controladora.GestionComercial.CCliente()).Consultar(CodCli, CentroOperativo);
+            return (new Controladora.GestionComercial.cCliente()).Consultar(CodCli, CentroOperativo);
         }
    
         [WebMethod]

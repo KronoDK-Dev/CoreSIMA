@@ -55,14 +55,20 @@
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
-      <HintPath>..\packages\Microsoft.Practices.EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\dll\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data">
-      <HintPath>..\packages\Microsoft.Practices.EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\dll\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\dll\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ObjectBuilder">
-      <HintPath>..\packages\Microsoft.Practices.EnterpriseLibrary\Microsoft.Practices.ObjectBuilder.dll</HintPath>
+      <HintPath>..\..\..\dll\Microsoft.Practices.ObjectBuilder.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=9.5.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.5.0\lib\net462\MySql.Data.dll</HintPath>
@@ -176,6 +182,7 @@
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteAdicionalNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteDetalleNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteRetencionDetalleNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComprobanteRetencionNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ControlNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\InterbancarioNTAD.cs" />
@@ -312,6 +319,7 @@
     <Compile Include="Transaccional\HelpDesk\Sistemas\SistemaProcesoSubProcesoTAD.cs" />
     <Compile Include="Transaccional\HelpDesk\Sistemas\StakeHolderTAD.cs" />
     <Compile Include="Transaccional\HelpDesk\TaskHistoryParticipanteTAD.cs" />
+    <Compile Include="Transaccional\SeguridadPlanta\InduccionTAD.cs" />
     <Compile Include="Transaccional\Seguridad\UsuarioTAD.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 ﻿using Controladora.GestionFinanciera.Tesoreria;
 using EntidadNegocio.GestionFinanciera.Tesoreria.Pagos;
 using EntidadNegocio.GestionReportes;
-using SIMANET_W22R.Controles;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +10,7 @@ using System.Web.Services;
 using Utilitario;
 using WSCore.General;
 using static Utilitario.Helper;
-using static WSCore.Test.CnsumirApiRest;
+
 
 
 namespace WSCore.GestionFinanciera.Tesoreria

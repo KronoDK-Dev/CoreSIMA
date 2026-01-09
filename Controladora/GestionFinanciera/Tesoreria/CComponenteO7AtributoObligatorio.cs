@@ -1,4 +1,5 @@
 ﻿using AccesoDatos.NoTransaccional.General;
+using AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria;
 using System;
 using System.Collections.Generic;
 using System.Data;

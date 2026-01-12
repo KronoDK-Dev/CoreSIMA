@@ -4,8 +4,8 @@ using Log;
 using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -36,26 +36,6 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
             throw new NotImplementedException();
         }
 
-        public int Modificar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Modifica(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ModificaInserta(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
         public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
@@ -64,7 +44,6 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
         public string Inserta(BaseBE oBaseBE)
         {
             CBContactoGrupoBE oCBContactoGrupoBE = (CBContactoGrupoBE)oBaseBE;
-
             try
             {
                 StackTrace stack = new StackTrace();
@@ -81,6 +60,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , ""
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
 
                 OracleParameter[] Param = new OracleParameter[9];
                 Param[0] = new OracleParameter("IDCONTACTO", OracleDbType.Int64);
@@ -117,9 +97,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
 
                 Param[8] = new OracleParameter("OUTIDMIEMBRO", OracleDbType.Int64);
                 Param[8].Direction = ParameterDirection.Output;
+                //Param[4].Value = oCBContactoGrupoBE.IdMiembro;
+
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oCBContactoGrupoBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -129,8 +112,13 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oCBContactoGrupoBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -143,8 +131,9 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
             }
         }
 
-        public string ActualizaEstado(string CodPersonal, int IdEstado, string UserName)
+        public string ActualizaEstado(string CodPersonal,int IdEstado,string UserName)
         {
+            
             try
             {
                 StackTrace stack = new StackTrace();
@@ -162,6 +151,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
                 OracleParameter[] Param = new OracleParameter[2];
                 Param[0] = new OracleParameter("pCODPERSONAL", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.InputOutput;
@@ -171,8 +161,10 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                 Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Convert.ToInt64(IdEstado);
 
+
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -182,8 +174,13 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -194,6 +191,27 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                 LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
                 return "-1";
             }
+        }
+
+
+        public string Modifica(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ModificaInserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ModificarInsertar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
         }
     }
 }

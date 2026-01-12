@@ -36,7 +36,12 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
             throw new NotImplementedException();
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -48,8 +53,8 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
 
         public string ModificaInserta(BaseBE oBaseBE)
         {
-            ObjAccIndRecBE oObjAccIndRecBE = (ObjAccIndRecBE)oBaseBE;
 
+            ObjAccIndRecBE oObjAccIndRecBE = (ObjAccIndRecBE)oBaseBE;
             try
             {
                 StackTrace stack = new StackTrace();
@@ -68,9 +73,11 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[6];
+
                 Param[0] = new OracleParameter("oModo", OracleDbType.Int64);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = 3;
+
 
                 Param[1] = new OracleParameter("IDITEM", OracleDbType.Int64);
                 Param[1].Direction = ParameterDirection.Input;
@@ -84,6 +91,7 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = oObjAccIndRecBE.IdItemRelacion;
 
+
                 Param[4] = new OracleParameter("IDTIPODETMETA", OracleDbType.Int64);
                 Param[4].Direction = ParameterDirection.Input;
                 Param[4].Value = oObjAccIndRecBE.Val2;
@@ -94,6 +102,7 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oObjAccIndRecBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -103,9 +112,14 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return Param[5].Value.ToString();
             }
-            catch (OracleException oracleException)
+
+            catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oObjAccIndRecBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
                 return "-1";
@@ -115,19 +129,15 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 LogTransaccional.LanzarSIMAExcepcionDominio(oObjAccIndRecBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
                 return "-1";
             }
+
+        }
+
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
         }
 
         public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }

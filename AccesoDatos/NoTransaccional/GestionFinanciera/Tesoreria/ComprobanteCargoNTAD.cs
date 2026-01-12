@@ -1,15 +1,15 @@
-﻿using Oracle.DataAccess.Client;
+﻿using Log;
 using System;
-using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Utilitario;
+using Oracle.DataAccess.Client;
+using System.Data.OleDb;
 
 namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 {
-    public class ComprobanteCargoNTAD : BaseAD
+    public class ComprobanteCargoNTAD:BaseAD
     {
         public DataSet ListarTodos(string TipoDoc, string NroSer, int CentroOperativo)
         {
@@ -36,12 +36,11 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
                 else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                { 
                     PackagName = "SP_ComprobanteCargo";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
-                else
-                {
+                else{ 
                     PackagName = "SP_ComprobanteCargo";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
@@ -62,8 +61,8 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             {
                 ;
             }
-
             return null;
         }
+       
     }
 }

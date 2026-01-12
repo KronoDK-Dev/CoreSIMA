@@ -1,4 +1,4 @@
-﻿using EntidadNegocio;
+using EntidadNegocio;
 using Log;
 using Oracle.DataAccess.Client;
 using System;
@@ -59,7 +59,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.ITIL
                                                                                      , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-                
+
                 return ds.Tables[0];
             }
             catch (SqlException oracleException)
@@ -122,7 +122,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.ITIL
                                                                                      , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-                
+
                 return ds.Tables[0];
             }
             catch (SqlException oracleException)
@@ -317,7 +317,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.ITIL
                                                                                      , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-                
+
                 return ds.Tables[0];
             }
             catch (SqlException oracleException)
@@ -370,7 +370,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.ITIL
                                                                                      , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-                
+
                 return ds.Tables[0];
             }
             catch (SqlException oracleException)
@@ -427,7 +427,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.ITIL
                                                                                      , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-                
+
                 return ds.Tables[0];
             }
             catch (SqlException oracleException)

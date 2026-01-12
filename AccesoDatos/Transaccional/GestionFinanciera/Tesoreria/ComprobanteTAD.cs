@@ -1,20 +1,19 @@
-﻿using Log;
+﻿using EntidadNegocio;
+using Log;
 using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilitario;
-
 namespace AccesoDatos.Transaccional.GestionFinanciera.Tesoreria
 {
-    public class ComprobanteTAD : BaseAD
+    public class ComprobanteTAD:BaseAD
     {
+
+
+
         public int ActualizarEstado(string TipoDoc, string NroSer, int Estado, int CentroOperativo)
         {
-            string UserName = "";
+            string UserName="";
             int IdProceso = 0;
             try
             {
@@ -37,10 +36,10 @@ namespace AccesoDatos.Transaccional.GestionFinanciera.Tesoreria
                     Param[2].Direction = ParameterDirection.Input;
                     Param[2].Value = Estado;
 
-
+                   
                     object id = Oracle(ORACLEVersion.O7).ExecuteScalar(true, PackagName, Param);
                 }
-                else if ((CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)) || (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaIquitos)))
+                else if ((CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))|| (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaIquitos)))
                 {
                     PackagName = "sp_FECComprobanteEst_Tra";
                     int idResult = Convert.ToInt32(Sql(SQLVersion.sqlDBSimaCH).ExecuteNonQuery(PackagName, TipoDoc, NroSer, Estado));
@@ -59,10 +58,10 @@ namespace AccesoDatos.Transaccional.GestionFinanciera.Tesoreria
             catch (System.Data.SqlClient.SqlException sqlException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + sqlException.Number.ToString()), "Código de Error:" + sqlException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + sqlException.Message);
-
+                
                 return IdProceso;
             }
-            catch (Oracle.DataAccess.Client.OracleException oleDbException)
+            catch (Oracle .DataAccess.Client.OracleException oleDbException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oleDbException.ErrorCode.ToString()), "Código de Error:" + oleDbException.ErrorCode.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oleDbException.Message);
                 return IdProceso;
@@ -73,5 +72,7 @@ namespace AccesoDatos.Transaccional.GestionFinanciera.Tesoreria
                 return IdProceso;
             }
         }
+      
+   
     }
 }

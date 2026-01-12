@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk
 {
-    public class PlanCronogramaActividadTareaBE : BaseBE
+    public class PlanCronogramaActividadTareaBE:BaseBE
     {
         public string IdTarea { get; set; }
         public string IdItemCronograma { get; set; }
         public string IdAccionTarea { get; set; }
-        public int Avance { get; set; }
+        public int Avance{  get; set; }
+
     }
 }

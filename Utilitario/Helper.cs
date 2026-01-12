@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Configuration;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,14 +11,16 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Net.Security;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
+using System.Runtime.Remoting;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Web;
+using System.Xml;
+
+
 
 namespace Utilitario
 {
@@ -54,410 +57,600 @@ namespace Utilitario
             return table;
         }
 
-        public static DataTable ReplyServiceRestOracle(string Metodo, string oParams)
-        {
-            string xpath = "//Table";
-            string result = Helper.WriteBackGroundWS(Metodo, oParams).Result;
-            XmlDocument node = new XmlDocument();
-            node.LoadXml(result);
-            node.SelectNodes(xpath);
-            DataSet dataSet = new DataSet();
-            int num = (int)dataSet.ReadXml((XmlReader)new XmlNodeReader((XmlNode)node));
-            DataTable table = dataSet.Tables[0];
-            table.TableName = "Table";
-            return table;
-        }
-
-        private static async Task<string> LoadBackGroundWS(string Metodo, string ListaParametrosValor)
-        {
-            string str1 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSUser");
-            string str2 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSPwd");
-            string str3 = ListaParametrosValor;
-            string str4 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "PathWSOracle");
-            string str5;
-            using (HttpClient httpWS = new HttpClient())
-            {
-                httpWS.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{str1}:{str2}")));
-                str5 = (await (await httpWS.GetAsync(str4 + Constante.Caracteres.Punto + Metodo + Constante.Caracteres.interrogacion + str3)).Content.ReadAsStringAsync()).Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
+                /*public static string BaseConfig(string Seccion,string Key)
+                {
+                    return ((Hashtable)ConfigurationManager.GetSection(Seccion))[Key].ToString(); 
+                }*/
             }
-            return str5;
-        }
-
-        private static async Task<string> WriteBackGroundWS(string Metodo, string ListaParametrosValor)
-        {
-            string str1 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSUser");
-            string str2 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSPwd");
-            string content1 = ListaParametrosValor;
-            string str3 = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "PathWSOracle");
-            string str4;
-            using (HttpClient httpWS = new HttpClient())
-            {
-                httpWS.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{str1}:{str2}")));
-                HttpContent content2 = (HttpContent)new StringContent(content1, Encoding.UTF8, "text/plain");
-                str4 = (await (await httpWS.PostAsync(str3 + Constante.Caracteres.Punto + Metodo + Constante.Caracteres.interrogacion, content2)).Content.ReadAsStringAsync()).Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
-            }
-            return str4;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
-        public struct Configuracion
-        {
             public static string BaseConfig(string Seccion, string Key)
             {
-                return ((Hashtable)ConfigurationManager.GetSection(Seccion))[(object)Key].ToString();
-            }
-
-            [StructLayout(LayoutKind.Sequential, Size = 1)]
-            public struct Autenticacion
-            {
-                public static string getLDAP
-                {
-                    get => Helper.Configuracion.BaseConfig(nameof(Autenticacion), "CadenaLDAP");
-                }
+                return ((Hashtable)ConfigurationManager.GetSection(Seccion))[Key].ToString();
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
         public struct Data
         {
-            public static DataTable GroupBy(
-              DataTable SourceTable,
-              string[] FieldNamesGroup,
-              string[] FieldsNamesFnAgregado)
+            public static DataTable GroupBy(DataTable SourceTable, string[] FieldNamesGroup, string[] FieldsNamesFnAgregado)
             {
-                return Helper.Data.GroupBy(SourceTable, "", FieldNamesGroup, FieldsNamesFnAgregado);
+                return GroupBy(SourceTable, "", FieldNamesGroup, FieldsNamesFnAgregado);
             }
-
-            public static DataTable GroupBy(
-              DataTable SourceTable,
-              string Where,
-              string[] FieldNamesGroup,
-              string[] FieldsNamesFnAgregado)
+            public static DataTable GroupBy(DataTable SourceTable, string Where, string[] FieldNamesGroup, string[] FieldsNamesFnAgregado)
             {
-                object[] lastValues = FieldNamesGroup != null && FieldNamesGroup.Length != 0 ? new object[FieldNamesGroup.Length] : throw new ArgumentNullException("FieldNames");
-                DataTable dataTable = new DataTable();
-                foreach (string str in FieldNamesGroup)
-                    dataTable.Columns.Add(str, SourceTable.Columns[str].DataType);
+                object[] lastValues;
+                DataTable newTable;
+                DataRow[] orderedRows;
+
+                if (FieldNamesGroup == null || FieldNamesGroup.Length == 0)
+                    throw new ArgumentNullException("FieldNames");
+
+                lastValues = new object[FieldNamesGroup.Length];
+                newTable = new DataTable();
+
+                foreach (string fieldName in FieldNamesGroup)
+                {
+                    newTable.Columns.Add(fieldName, SourceTable.Columns[fieldName].DataType);
+                }
+
                 if (FieldsNamesFnAgregado != null)
                 {
-                    foreach (string str in FieldsNamesFnAgregado)
-                        dataTable.Columns.Add(str, SourceTable.Columns[str].DataType);
-                }
-                foreach (DataRow dataRow in SourceTable.Select(Where, string.Join(", ", FieldNamesGroup)))
-                {
-                    if (!Helper.Data.fieldValuesAreEqual(lastValues, dataRow, FieldNamesGroup))
+                    foreach (string fieldName in FieldsNamesFnAgregado)
                     {
-                        DataRow rowClone = Helper.createRowClone(dataRow, dataTable.NewRow(), FieldNamesGroup);
-                        dataTable.Rows.Add(rowClone);
-                        string filter = "";
-                        for (int index = 0; index <= FieldNamesGroup.Length - 1; ++index)
+                        newTable.Columns.Add(fieldName, SourceTable.Columns[fieldName].DataType);
+                    }
+                }
+
+                orderedRows = SourceTable.Select(Where, string.Join(", ", FieldNamesGroup));
+
+                //SourceTable.Compute(
+
+
+                foreach (DataRow row in orderedRows)
+                {
+                    //HttpContext.Current.Response.Write(row["RazonSocial"].ToString()+"<br>");
+
+                    if (!fieldValuesAreEqual(lastValues, row, FieldNamesGroup))
+                    {
+                        DataRow fila = createRowClone(row, newTable.NewRow(), FieldNamesGroup);
+                        newTable.Rows.Add(fila);
+
+                        string Criterio = "";
+                        for (int idx = 0; idx <= FieldNamesGroup.Length - 1; idx++)
                         {
-                            string str = FieldNamesGroup.Length - 1 == index ? " " : " and";
-                            if (SourceTable.Columns[FieldNamesGroup[index].ToString()].DataType.ToString().Equals("System.String"))
-                                filter = $"{filter} {FieldNamesGroup[index].ToString()}='{rowClone[FieldNamesGroup[index].ToString()].ToString()}'{str}";
+                            string op = ((FieldNamesGroup.Length - 1 == idx) ? " " : " and");
+                            if (SourceTable.Columns[FieldNamesGroup[idx].ToString()].DataType.ToString().Equals("System.String"))
+                            {
+                                Criterio = Criterio + " " + FieldNamesGroup[idx].ToString() + "='" + fila[FieldNamesGroup[idx].ToString()].ToString() + "'" + op;
+                            }
                             else
-                                filter = $"{filter} {FieldNamesGroup[index].ToString()}={rowClone[FieldNamesGroup[index].ToString()].ToString()}{str}";
+                            {
+                                Criterio = Criterio + " " + FieldNamesGroup[idx].ToString() + "=" + fila[FieldNamesGroup[idx].ToString()].ToString() + op;
+                            }
                         }
                         if (FieldsNamesFnAgregado != null)
                         {
-                            for (int index = 0; index <= FieldsNamesFnAgregado.Length - 1; ++index)
+                            for (int idx = 0; idx <= FieldsNamesFnAgregado.Length - 1; idx++)
                             {
-                                object obj = SourceTable.Compute($"sum({FieldsNamesFnAgregado[index].ToString()})", filter);
-                                dataTable.Rows[dataTable.Rows.Count - 1][FieldsNamesFnAgregado[index].ToString()] = obj;
+                                object drtotal = SourceTable.Compute("sum(" + FieldsNamesFnAgregado[idx].ToString() + ")", Criterio);
+                                newTable.Rows[newTable.Rows.Count - 1][FieldsNamesFnAgregado[idx].ToString()] = drtotal;
                             }
                         }
-                        dataTable.AcceptChanges();
-                        Helper.setLastValues(lastValues, dataRow, FieldNamesGroup);
+                        newTable.AcceptChanges();
+                        setLastValues(lastValues, row, FieldNamesGroup);
                     }
                 }
-                return dataTable;
+                return newTable;
             }
+
 
             public static DataTable SelectDistinct(DataTable SourceTable, params string[] FieldNames)
             {
-                object[] lastValues = FieldNames != null && FieldNames.Length != 0 ? new object[FieldNames.Length] : throw new ArgumentNullException(nameof(FieldNames));
-                DataTable dataTable = new DataTable();
+                object[] lastValues;
+                DataTable newTable;
+                DataRow[] orderedRows;
+
+                if (FieldNames == null || FieldNames.Length == 0)
+                    throw new ArgumentNullException("FieldNames");
+
+                lastValues = new object[FieldNames.Length];
+                newTable = new DataTable();
+
                 foreach (string fieldName in FieldNames)
-                    dataTable.Columns.Add(fieldName, SourceTable.Columns[fieldName].DataType);
-                foreach (DataRow dataRow in SourceTable.Select("", string.Join(", ", FieldNames)))
+                    newTable.Columns.Add(fieldName, SourceTable.Columns[fieldName].DataType);
+
+                orderedRows = SourceTable.Select("", string.Join(", ", FieldNames));
+
+                foreach (DataRow row in orderedRows)
                 {
-                    if (!Helper.Data.fieldValuesAreEqual(lastValues, dataRow, FieldNames))
+                    if (!fieldValuesAreEqual(lastValues, row, FieldNames))
                     {
-                        dataTable.Rows.Add(Helper.createRowClone(dataRow, dataTable.NewRow(), FieldNames));
-                        Helper.setLastValues(lastValues, dataRow, FieldNames);
+                        newTable.Rows.Add(createRowClone(row, newTable.NewRow(), FieldNames));
+
+                        setLastValues(lastValues, row, FieldNames);
                     }
                 }
-                return dataTable;
+
+                return newTable;
             }
 
-            private static bool fieldValuesAreEqual(
-              object[] lastValues,
-              DataRow currentRow,
-              string[] fieldNames)
+            private static bool fieldValuesAreEqual(object[] lastValues, DataRow currentRow, string[] fieldNames)
             {
-                bool flag = true;
-                for (int index = 0; index < fieldNames.Length; ++index)
+                bool areEqual = true;
+
+                for (int i = 0; i < fieldNames.Length; i++)
                 {
-                    if (lastValues[index] == null || !lastValues[index].Equals(currentRow[fieldNames[index]]))
+                    if (lastValues[i] == null || !lastValues[i].Equals(currentRow[fieldNames[i]]))
                     {
-                        flag = false;
+                        areEqual = false;
                         break;
                     }
                 }
-                return flag;
+
+                return areEqual;
             }
 
             public static DataTable DataViewTODataTable(DataView dvDataOrigen)
             {
-                if (dvDataOrigen == null)
-                    return (DataTable)null;
-                DataTable dataTable = dvDataOrigen.Table.Clone();
-                int num = 0;
-                string[] strArray = new string[dataTable.Columns.Count];
-                foreach (DataColumn column in (InternalDataCollectionBase)dataTable.Columns)
-                    strArray[num++] = column.ColumnName;
-                foreach (DataRowView dataRowView in dvDataOrigen)
+                if (dvDataOrigen == null) return null;
+                DataTable obNewDt = dvDataOrigen.Table.Clone();
+                int idx = 0;
+                string[] strColNames = new string[obNewDt.Columns.Count];
+                foreach (DataColumn col in obNewDt.Columns)
                 {
-                    DataRow row = dataTable.NewRow();
+                    strColNames[idx++] = col.ColumnName;
+                }
+
+                IEnumerator viewEnumerator = dvDataOrigen.GetEnumerator();
+                while (viewEnumerator.MoveNext())
+                {
+                    DataRowView drv = (DataRowView)viewEnumerator.Current;
+                    DataRow dr = obNewDt.NewRow();
                     try
                     {
-                        foreach (string str in strArray)
-                            row[str] = dataRowView[str];
+                        foreach (string strName in strColNames)
+                        {
+                            dr[strName] = drv[strName];
+                        }
                     }
                     catch (Exception ex)
                     {
-                        string message = ex.Message;
+                        string a = ex.Message;
                     }
-                    dataTable.Rows.Add(row);
+                    obNewDt.Rows.Add(dr);
                 }
-                return dataTable;
+                return obNewDt;
             }
+
+
+
         }
 
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
+
+
+
+        private static DataRow createRowClone(DataRow sourceRow, DataRow newRow, string[] fieldNames)
+        {
+            foreach (string field in fieldNames)
+                newRow[field] = sourceRow[field];
+
+            return newRow;
+        }
+
+        private static void setLastValues(object[] lastValues, DataRow sourceRow, string[] fieldNames)
+        {
+            for (int i = 0; i < fieldNames.Length; i++)
+                lastValues[i] = sourceRow[fieldNames[i]];
+        }
+
         public struct Archivo
         {
-            [StructLayout(LayoutKind.Sequential, Size = 1)]
             public struct Configuracion
             {
-                public static string getKey(string Seccion, string key)
-                {
-                    return ((Hashtable)ConfigurationManager.GetSection(Seccion))[(object)key].ToString();
-                }
-
-                [StructLayout(LayoutKind.Sequential, Size = 1)]
                 public struct All_Section
                 {
-                    public static string ArchivoLog => "LogFile";
+                    public static string ArchivoLog
+                    {
+                        get { return "LogFile"; }
+                    }
                 }
 
-                [StructLayout(LayoutKind.Sequential, Size = 1)]
+
                 public struct All_Keys
                 {
-                    public static string PATH_ARCHIVO_LOG => "RutaFileLog";
+                    public static string PATH_ARCHIVO_LOG
+                    {
+                        get { return "RutaFileLog"; }
+                    }
+                    public static string NOMBRE_ARCHIVO_LOG
+                    {
+                        get { return "LogFileName"; }
+                    }
 
-                    public static string NOMBRE_ARCHIVO_LOG => "LogFileName";
                 }
-            }
 
-            [StructLayout(LayoutKind.Sequential, Size = 1)]
+
+                public static string getKey(string Seccion, string key)
+                {
+
+                    return ((System.Collections.Hashtable)ConfigurationManager.GetSection(Seccion))[key].ToString();
+                }
+
+            }
             public struct Log
             {
+
                 public static void Write(string message)
                 {
-                    string str1 = Helper.Archivo.Configuracion.getKey(Helper.Archivo.Configuracion.All_Section.ArchivoLog, Helper.Archivo.Configuracion.All_Keys.PATH_ARCHIVO_LOG) + Helper.Archivo.Configuracion.getKey(Helper.Archivo.Configuracion.All_Section.ArchivoLog, Helper.Archivo.Configuracion.All_Keys.NOMBRE_ARCHIVO_LOG);
-                    DateTime dateTime = DateTime.Today;
-                    dateTime = dateTime.AddMonths(-1);
-                    string str2 = dateTime.ToString(Constante.Formato.Fecha.YYYYMM);
-                    string txt = Constante.Archivo.Extension.TXT;
-                    string path = str1 + str2 + txt;
-                    CultureInfo invariantCulture = CultureInfo.InvariantCulture;
+                    string path = Helper.Archivo.Configuracion.getKey(Helper.Archivo.Configuracion.All_Section.ArchivoLog, Helper.Archivo.Configuracion.All_Keys.PATH_ARCHIVO_LOG) + Helper.Archivo.Configuracion.getKey(Helper.Archivo.Configuracion.All_Section.ArchivoLog, Helper.Archivo.Configuracion.All_Keys.NOMBRE_ARCHIVO_LOG);
+                    string ArchivoLog = path + DateTime.Today.AddMonths(-1).ToString(Constante.Formato.Fecha.YYYYMM) + Constante.Archivo.Extension.TXT;
+                    CultureInfo ci = CultureInfo.InvariantCulture;
                     try
                     {
-                        StreamWriter streamWriter = new StreamWriter((Stream)new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write));
-                        streamWriter.BaseStream.Seek(0L, SeekOrigin.End);
+                        FileStream fs = new FileStream(ArchivoLog, FileMode.OpenOrCreate, FileAccess.Write);
+                        StreamWriter m_streamWriter = new StreamWriter(fs);
+                        m_streamWriter.BaseStream.Seek(0, SeekOrigin.End);
+                        //Quitar posibles saltos de línea del mensaje
                         message = message.Replace(Environment.NewLine, Constante.Caracteres.Espacio + Constante.Caracteres.SeperadorSimple + Constante.Caracteres.Espacio);
                         message = message.Replace("\r\n", " | ").Replace("\n", Constante.Caracteres.Espacio + Constante.Caracteres.SeperadorSimple + Constante.Caracteres.Espacio).Replace("\r", Constante.Caracteres.Espacio + Constante.Caracteres.SeperadorSimple + Constante.Caracteres.Espacio);
-                        streamWriter.WriteLine($"{DateTime.Now.ToString(Constante.Formato.Hora.HHmmssFFF, (IFormatProvider)invariantCulture)} {message}");
-                        streamWriter.Flush();
-                        streamWriter.Close();
+                        m_streamWriter.WriteLine(DateTime.Now.ToString(Constante.Formato.Hora.HHmmssFFF, ci) + " " + message);
+                        m_streamWriter.Flush();
+                        m_streamWriter.Close();
                     }
                     catch
                     {
+                        //Silenciosa
                     }
                 }
             }
 
-            [StructLayout(LayoutKind.Sequential, Size = 1)]
             public struct XMLinURL
             {
+
                 public static void TransaccionalAccesoDatos(string Resultado)
                 {
                     HttpContext.Current.Response.Clear();
                     HttpContext.Current.Response.ContentType = "text/xml";
-                    HttpContext.Current.Response.Write($"{"<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" + "<DATASET>\n" + "  <DataTable>\n"}    <Resultado>{Resultado.ToString()}</Resultado>\n" + "  </DataTable>\n" + "</DATASET>");
+                    string output = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+                    output += "<DATASET>\n";
+                    output += "  <DataTable>\n";
+                    output += "    <Resultado>" + Resultado.ToString() + "</Resultado>\n";
+                    output += "  </DataTable>\n";
+                    output += "</DATASET>";
+                    HttpContext.Current.Response.Write(output);
+                    //HttpContext.Current.Response.End();  
                 }
             }
+
         }
 
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
+
+
         public struct Cadena
         {
             public static string CortarTextoDerecha(int tamaño, string texto)
             {
                 return texto.Substring(texto.Length - tamaño, tamaño);
+
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
-        public struct WebAppi
+
+        /*--------------------------------------------------------------------------------------------*/
+        /* COD OLD*/
+        public static string MensajesIngresarMetodo()
         {
+            return "Ingresó al Metodo.";
+        }
+
+        public static string MensajesSalirMetodo()
+        {
+            return "Salió del Metodo.";
+        }
+
+
+        /* LLAMADA AL SERVICIO */
+        public static DataTable CallServiceRestOracle(string Metodo, string oParams)
+        {
+            string TagName = "//Table";
+            string strData = LoadBackGroundWS(Metodo, oParams).Result;
+
+            XmlDocument Mi_xml = new XmlDocument();
+            Mi_xml.LoadXml(strData);
+
+            XmlNodeList datos_XML = Mi_xml.SelectNodes(TagName); // se coloca el nombre de nodo que es la tabla/vista
+
+            DataSet conjunto_dx = new DataSet();
+            conjunto_dx.ReadXml(new XmlNodeReader(Mi_xml));
+
+            DataTable dt = conjunto_dx.Tables[0];
+            dt.TableName = "Table";
+            return dt;
+        }
+
+        /* RESPONDE AL SERVICIO */
+        public static DataTable ReplyServiceRestOracle(string Metodo, string oParams)
+        {
+            string TagName = "//Table";
+            string strData = WriteBackGroundWS(Metodo, oParams).Result;
+
+            XmlDocument Mi_xml = new XmlDocument();
+            Mi_xml.LoadXml(strData);
+
+            XmlNodeList datos_XML = Mi_xml.SelectNodes(TagName); // se coloca el nombre de nodo que es la tabla/vista
+
+            DataSet conjunto_dx = new DataSet();
+            conjunto_dx.ReadXml(new XmlNodeReader(Mi_xml));
+
+            DataTable dt = conjunto_dx.Tables[0];
+            dt.TableName = "Table";
+            return dt;
+        }
+        // LEE EL SERVICIO
+        static async Task<string> LoadBackGroundWS(string Metodo, string ListaParametrosValor)
+        {
+            //referencia : https://stackoverflow.com/questions/40291526/why-async-function-returning-system-threading-tasks-task1system-string
+            string susername = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSUser");
+            string spassword = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSPwd");
+            string sParametros = ListaParametrosValor;
+
+
+            string sServicio = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "PathWSOracle"); //"http://10.10.90.168:7060/xml_oracle/xml_api";
+                                                                                                        //string sMetodo = ".get_planilla?"; // En este metodo esta expuesta toda la información necesaria
+
+            using (var httpWS = new HttpClient())
+            {
+                httpWS.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(susername + ":" + spassword)));
+                var resultado = await httpWS.GetAsync(sServicio + Utilitario.Constante.Caracteres.Punto + Metodo + Utilitario.Constante.Caracteres.interrogacion + sParametros);
+
+                string get_contenido = await resultado.Content.ReadAsStringAsync();
+
+                get_contenido = get_contenido.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
+                return get_contenido;
+            }
+
+        }
+
+        // ESCRIBE EN EL SERVICIO
+        static async Task<string> WriteBackGroundWS(string Metodo, string ListaParametrosValor)
+        {
+            //referencia : https://stackoverflow.com/questions/40291526/why-async-function-returning-system-threading-tasks-task1system-string
+            string susername = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSUser");
+            string spassword = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "WSPwd");
+            string sParametros = ListaParametrosValor;
+
+
+            string sServicio = Helper.Configuracion.BaseConfig("WebServiceSIMAOracle", "PathWSOracle"); //"http://10.10.90.168:7060/xml_oracle/xml_api";
+                                                                                                        //string sMetodo = ".get_planilla?"; // En este metodo esta expuesta toda la información necesaria
+
+            using (var httpWS = new HttpClient())
+            {
+                httpWS.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(susername + ":" + spassword)));
+                HttpContent contenido = new StringContent(sParametros, Encoding.UTF8, "text/plain");
+                var resultado = await httpWS.PostAsync(sServicio + Utilitario.Constante.Caracteres.Punto + Metodo + Utilitario.Constante.Caracteres.interrogacion,
+                                                       contenido);
+                string get_contenido = await resultado.Content.ReadAsStringAsync();
+                get_contenido = get_contenido.Replace("\r\n", "").Replace("\n", "").Replace("\r", "");
+                return get_contenido;
+            }
+
+        }
+
+
+        public struct WebAppi{
+
+            public struct Rest {
+                    public static ResposeBE Send(ApiInfoBE _ApiInfoBE) {
+                        ResposeBE oResposeBE = new ResposeBE();
+                        try
+                            {
+                            oResposeBE = (ResposeBE)BackGroudRest(_ApiInfoBE).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            int i = 0;
+
+                        }
+                        return oResposeBE;
+                    }
+
+            }
+            public static async Task<ResposeBE> BackGroudRest( ApiInfoBE oApiInfoBE)
+            {
+                var baseAddress = oApiInfoBE.Url; 
+                var endpoint = oApiInfoBE.Metodo; 
+
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(baseAddress)
+                };
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(oApiInfoBE.MediaType));// "application/json"
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "a28ASXzbGF0YDF256Dds41iYWxmYSI6ImE4OTM0Y2as51");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(oApiInfoBE.Tipo.ToString(), oApiInfoBE.TokenValue);
+
+                /*var body = new
+                {
+                    nroDOI = "45105752"
+                };*/
+                var body = oApiInfoBE.BodyParam;
+
+                var content = new StringContent(
+                    JsonSerializer.Serialize(body),
+                    Encoding.UTF8,
+                    oApiInfoBE.MediaType
+                );
+
+                var response = client.PostAsync(endpoint, content).Result;
+
+                ResposeBE oResposeBE = new ResposeBE();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                     //return $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}";
+                   // oResposeBE.Mensaje = response.Content.ReadAsStringAsync().Result.ToString();
+                    oResposeBE.Status = response.StatusCode;
+                    return oResposeBE;
+                }
+
+                var strrptBE = await response.Content.ReadAsStringAsync();
+
+                string strResult = response.RequestMessage.ToString();
+                oResposeBE.Mensaje = Utilitario.Helper.WebAppi.SeriaizedDiccionario(strResult);
+                oResposeBE.Mensaje.Add("StatusOperacion", strrptBE);
+                oResposeBE.Status = response.StatusCode;
+                oResposeBE.ObjResult = strrptBE;
+
+                return oResposeBE;
+            }
+
+
             public static ResposeBE Post(string _Url, object EntityBE)
             {
-                return Helper.WebAppi.result(_Url, EntityBE);
+                return result(_Url, EntityBE);
             }
-
             public static ResposeBE Get(string _Url, object EntityBE)
             {
-                return Helper.WebAppi.result(_Url, EntityBE);
+                return result(_Url, EntityBE);
             }
-
-            private static ResposeBE result(string _Url, object EntityBE)
-            {
-                ResposeBE resposeBe = new ResposeBE();
-                return Helper.WebAppi._PostGet(_Url, EntityBE).Result;
-            }
-
-            private static readonly HttpClient httpClient = new HttpClient(new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true // Solo si es necesario
-            });
-
-            private static async Task<ResposeBE> _PostGet(string _Url, object EntityBE)
+            static ResposeBE result(string _Url, object EntityBE)
             {
                 ResposeBE oResposeBE = new ResposeBE();
-                ResposeBE resposeBe;
-                using (HttpClient httpClient = new HttpClient((HttpMessageHandler)new HttpClientHandler()
-                       {
-                           ServerCertificateCustomValidationCallback = (Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool>)((sender, cert, chain, sslPolicyErrors) => true)
-                       }))
-                {
-                    HttpResponseMessage respuesta = await httpClient.PostAsJsonAsync<object>(_Url, EntityBE).ConfigureAwait(false);
-                    string str = await respuesta.Content.ReadAsStringAsync();
-                    oResposeBE.Mensaje = Helper.WebAppi.SeriaizedDiccionario(respuesta.RequestMessage.ToString());
-                    oResposeBE.Mensaje.Add("StatusOperacion", str);
-                    oResposeBE.Status = respuesta.StatusCode;
-                    oResposeBE.ObjResult = str;
-                    resposeBe = oResposeBE;
-                }
-                oResposeBE = (ResposeBE)null;
-                return resposeBe;
+                oResposeBE = Utilitario.Helper.WebAppi._PostGet(_Url, EntityBE).Result;
+                return oResposeBE;
             }
 
-
-            /*
-            private static async Task<ResposeBE> PostAsync<T>(string url, T entity)
+      
+            static async Task<ResposeBE> _PostGet(string _Url, object EntityBE)
             {
-                var responseBe = new ResposeBE();
+                /*rEFERENCIA PARA OBVIAR EL BLOQUEO: https://stackoverflow.com/questions/30653770/httpclient-postasjsonasync-never-sees-when-the-post-is-succeeding-and-responding
+                 */
+                ResposeBE oResposeBE = new ResposeBE();
+                var strResult= "";
 
-                try
-                {
-                    using var response = await httpClient.PostAsJsonAsync(url, entity).ConfigureAwait(false);
-                    string content = await response.Content.ReadAsStringAsync();
+                HttpClientHandler clientHandler = new HttpClientHandler();//para evitar la certificacion
+                    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
-                    responseBe.Status = response.StatusCode;
-                    responseBe.ObjResult = content;
 
-                    if (response.IsSuccessStatusCode)
+                    using (var httpClient = new HttpClient(clientHandler))
                     {
-                        responseBe.Mensaje = new Dictionary<string, string>
-                        {
-                            { "StatusOperacion", "OK" }
-                        };
+                        var respuesta = await httpClient.PostAsJsonAsync(_Url, EntityBE).ConfigureAwait(false);
+                        var strrptBE = await respuesta.Content.ReadAsStringAsync();
+
+                        strResult = respuesta.RequestMessage.ToString();
+                        oResposeBE.Mensaje = Utilitario.Helper.WebAppi.SeriaizedDiccionario(strResult);
+                        oResposeBE.Mensaje.Add("StatusOperacion", strrptBE);
+                        oResposeBE.Status = respuesta.StatusCode;
+                        oResposeBE.ObjResult = strrptBE;
+
+                        return oResposeBE; ;
                     }
-                    else
-                    {
-                        responseBe.Mensaje = new Dictionary<string, string>
-                        {
-                            { "Error", $"Código HTTP {(int)response.StatusCode}: {response.ReasonPhrase}" }
-                        };
-                    }
-                }
-                catch (Exception ex)
-                {
-                    responseBe.Mensaje = new Dictionary<string, string>
-                    {
-                        { "Exception", ex.Message }
-                    };
-                    responseBe.Status = System.Net.HttpStatusCode.InternalServerError;
-                }
-
-                return responseBe;
             }
-            */
 
-            private static async Task<string> _PostGete(string _Url, object EntityBE)
+            static async Task<string> _PostGete(string _Url, object EntityBE)
             {
-                using (HttpClient httpClient = new HttpClient((HttpMessageHandler)new HttpClientHandler()
+                /*rEFERENCIA PARA OBVIAR EL BLOQUEO: https://stackoverflow.com/questions/30653770/httpclient-postasjsonasync-never-sees-when-the-post-is-succeeding-and-responding
+                 */
+
+                HttpClientHandler clientHandler = new HttpClientHandler();//para evitar la certificacion
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+                using (var httpClient = new HttpClient(clientHandler))
                 {
-                    ServerCertificateCustomValidationCallback = (Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool>)((sender, cert, chain, sslPolicyErrors) => true)
-                }))
-                {
-                    HttpResponseMessage respuesta = await httpClient.PostAsJsonAsync<object>(_Url, EntityBE).ConfigureAwait(false);
-                    string strrptBE = await respuesta.Content.ReadAsStringAsync();
+                    var respuesta = await httpClient.PostAsJsonAsync(_Url, EntityBE).ConfigureAwait(false);
+                    var strrptBE = await respuesta.Content.ReadAsStringAsync();
+
                     switch (respuesta.StatusCode)
                     {
                         case HttpStatusCode.OK:
-                            return (await respuesta.Content.ReadAsStringAsync()).ToString();
+                            var cuerpo = await respuesta.Content.ReadAsStringAsync();
+
+                            return cuerpo.ToString();
+                            break;
                         case HttpStatusCode.BadRequest:
-                            Helper.WebAppi.ExtraerErroresDelWebAPI(await respuesta.Content.ReadAsStringAsync());
+                            var cuerpo1 = await respuesta.Content.ReadAsStringAsync();
+                            var erroresDelAPI1 = ExtraerErroresDelWebAPI(cuerpo1);
                             return strrptBE;
+                            break;
                         case HttpStatusCode.NotFound:
-                            return $"{{status:NotFound,{respuesta.RequestMessage.ToString()}}}";
-                        default:
-                            return "";
+                            string errDes = respuesta.RequestMessage.ToString();
+                            return "{status:NotFound," + errDes + "}";
+                            break;
                     }
+                    return "";
+                    /* if (respuesta.StatusCode == HttpStatusCode.BadRequest)
+                     {
+                         var cuerpo = await respuesta.Content.ReadAsStringAsync();
+                         var erroresDelAPI = ExtraerErroresDelWebAPI(cuerpo);
+
+                          //foreach (var campoErrores in erroresDelAPI)
+                          //{
+                          //    Console.WriteLine($"-{campoErrores.Key}");
+                          //    foreach (var error in campoErrores.Value)
+                          //    {
+                          //        Console.WriteLine($"  {error}");
+                          //    }
+                          //}
+                     }
+                     return strrptBE;*/
                 }
+
+
             }
+
+
 
             public static Dictionary<string, List<string>> ExtraerErroresDelWebAPI(string json)
             {
-                Dictionary<string, List<string>> dictionary = new Dictionary<string, List<string>>();
-                foreach (JsonProperty jsonProperty in JsonSerializer.Deserialize<JsonElement>(json).GetProperty("errors").EnumerateObject())
+                var respuesta = new Dictionary<string, List<string>>();
+
+                var jsonElement = JsonSerializer.Deserialize<JsonElement>(json);
+                var errorsJsonElement = jsonElement.GetProperty("errors");
+
+                foreach (var campoConErrores in errorsJsonElement.EnumerateObject())
                 {
-                    string name = jsonProperty.Name;
-                    List<string> stringList = new List<string>();
-                    foreach (JsonElement enumerate in jsonProperty.Value.EnumerateArray())
+                    var campo = campoConErrores.Name;
+                    var errores = new List<string>();
+                    foreach (var errorKind in campoConErrores.Value.EnumerateArray())
                     {
-                        string str = enumerate.GetString();
-                        stringList.Add(str);
+                        var error = errorKind.GetString();
+                        errores.Add(error);
                     }
-                    dictionary.Add(name, stringList);
+                    respuesta.Add(campo, errores);
                 }
-                return dictionary;
+
+                return respuesta;
             }
 
             public static Dictionary<string, string> SeriaizedDiccionario(string oStringEntity)
             {
-                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                Dictionary<string, string> DataDiconario = new Dictionary<string, string>();
                 oStringEntity = oStringEntity.Replace("{", "").Replace("}", "");
-                string str1 = oStringEntity;
-                char[] chArray = new char[1] { ',' };
-                foreach (string str2 in str1.Split(chArray))
+                string[] Items = oStringEntity.Split(',');
+                foreach (string FV in Items)
                 {
-                    string[] strArray = str2.Split(Constante.Caracteres.DosPunto.ToCharArray());
-                    string str3;
-                    if (strArray.Length > 2)
+                    string[] Fiel_Value = FV.Split(Utilitario.Constante.Caracteres.DosPunto.ToCharArray());
+                    string value = "";
+                    if (Fiel_Value.Length > 2)
                     {
-                        int startIndex = strArray[0].Length + 1;
-                        str3 = str2.Substring(startIndex, str2.Length - startIndex);
+                        int LongIni = Fiel_Value[0].Length + 1;
+                        value = FV.Substring(LongIni, (FV.Length - LongIni));
                     }
                     else
-                        str3 = strArray[1];
-                    dictionary[strArray[0].Replace(Constante.Caracteres.ComillasDobles.ToString(), "")] = str3.Replace(Constante.Caracteres.ComillasDobles.ToString(), "").Replace("'", "");
+                    {
+                        value = Fiel_Value[1];
+                    }
+                    DataDiconario[Fiel_Value[0].Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(),"")] = value.Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(), "").Replace("'", "");
                 }
-                return dictionary;
+                return DataDiconario;
             }
+
+
+
+
         }
+
+
+
+
+
     }
 }

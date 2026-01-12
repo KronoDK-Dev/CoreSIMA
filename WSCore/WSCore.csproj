@@ -14,9 +14,9 @@
     <RootNamespace>WSCore</RootNamespace>
     <AssemblyName>WSCore</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44351</IISExpressSSLPort>
+    <IISExpressSSLPort>44354</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -51,7 +51,10 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=4.112.4.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64" />
+    <Reference Include="Oracle.DataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\app\client\erosales\product\12.2.0\client_1\odp.net\bin\4\Oracle.DataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -150,6 +153,7 @@
     <Content Include="Recursos\seguridad.png" />
     <Content Include="Recursos\style.css" />
     <Content Include="Recursos\Tesoreria.png" />
+    <Content Include="SeguridadPlanta\SeguridadIndustrial.asmx" />
     <Content Include="Seguridad\Seguridad.asmx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -210,6 +214,16 @@
       <DependentUpon>Interbancario.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\Archivo.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\demo.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\DetDocBenef.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\LecturaError.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanCabProv.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanDetProv.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanillaPagos.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanillaPagosOperationResult.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\RespuestaBE.cs" />
+    <Compile Include="GestionFinanciera\Tesoreria\Pagos\StringOperationResult.cs" />
     <Compile Include="GestionGobernanza\Indicadores.asmx.cs">
       <DependentUpon>Indicadores.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -283,6 +297,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeguridadPlanta\SeguridadIndustrial.asmx.cs">
+      <DependentUpon>SeguridadIndustrial.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Seguridad\Seguridad.asmx.cs">
       <DependentUpon>Seguridad.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -338,9 +356,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>62996</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:62996/</IISUrl>
+          <DevelopmentServerPort>90</DevelopmentServerPort>
+          <DevelopmentServerVPath>/Core</DevelopmentServerVPath>
+          <IISUrl>http://localhost:90/Core</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

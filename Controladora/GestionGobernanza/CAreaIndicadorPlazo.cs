@@ -1,16 +1,16 @@
-﻿using EntidadNegocio;
+﻿using AccesoDatos.NoTransaccional.GestionGobernanza;
+using AccesoDatos.Transaccional.GestionGobernanza;
+using EntidadNegocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.GestionGobernanza;
-using AccesoDatos.Transaccional.GestionGobernanza;
 
 namespace Controladora.GestionGobernanza
 {
-    public class CAreaIndicadorPlazo
+    public  class CAreaIndicadorPlazo
     {
         public string ModificaInserta(BaseBE oBaseBE)
         {

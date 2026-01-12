@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk
 {
-    public class PlanCronogramaActividadBE : BaseBE
+    public class PlanCronogramaActividadBE:BaseBE
     {
         public string IdConogramaActividad { get; set; }
         public string IdConogramaActividadPadre { get; set; }
@@ -17,5 +17,6 @@ namespace EntidadNegocio.HelpDesk
         public int Duracion { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
+
     }
 }

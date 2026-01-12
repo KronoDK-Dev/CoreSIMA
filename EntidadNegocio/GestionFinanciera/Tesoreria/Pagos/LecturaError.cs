@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.GestionFinanciera.Tesoreria.Pagos
 {
-    public class LecturaError
+    public  class LecturaError
     {
-        public string tipo { get; set; }
+        public LecturaError() { }   
 
-        public int? linea { get; set; }
-
-        public int? posicion { get; set; }
-
-        public string mensaje { get; set; }
+      public string tipo { get; set; }
+      public int?  linea { get; set; }
+      public int? posicion { get; set; }
+      public string mensaje { get; set; }
     }
 }

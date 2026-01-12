@@ -1,12 +1,12 @@
-﻿using EntidadNegocio;
+﻿using AccesoDatos.NoTransaccional.HelpDesk;
+using AccesoDatos.Transaccional.HelpDesk;
+using EntidadNegocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.HelpDesk;
-using AccesoDatos.Transaccional.HelpDesk;
 
 namespace Controladora.HelpDesk
 {
@@ -21,8 +21,8 @@ namespace Controladora.HelpDesk
             return (new RequerimientoResponsableATencionTAD()).ModificaInserta(oBaseBE);
         }
         public DataTable ListarTodos(string Id1, string UserName)
-        {
-            return (new RequerimientoResponsableAtencionNTAD()).ListarTodos(Id1, UserName);
+        { 
+            return(new RequerimientoResponsableAtencionNTAD()).ListarTodos(Id1, UserName);
         }
     }
 }

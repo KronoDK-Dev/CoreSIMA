@@ -1,15 +1,15 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.HelpDesk;
+using AccesoDatos.Transaccional.HelpDesk;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.HelpDesk;
-using AccesoDatos.Transaccional.HelpDesk;
 
 namespace Controladora.HelpDesk
 {
-    public class CRequerimientoResponsable
+    public  class CRequerimientoResponsable
     {
         public DataTable ListarTodos(string Id1, string UserName)
         {
@@ -20,10 +20,10 @@ namespace Controladora.HelpDesk
         {
             return (new RequerimientoResponsableTAD()).ModificaInserta(IdResponsableAprobRqr, Token, Aprobado, IdUsuario, UserName);
         }
-
         public string ModificaInserta(string IdResponsableAprobRqr, string Token, int IdUsuario, string UserName)
         {
-            return (new RequerimientoResponsableTAD()).ModificaInserta(IdResponsableAprobRqr, Token, IdUsuario, UserName);
+            return (new RequerimientoResponsableTAD()).ModificaInserta(IdResponsableAprobRqr, Token,  IdUsuario, UserName);
         }
+
     }
 }

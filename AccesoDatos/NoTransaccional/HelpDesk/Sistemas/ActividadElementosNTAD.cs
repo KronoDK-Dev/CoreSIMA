@@ -1,4 +1,5 @@
 ﻿using EntidadNegocio;
+using EntidadNegocio.HelpDesk.Sistemas;
 using Log;
 using Oracle.DataAccess.Client;
 using System;
@@ -9,143 +10,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EntidadNegocio.HelpDesk.Sistemas;
 using Utilitario;
 
 namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
 {
     public class ActividadElementosNTAD : BaseAD, IMantenimientoNTAD
     {
-        public DataTable ListarTodos()
-        {
-            throw new NotImplementedException();
-        }
-
-        public DataTable ListarTodos(string Id1, string UserName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DataTable ListarTodos(string Id1, string Id2, string UserName)
-        {
-            try
-            {
-                StackTrace stack = new StackTrace();
-                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
-
-                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id2.ToString(), UserName);
-                string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementos";
-
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
-                                                                                     , oInfoMetodoBE.FullName
-                                                                                     , NombreMetodo
-                                                                                     , PackagName
-                                                                                     , oInfoMetodoBE.VoidParams
-                                                                                     , ""
-                                                                                     , Helper.MensajesIngresarMetodo()
-                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
-                                                                 );
-
-                OracleParameter[] oParam = new OracleParameter[3];
-                oParam[0] = new OracleParameter("ID_ACTIVIDAD", OracleDbType.Varchar2);
-                oParam[0].Direction = ParameterDirection.Input;
-                oParam[0].Value = Id1;
-
-                oParam[1] = new OracleParameter("IDTIPOELEMENTO", OracleDbType.Varchar2);
-                oParam[1].Direction = ParameterDirection.Input;
-                oParam[1].Value = Id2;
-
-                oParam[2] = new OracleParameter("rstOut", OracleDbType.RefCursor);
-                oParam[2].Direction = ParameterDirection.Output;
-
-                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
-
-                int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
-
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
-                                                                                     , oInfoMetodoBE.FullName
-                                                                                     , NombreMetodo
-                                                                                     , PackagName
-                                                                                     , ""
-                                                                                     , "rstCount:" + NroReg.ToString()
-                                                                                     , Helper.MensajesSalirMetodo()
-                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-
-                return (ds == null) ? null : ds.Tables[0];
-            }
-            catch (SqlException oracleException)
-            {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
-                return null;
-            }
-        }
-
-        public DataTable ListarTodos(string Id1, string Id2, string Id3, string UserName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DataTable Buscar(string TextFind, string UserName)
-        {
-            try
-            {
-                StackTrace stack = new StackTrace();
-                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
-
-                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, TextFind, UserName);
-                string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementosFind";
-
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
-                                                                                     , oInfoMetodoBE.FullName
-                                                                                     , NombreMetodo
-                                                                                     , PackagName
-                                                                                     , oInfoMetodoBE.VoidParams
-                                                                                     , ""
-                                                                                     , Helper.MensajesIngresarMetodo()
-                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
-                                                                 );
-
-                OracleParameter[] oParam = new OracleParameter[2];
-                oParam[0] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
-                oParam[0].Direction = ParameterDirection.Input;
-                oParam[0].Value = TextFind;
-
-                oParam[1] = new OracleParameter("rstOut", OracleDbType.RefCursor);
-                oParam[1].Direction = ParameterDirection.Output;
-
-                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
-
-                int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
-
-                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
-                                                                                     , oInfoMetodoBE.FullName
-                                                                                     , NombreMetodo
-                                                                                     , PackagName
-                                                                                     , ""
-                                                                                     , "rstCount:" + NroReg.ToString()
-                                                                                     , Helper.MensajesSalirMetodo()
-                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-
-                return (ds == null) ? null : ds.Tables[0];
-            }
-            catch (SqlException oracleException)
-            {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
-                return null;
-            }
-        }
-
-        public DataTable Buscar(string TextFind, string IdActividad, string IdTipoElemento, string UserName)
+        public DataTable Buscar(string TextFind, string IdActividad, string  IdTipoElemento, string UserName)
         {
             try
             {
@@ -153,7 +24,9 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
                 InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, TextFind, IdTipoElemento, UserName);
+
                 string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementosFind";
+
 
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
@@ -164,6 +37,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I))
                                                                  );
+
 
                 OracleParameter[] oParam = new OracleParameter[4];
                 oParam[0] = new OracleParameter("IDTIPOELEMENTO", OracleDbType.Varchar2);
@@ -185,6 +59,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
 
                 int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -193,9 +68,9 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                                                                                      , "rstCount:" + NroReg.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
-
                 return (ds == null) ? null : ds.Tables[0];
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -207,6 +82,65 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                 return null;
             }
         }
+        public DataTable Buscar(string TextFind,  string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, TextFind, UserName);
+
+                string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementosFind";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+                OracleParameter[] oParam = new OracleParameter[2];
+                oParam[0] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = TextFind;
+
+                oParam[1] = new OracleParameter("rstOut", OracleDbType.RefCursor);
+                oParam[1].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
+
+                int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + NroReg.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+                return (ds == null) ? null : ds.Tables[0];
+            }
+
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+      
 
         public BaseBE Detalle(string Id1)
         {
@@ -221,7 +155,9 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
                 InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), UserName);
+
                 string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementoDet";
+
 
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
@@ -232,6 +168,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I))
                                                                  );
+
 
                 OracleParameter[] oParam = new OracleParameter[2];
                 oParam[0] = new OracleParameter("ID_ACT_ELEM", OracleDbType.Varchar2);
@@ -245,6 +182,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
 
                 int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -255,8 +193,7 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 ActividadElementosBE oActividadElementosBE = new ActividadElementosBE();
-                if (ds != null)
-                {
+                if (ds != null) {
                     DataRow dr = ds.Tables[0].Rows[0];
 
                     oActividadElementosBE.IdActElemento = dr["ID_ACT_ELEM"].ToString();
@@ -290,6 +227,84 @@ namespace AccesoDatos.NoTransaccional.HelpDesk.Sistemas
         }
 
         public BaseBE Detalle(string Id1, string Id2, string Id3, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos(string Id1, string Id2, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id2.ToString(), UserName);
+
+                string PackagName = "NSASERVICE.PKG_SYS_PRC_NTAD.IActividadElementos";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+                OracleParameter[] oParam = new OracleParameter[3];
+                oParam[0] = new OracleParameter("ID_ACTIVIDAD", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = Id1;
+
+                oParam[1] = new OracleParameter("IDTIPOELEMENTO", OracleDbType.Varchar2);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = Id2;
+
+                oParam[2] = new OracleParameter("rstOut", OracleDbType.RefCursor);
+                oParam[2].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
+
+                int NroReg = (ds == null) ? 0 : ds.Tables[0].Rows.Count;
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + NroReg.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+                return (ds == null) ? null : ds.Tables[0];
+            }
+
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+        public DataTable ListarTodos(string Id1, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos(string Id1, string Id2, string Id3, string UserName)
         {
             throw new NotImplementedException();
         }

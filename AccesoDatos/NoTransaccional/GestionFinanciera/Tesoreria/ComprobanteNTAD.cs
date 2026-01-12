@@ -1,25 +1,23 @@
-﻿using Oracle.DataAccess.Client;
+﻿using Log;
 using System;
-using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Utilitario;
+using Oracle.DataAccess.Client;
 
 namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 {
-    public class ComprobanteNTAD : BaseAD
+    public class ComprobanteNTAD:BaseAD
     {
-        public DataSet ConsultarPorEstado(string Ind_Org, int IdEstado, int CentroOperativo)
+        public DataSet ConsultarPorEstado(string Ind_Org,int IdEstado, int CentroOperativo)
         {
             try
             {
                 DataSet ds = new DataSet();
 
                 string PackagName = "";
-                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao))
-                {
+                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao)){ 
                     PackagName = "O7INVOICE.PD_COMPROBANTE_VENTA_PKG.ComprobanteXEst";
                     OracleParameter[] Param = new OracleParameter[3];
                     Param[0] = new OracleParameter("p_ind_org", OracleDbType.Varchar2);
@@ -35,18 +33,16 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
-                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)){ 
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, Ind_Org, IdEstado);
                 }
-                else
-                {
+                else{ 
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, Ind_Org, IdEstado);
                 }
 
-                //   ds = DBGeneric((Enumerados.CentroOperativo)System.Enum.Parse(typeof(Enumerados.CentroOperativo), CentroOperativo.ToString())).ExecuteDataSets(PackagName, Param);
+             //   ds = DBGeneric((Enumerados.CentroOperativo)System.Enum.Parse(typeof(Enumerados.CentroOperativo), CentroOperativo.ToString())).ExecuteDataSets(PackagName, Param);
                 return ds;
             }
             catch (System.Data.SqlClient.SqlException sqlException)
@@ -65,6 +61,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             return null;
         }
 
+      
         public DataSet Consultar(string Ind_Org, int CentroOperativo)
         {
             try
@@ -72,8 +69,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                 DataSet ds = new DataSet();
 
                 string PackagName = "";
-                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao))
-                {
+                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao)){
                     PackagName = "O7INVOICE.PD_COMPROBANTE_VENTA_PKG.Comprobante";
                     OracleParameter[] Param = new OracleParameter[2];
                     Param[0] = new OracleParameter("p_ind_org", OracleDbType.Varchar2);
@@ -82,16 +78,14 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                     Param[1] = new OracleParameter("relacion", OracleDbType.RefCursor);
                     Param[1].Direction = ParameterDirection.Output;
-
+                    
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
-                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)){ 
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, Ind_Org);
                 }
-                else
-                {
+                else{ 
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, Ind_Org);
                 }
@@ -116,15 +110,14 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             return null;
         }
 
-        public DataSet Consultar(string Ind_Org, int IdEstado, string TipoDoc, string NroSerie, int CentroOperativo)
+        public DataSet Consultar(string Ind_Org,int IdEstado, string TipoDoc, string NroSerie, int CentroOperativo)
         {
             try
             {
                 DataSet ds = new DataSet();
 
                 string PackagName = "";
-                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao))
-                {
+                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao)){ 
                     PackagName = "O7INVOICE.PD_COMPROBANTE_VENTA_PKG.ComprobanteXEst";
 
                     OracleParameter[] Param = new OracleParameter[2];
@@ -137,27 +130,23 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                     Param[1].Value = IdEstado;
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
-                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)){
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, Ind_Org, IdEstado);
                 }
-                else
-                {
+                else{ 
                     PackagName = "sp_FECComprobanteCAB";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, Ind_Org, IdEstado);
                 }
 
-                // ds = DBGeneric((Enumerados.CentroOperativo)System.Enum.Parse(typeof(Enumerados.CentroOperativo), CentroOperativo.ToString())).ExecuteDataSets(PackagName, Param);
-
-                if (ds.Tables.Count > 0)
-                {
+               // ds = DBGeneric((Enumerados.CentroOperativo)System.Enum.Parse(typeof(Enumerados.CentroOperativo), CentroOperativo.ToString())).ExecuteDataSets(PackagName, Param);
+                
+                if (ds.Tables.Count > 0) {
                     DataTable dt = ds.Tables[0];
-                    if (dt != null)
-                    {
+                    if (dt != null) {
                         DataView dv = dt.DefaultView;
                         dv.RowFilter = " TIP_DOC='" + TipoDoc + "' and SER_NUM='" + NroSerie + "'";
-                        DataTable dtv = Helper.Data.DataViewTODataTable(dv);
+                        DataTable dtv=  Helper.Data.DataViewTODataTable(dv);
                         ds.Tables.Remove(dt);
                         ds.Tables.Add(dtv);
                     }
@@ -180,5 +169,6 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             }
             return null;
         }
+     
     }
 }

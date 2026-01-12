@@ -1,11 +1,12 @@
 ﻿using EntidadNegocio;
 using EntidadNegocio.HelpDesk.Sistemas;
 using Log;
+using Microsoft.Practices.EnterpriseLibrary.Common.Instrumentation;
 using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -51,6 +52,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[2];
+
                 Param[0] = new OracleParameter("ID_ACT_ELEM", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Id1;
@@ -59,8 +61,10 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                 Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Id2;
 
+
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(Id3
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -70,8 +74,13 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return 1;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(Id3, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -84,7 +93,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
             }
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -115,6 +129,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[9];
+
                 Param[0] = new OracleParameter("ID_ACT_ELEM", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = oActividadElementosBE.IdActElemento;
@@ -126,6 +141,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                 Param[2] = new OracleParameter("ID_ACT_ELEM_ORG", OracleDbType.Varchar2);
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = oActividadElementosBE.IdActividadElemOrg;
+
 
                 Param[3] = new OracleParameter("NOMBRE", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
@@ -143,6 +159,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                 Param[6].Direction = ParameterDirection.Input;
                 Param[6].Value = oActividadElementosBE.IdTipoElemento;
 
+
                 Param[7] = new OracleParameter("USU_ADD", OracleDbType.Int64);
                 Param[7].Direction = ParameterDirection.Input;
                 Param[7].Value = oActividadElementosBE.IdUsuario;
@@ -153,6 +170,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oActividadElementosBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -162,8 +180,13 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oActividadElementosBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -176,17 +199,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
             }
         }
 
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
         public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }

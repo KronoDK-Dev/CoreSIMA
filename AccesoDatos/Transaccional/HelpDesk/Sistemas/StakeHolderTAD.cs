@@ -4,8 +4,8 @@ using Log;
 using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -33,6 +33,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
         public int Eliminar(string Id1, string Id2, string Id3)
         {
+            
             try
             {
                 StackTrace stack = new StackTrace();
@@ -51,6 +52,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[2];
+
                 Param[0] = new OracleParameter("ID_STAKEHOLDER", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Id1;
@@ -61,6 +63,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(Id3
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -72,6 +75,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
                 return 1;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(Id3, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -84,7 +88,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
             }
         }
 
-        public int Modificar(BaseBE oBaseBE)
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }
@@ -115,6 +124,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
                 OracleParameter[] Param = new OracleParameter[8];
+
                 Param[0] = new OracleParameter("ID_STAKEHOLDER", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = oStakeHolderBE.IdStakeHolder;
@@ -126,7 +136,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                 Param[2] = new OracleParameter("IDPERSONAL", OracleDbType.Int64);
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = Convert.ToInt64(oStakeHolderBE.IdPersonal);
-
+    
                 Param[3] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = oStakeHolderBE.Descripcion;
@@ -138,7 +148,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
                 Param[5] = new OracleParameter("NOMIMG", OracleDbType.Varchar2);
                 Param[5].Direction = ParameterDirection.Input;
                 Param[5].Value = oStakeHolderBE.NombreImg;
-
+ 
                 Param[6] = new OracleParameter("USU_ADD", OracleDbType.Int64);
                 Param[6].Direction = ParameterDirection.Input;
                 Param[6].Value = oStakeHolderBE.IdUsuario;
@@ -149,6 +159,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oStakeHolderBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -160,6 +171,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
 
                 return ParamsOut;
             }
+
             catch (OracleException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oStakeHolderBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -172,17 +184,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.Sistemas
             }
         }
 
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
         public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
         {
             throw new NotImplementedException();
         }

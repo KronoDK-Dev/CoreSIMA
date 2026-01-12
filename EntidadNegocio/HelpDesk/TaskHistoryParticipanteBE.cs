@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk
 {
-    public class TaskHistoryParticipanteBE : BaseBE
+    public  class TaskHistoryParticipanteBE:BaseBE
     {
+        public TaskHistoryParticipanteBE()
+        {
+        }
         public string IdParticipante { get; set; }
         public int IdPersonal { get; set; }
         public string IdHistory { get; set; }

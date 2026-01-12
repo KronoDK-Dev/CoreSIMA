@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Controladora.GestionFinanciera.Tesoreria;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using Controladora.GestionFinanciera.Tesoreria;
 
 namespace WSCore.GestionFinanciera.Tesoreria
 {

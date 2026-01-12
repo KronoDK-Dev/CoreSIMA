@@ -1,16 +1,13 @@
-﻿using Oracle.DataAccess.Client;
+﻿using Log;
 using System;
-using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utilitario;
-using static AccesoDatos.BaseAD;
+using Oracle.DataAccess.Client;
 
-namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
+namespace AccesoDatos.NoTransaccional.Tesoreria
 {
-    public class ComprobanteDetalleNTAD : BaseAD
+    public class ComprobanteDetalleNTAD:BaseAD
     {
         public DataSet Consultar(string TipoDoc, string NroSer, int CentroOperativo)
         {
@@ -19,8 +16,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                 DataSet ds = new DataSet();
 
                 string PackagName = "";
-                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao))
-                {
+                if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaCallao)){ 
                     PackagName = "O7INVOICE.Pd_Comprobante_Venta_Pkg.ComprobanteDetalle";
                     OracleParameter[] Param = new OracleParameter[3];
 
@@ -37,13 +33,11 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                     ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, Param);
                 }
-                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))
-                {
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)){ 
                     PackagName = "sp_FECComprobanteDET";
                     ds = Sql(SQLVersion.sqlDBSimaCH).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
-                else
-                {
+                else{ 
                     PackagName = "sp_FECComprobanteDET";
                     ds = Sql(SQLVersion.sqlDBSimaIQ).ExecuteDataSet(PackagName, TipoDoc, NroSer);
                 }
@@ -64,5 +58,6 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
             }
             return null;
         }
+     
     }
 }

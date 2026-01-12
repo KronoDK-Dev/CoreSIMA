@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.HelpDesk
 {
-    public class RequerimientoBE : BaseBE
+    public class RequerimientoBE:BaseBE
     {
+        public RequerimientoBE() { }
         public string IdRequerimiento { get; set; }
         public string IdRequerientoPadre { get; set; }
         public string IdServicioArea { get; set; }
@@ -17,6 +18,8 @@ namespace EntidadNegocio.HelpDesk
         public string IdPersonal { get; set; }
 
         public int IdPrioridadSolicitada { get; set; }
-        public int IdPrioridadAtendida { get; set; }
+        public int IdPrioridadAtendida{ get; set; }
+        
+
     }
 }

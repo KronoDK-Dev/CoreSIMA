@@ -1,17 +1,23 @@
 ﻿using EntidadNegocio;
-using EntidadNegocio.HelpDesk.ChatBot;
+using EntidadNegocio.GestionCalidad;
 using Log;
-using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilitario;
-
+using EntidadNegocio.GestionPersonal;
+using System.Data.OleDb;
+using System.Data;
+using Oracle.DataAccess.Client;
+using static System.Net.Mime.MediaTypeNames;
+using System.Diagnostics.Contracts;
+using EntidadNegocio.HelpDesk.ChatBot;
+using System.CodeDom;
+using EntidadNegocio.GestionReportes;
 namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
 {
     public class CBMensajeContendidoTAD : BaseAD, IMantenimientoTAD
@@ -36,33 +42,12 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
             throw new NotImplementedException();
         }
 
-        public int Modificar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Modifica(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ModificaInserta(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
         public string Inserta(BaseBE oBaseBE)
         {
+            /*
+             * EJEMPLO DE CARGAR EN UN CAMPO CLOB
+             * https://es.stackoverflow.com/questions/273947/como-llamar-un-procedimiento-almacenado-de-oracle-desde-c
+             */
             MensajeContenidoBE oMensajeContenidoBE = (MensajeContenidoBE)oBaseBE;
             try
             {
@@ -80,6 +65,7 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , ""
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
 
                 OracleParameter[] Param = new OracleParameter[10];
                 Param[0] = new OracleParameter("ID_MIEMBRO", OracleDbType.Int64);
@@ -118,12 +104,14 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                 Param[8].Direction = ParameterDirection.Output;
                 Param[8].Size = 20;
 
+
                 Param[9] = new OracleParameter("OutIdRecip", OracleDbType.Varchar2);
                 Param[9].Direction = ParameterDirection.Output;
                 Param[9].Size = 20;
 
-                string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
+                string  ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
+                //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oMensajeContenidoBE.UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
@@ -133,8 +121,13 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
+
+
+
+
                 return ParamsOut;
             }
+
             catch (SqlException oracleException)
             {
                 LogTransaccional.LanzarSIMAExcepcionDominio(oMensajeContenidoBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
@@ -145,6 +138,31 @@ namespace AccesoDatos.Transaccional.HelpDesk.ChatBot
                 LogTransaccional.LanzarSIMAExcepcionDominio(oMensajeContenidoBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
                 return "-1";
             }
+        }
+
+        public int Insertar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Modifica(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ModificaInserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ModificarInsertar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
         }
     }
 }

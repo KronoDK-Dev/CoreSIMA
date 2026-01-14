@@ -20,7 +20,9 @@ namespace EntidadNegocio.SeguridadPlanta
         public string nombreCurso { get; set; }
         public string fechaInicio { get; set; }
         public string fechaVencimiento { get; set; }
-        public string nota { get; set; }
+        public string nota1 { get; set; }
+        public string nota2 { get; set; }
+        public string notaProm { get; set; }
         public string estado { get; set; }
         public int aprobado { get; set; }
         public int empresaAntigua { get; set; }

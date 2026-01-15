@@ -122,7 +122,7 @@ namespace WSCore.GestionGobernanza
         {
             return (new CAccionIndicador()).ListarIndicadoresPorArea(CodArea, UserName);
         }
-
+         
 
         [WebMethod]
         public DataTable ListarIndicadorCondicion(int IdArea ,int IdIndicador, string UserName)
@@ -264,5 +264,13 @@ namespace WSCore.GestionGobernanza
         {
             return (new CResponsablexArea()).Eliminar(IdTabla, IdItem, UserName);
         }
+
+
+        [WebMethod(Description = "Buscar en el Maestro de Areas de UNISYS")]
+        public DataTable BuscarArea(string Nombre_Area, string CodEmp,string CodSuc , string UserName)
+        {
+            return (new CResponsableArea()).BuscarArea(CodEmp, CodSuc, Nombre_Area, UserName);
+        }
+
     }
 }

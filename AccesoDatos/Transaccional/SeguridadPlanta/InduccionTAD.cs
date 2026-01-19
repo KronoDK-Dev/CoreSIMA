@@ -148,7 +148,7 @@ namespace AccesoDatos.Transaccional.SeguridadPlanta
 
                 string nYear = DateTime.Now.Year.ToString();
                 string nYearMonth = nYear + DateTime.Now.Month.ToString().PadLeft(2, '0');
-                int Nota = Int32.Parse(opersonal.nota.Split('.')[0]);
+                int Nota = Int32.Parse(opersonal.notaProm.Split('.')[0]);
 
                 string idResult = Convert.ToString(Sql(SQLVersion.sqlSIMANET).ExecuteScalar(PackagName, nrodoc
                                                                                                         , dFI

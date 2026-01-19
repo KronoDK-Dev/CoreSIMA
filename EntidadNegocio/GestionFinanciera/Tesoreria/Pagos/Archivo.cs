@@ -14,6 +14,7 @@ namespace EntidadNegocio.GestionFinanciera.Tesoreria.Pagos
         }
         public Archivo(string _CodCope,string NombrePlanilla,string Ext)
         {
+
             this.BANCO = "";
             this.codCope = _CodCope;
             this.nombrePlanilla = NombrePlanilla;

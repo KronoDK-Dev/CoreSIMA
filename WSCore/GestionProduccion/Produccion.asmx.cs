@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Web;
 using System.Web.Services;
+using System.Web.Script.Services; // para ser invocado desde JavaScript
 using System.Xml;
 using CActividad = Controladora.GestionProduccion.CActividad;
 

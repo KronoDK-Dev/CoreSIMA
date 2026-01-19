@@ -1,7 +1,4 @@
-﻿using Controladora.GestionFinanciera.Tesoreria;
-using EntidadNegocio.GestionFinanciera.Tesoreria.Pagos;
-using EntidadNegocio.GestionReportes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
@@ -9,7 +6,8 @@ using System.Text.Json;
 using System.Web.Services;
 using Utilitario;
 using WSCore.General;
-using static Utilitario.Helper;
+using Controladora.GestionFinanciera.Tesoreria;
+using EntidadNegocio.GestionFinanciera.Tesoreria.Pagos;
 
 
 
@@ -27,7 +25,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
         string cmll = Utilitario.Constante.Caracteres.ComillasDobles;
 
         [WebMethod]
-        public void IniciarTransferencia(string CodigoBanco, string NroLote,string UserName)
+        public void IniciarTransferencia(string CodigoBanco, string NroLote, string UserName)
         {
             try
             {
@@ -60,7 +58,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
                         oPlanillaPagos.datos = oPlanCabProv;
                         oPlanillaPagos.archivo = oArchivo;
 
-                        
+
                         //Llamar al servicio
                         object objBE = oPlanillaPagos;
 
@@ -97,37 +95,39 @@ namespace WSCore.GestionFinanciera.Tesoreria
                                 break;
                         }
                     }
-                    else {
-                        
+                    else
+                    {
+
                         strOperacionBE = "{Id:3,Mensaje:" + cmll + "No existe datos de proveedores a procesar.." + cmll + "}";
                     }
                 }
                 Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(strOperacionBE);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:-98,Mensaje:" + cmll + e.Message.Replace(",", " ") + cmll + "}");
             }
         }
 
 
-      
+
 
         [WebMethod]
-        public void LeerTransferencia(string CodigoBanco,string LotePago,string Estado="1", string UserName="Banco")
+        public void LeerTransferencia(string CodigoBanco, string LotePago, string Estado = "1", string UserName = "Banco")
         {
             try
             {
-                string strOperacionBE = "{Id:2,Mensaje:"+ cmll + "No existe envios que procesar.." + cmll+"}";
+                string strOperacionBE = "{Id:2,Mensaje:" + cmll + "No existe envios que procesar.." + cmll + "}";
                 ResposeBE oresposeBE = null;
                 var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco,LotePago, Estado, UserName);
+                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco, LotePago, Estado, UserName);
                 if (dt != null)
                 {
 
                     foreach (DataRow dr in dt.Rows)
                     {
                         PlanCabProv oPlanCabProv = (new PlanCabProv()).SetAttrValue(dr);
-                        EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo oArchivo = new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", oPlanCabProv.cCodPlanilla, ".txt");
+                        Archivo oArchivo = new Archivo("C", oPlanCabProv.cCodPlanilla, ".txt");
                         //Llamar al servicio
                         oArchivo.BANCO = CodigoBanco;
                         object objBE = oArchivo;
@@ -150,14 +150,14 @@ namespace WSCore.GestionFinanciera.Tesoreria
                                 if (oStringOperationResult.resultType.Equals(-7))//val
                                 {
                                     var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
-                                    DataTable dtRegPrv = (new CInterbancario()).DetalleLotePago(CodigoBanco,NroLote, UserName);
+                                    DataTable dtRegPrv = (new CInterbancario()).DetalleLotePago(CodigoBanco, NroLote, UserName);
                                     foreach (LecturaError err in cab.error)
                                     {
                                         DataRow[] drs = dtRegPrv.Select("NroLinea=" + err.linea.ToString());
                                         if (drs.Length > 0)
                                         {
                                             DataRow drErr = drs[0];
-                                          // * (new CInterbancario()).DetActulizaEstado(NroLote, drErr["cNroDocProv"].ToString(), err.mensaje.ToString(), UserName);
+                                            // * (new CInterbancario()).DetActulizaEstado(NroLote, drErr["cNroDocProv"].ToString(), err.mensaje.ToString(), UserName);
                                         }
                                     }
                                     strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
@@ -165,12 +165,13 @@ namespace WSCore.GestionFinanciera.Tesoreria
                                 else if (oStringOperationResult.resultType.Equals(0))//res
                                 {
                                     var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
-                                   //* (new CInterbancario()).CabActulizaEstado(NroLote, 3, cab.datos.cEstado, UserName);
-                                    foreach (PlanDetProv opdp in cab.datos.listPlanDetProv) {
-                                        string Obs = opdp.cEstado + '-' + opdp.cObserva.Replace("Ninguna","");
+                                    //* (new CInterbancario()).CabActulizaEstado(NroLote, 3, cab.datos.cEstado, UserName);
+                                    foreach (PlanDetProv opdp in cab.datos.listPlanDetProv)
+                                    {
+                                        string Obs = opdp.cEstado + '-' + opdp.cObserva.Replace("Ninguna", "");
                                         Obs = ((Obs.Length <= 80) ? Obs : Obs.Substring(0, 79));
 
-                                       //* (new CInterbancario()).DetActulizaEstado(NroLote, opdp.cNroDocProv, Obs, UserName);
+                                        //* (new CInterbancario()).DetActulizaEstado(NroLote, opdp.cNroDocProv, Obs, UserName);
                                     }
                                     strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
                                 }
@@ -179,13 +180,13 @@ namespace WSCore.GestionFinanciera.Tesoreria
 
                                     string msgReturn = ((oStringOperationResult.message.Length <= 80) ? oStringOperationResult.message : oStringOperationResult.message.Substring(1, 79));
 
-                                 //   (new CInterbancario()).CabActulizaEstado(NroLote, 1, oStringOperationResult.message, UserName);
+                                    //   (new CInterbancario()).CabActulizaEstado(NroLote, 1, oStringOperationResult.message, UserName);
                                     strOperacionBE = "{Id:91,Mensaje:" + cmll + "Espera para volver a leer" + cmll + "}";
                                 }
                                 //Crea Una Tarea en el paquete rigth
                                 break;
                             case HttpStatusCode.NotFound:
-                                strOperacionBE = "{Id:92,Mensaje:" + cmll + oresposeBE.ObjResult.ToString().Replace(",", " ")+ cmll + "}";
+                                strOperacionBE = "{Id:92,Mensaje:" + cmll + oresposeBE.ObjResult.ToString().Replace(",", " ") + cmll + "}";
                                 break;
                             default:
                                 strOperacionBE = "{Id:93,Mensaje:" + cmll + oresposeBE.ObjResult.ToString().Replace(",", " ") + cmll + "}";
@@ -195,20 +196,21 @@ namespace WSCore.GestionFinanciera.Tesoreria
                 }
                 Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos(strOperacionBE);
             }
-            catch(Exception e){
-                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:92,Mensaje:"+ cmll + e.Message.Replace(","," ") + cmll+ "}");
+            catch (Exception e)
+            {
+                Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:92,Mensaje:" + cmll + e.Message.Replace(",", " ") + cmll + "}");
             }
-            
+
         }
 
 
         [WebMethod]
-        public void Test(string Valor) {
+        public void Test(string Valor)
+        {
 
-            Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:1,Mensaje: " + cmll + Valor + cmll +"}");
+            Utilitario.Helper.Archivo.XMLinURL.TransaccionalAccesoDatos("{Id:1,Mensaje: " + cmll + Valor + cmll + "}");
         }
 
 
     }
 }
- 

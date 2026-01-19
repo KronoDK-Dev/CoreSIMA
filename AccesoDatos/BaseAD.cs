@@ -4,109 +4,38 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Data;
-using Utilitario;
 
 namespace AccesoDatos
 {
     public class BaseAD
     {
-        public static Database DBGeneric(Enumerados.CentroOperativo IdCentroOperativo)
-        {
-            switch (IdCentroOperativo)
-            {
-                case Enumerados.CentroOperativo.SimaCallao:
-                    return BaseAD.Oracle(BaseAD.ORACLEVersion.O7);
-                case Enumerados.CentroOperativo.SimaChimbote:
-                    return BaseAD.Sql(BaseAD.SQLVersion.sqlDBSimaCH);
-                case Enumerados.CentroOperativo.SimaIquitos:
-                    return BaseAD.Sql(BaseAD.SQLVersion.sqlDBSimaIQ);
-                default:
-                    return (Database)null;
-            }
-        }
-
-        public static Database DBGeneric(BaseAD.SQLVersion sqlDB) => BaseAD.Sql(sqlDB);
-
-        public static Database DBGeneric(BaseAD.ORACLEVersion sqlDB) => BaseAD.Oracle(sqlDB);
-
-        public static Database DBGeneric(BaseAD.OLEDBVersion sqlDB) => BaseAD.OleDb(sqlDB);
-
-        public static Database Sql(BaseAD.SQLVersion dbVer) => BaseAD.BasedeDatos(dbVer.ToString());
-
-        public static Database Oracle(BaseAD.ORACLEVersion dbVer) => BaseAD.BasedeDatos(dbVer.ToString());
-
-        public static Database OleDb(BaseAD.OLEDBVersion dbVer) => BaseAD.BasedeDatos(dbVer.ToString());
-
-        public static Database MySQL(BaseAD.MySQLVersion dbVer) => BaseAD.BasedeDatos(dbVer.ToString());
-
-        private static Database BasedeDatos(string tagConexionDB)
-        {
-            return new DatabaseProviderFactory((IConfigurationSource)new FileConfigurationSource(BaseAD.Configuracion.BaseDatos.NombreArchivo)).Create(tagConexionDB.ToUpper());
-        }
-
-        public InfoMetodoBE MetodoInfo(string NombreMetodo, params string[] Valores)
-        {
-            InfoMetodoBE infoMetodoBe = new InfoMetodoBE();
-            string str1 = "[M]([P])".Replace("[M]", NombreMetodo);
-            Type type = this.GetType();
-            string newValue = "";
-            MethodBase method;
-            try
-            {
-                method = (MethodBase)type.GetMethod(NombreMetodo);
-            }
-            catch (Exception ex)
-            {
-                method = (MethodBase)type.GetMethod(NombreMetodo, BindingFlags.Instance | BindingFlags.Public, (Binder)null, CallingConventions.Any, new Type[2]
-                {
-        typeof (int),
-        typeof (int)
-                }, (ParameterModifier[])null);
-            }
-            if (method == (MethodBase)null)
-                return infoMetodoBe;
-            infoMetodoBe.FullName = method.DeclaringType.FullName;
-            string str2 = "";
-            int index = 0;
-            foreach (ParameterInfo parameter in method.GetParameters())
-            {
-                newValue = $"{newValue}{(index == 0 ? "" : ",")}{parameter.ParameterType?.ToString()} {parameter.Name}";
-                if (Valores.Length != 0)
-                {
-                    if (parameter.ParameterType.Name == "BaseBE")
-                        str2 = $"{str2}{(index == 0 ? "" : ",")}{parameter.Name}:{{{string.Join(",", Valores)}}}";
-                    else
-                        str2 = $"{str2}{(index == 0 ? "" : ",")}{parameter.Name}:'{Valores[index]}'";
-                }
-                ++index;
-            }
-            infoMetodoBe.MetodoANDParams = str1.Replace("[P]", newValue);
-            infoMetodoBe.VoidParams = $"{{{str2}}}";
-            return infoMetodoBe;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
         public struct Configuracion
         {
-            private static string NombreSeccion => "FileDBConectivity";
+            #region Privados
+            private static string NombreSeccion
+            {
+                get { return "FileDBConectivity"; }
+            }
+            #endregion
 
-            [StructLayout(LayoutKind.Sequential, Size = 1)]
             public struct BaseDatos
             {
-                private static string KeyFileDB => "ConfigDB";
-
+                #region Privados
+                private static string KeyFileDB
+                {
+                    get { return "ConfigDB"; }
+                }
+                #endregion
+                #region Publicos
                 public static string NombreArchivo
                 {
-                    get
-                    {
-                        return ((Hashtable)ConfigurationManager.GetSection(BaseAD.Configuracion.NombreSeccion))[(object)BaseAD.Configuracion.BaseDatos.KeyFileDB].ToString();
-                    }
+                    get { return ((Hashtable)ConfigurationManager.GetSection(Configuracion.NombreSeccion))[Configuracion.BaseDatos.KeyFileDB].ToString(); }
                 }
+                #endregion
             }
         }
 
@@ -116,10 +45,10 @@ namespace AccesoDatos
             sql2019,
             sqlSeguridad,
             sqlSistrades,
+            /*Para la facturacion electronica*/
             sqlDBSimaCH,
             sqlDBSimaIQ,
         }
-
         public enum ORACLEVersion
         {
             o9i,
@@ -129,15 +58,134 @@ namespace AccesoDatos
             oJDE,
             O7,
         }
-
         public enum MySQLVersion
         {
-            oMySql,
+            oMySql
         }
-
         public enum OLEDBVersion
         {
             oledb,
         }
+
+
+        public static Database DBGeneric(Utilitario.Enumerados.CentroOperativo IdCentroOperativo)
+        {
+            if (IdCentroOperativo == Utilitario.Enumerados.CentroOperativo.SimaCallao)
+            {
+                return Oracle(ORACLEVersion.O7);
+            }
+            else if (IdCentroOperativo == Utilitario.Enumerados.CentroOperativo.SimaChimbote)
+            {
+                return Sql(SQLVersion.sqlDBSimaCH);
+            }
+            else if (IdCentroOperativo == Utilitario.Enumerados.CentroOperativo.SimaIquitos)
+            {
+                return Sql(SQLVersion.sqlDBSimaIQ);
+            }
+            return null;
+        }
+
+
+
+
+        public static Database DBGeneric(SQLVersion sqlDB)
+        {
+            return Sql(sqlDB);
+        }
+        public static Database DBGeneric(ORACLEVersion sqlDB)
+        {
+            return Oracle(sqlDB);
+        }
+        public static Database DBGeneric(OLEDBVersion sqlDB)
+        {
+            return OleDb(sqlDB);
+        }
+
+
+
+        public static Database Sql(SQLVersion dbVer)
+        {
+            return BasedeDatos(dbVer.ToString());
+        }
+
+        public static Database Oracle(ORACLEVersion dbVer)
+        {
+            return BasedeDatos(dbVer.ToString());
+        }
+
+
+        public static Database OleDb(OLEDBVersion dbVer)
+        {
+            return BasedeDatos(dbVer.ToString());
+        }
+        public static Database MySQL(MySQLVersion dbVer)
+        {
+            return BasedeDatos(dbVer.ToString());
+        }
+
+        private static Database BasedeDatos(string tagConexionDB)
+        {
+            FileConfigurationSource dataSource = new FileConfigurationSource(Configuracion.BaseDatos.NombreArchivo);
+            DatabaseProviderFactory dbFactory = new DatabaseProviderFactory(dataSource);
+            Database db = dbFactory.Create(tagConexionDB.ToUpper());
+            return db;
+        }
+
+        #region metodos privados
+        public InfoMetodoBE MetodoInfo(string NombreMetodo, params string[] Valores)
+        {
+            InfoMetodoBE oInfoMetodoBE = new InfoMetodoBE();
+            string Metodo = "[M]([P])";
+            Metodo = Metodo.Replace("[M]", NombreMetodo);
+            Type MyType = this.GetType();
+            MethodBase Mymethodbase;
+            string ParamValor = "";
+            try
+            {
+                Mymethodbase = MyType.GetMethod(NombreMetodo);
+            }
+            catch (Exception ex)
+            {
+                Mymethodbase = MyType.GetMethod(NombreMetodo, BindingFlags.Public | BindingFlags.Instance, null, CallingConventions.Any, new Type[] { typeof(int), typeof(int) }, null);
+            }
+
+
+
+            if (Mymethodbase == null) { return oInfoMetodoBE; }
+
+            oInfoMetodoBE.FullName = Mymethodbase.DeclaringType.FullName;
+
+            string _SoloParams = "";
+            int idx = 0;
+            foreach (ParameterInfo ParamMetod in Mymethodbase.GetParameters())
+            {
+                ParamValor += ((idx == 0) ? "" : ",") + ParamMetod.ParameterType + " " + ParamMetod.Name;
+                if (Valores.Length > 0)
+                {
+                    if (ParamMetod.ParameterType.Name == "BaseBE")
+                    {
+                        _SoloParams += ((idx == 0) ? "" : ",") + ParamMetod.Name + ":" + "{" + string.Join(",", Valores) + "}";
+                    }
+                    else
+                    {
+                        _SoloParams += ((idx == 0) ? "" : ",") + ParamMetod.Name + ":" + "'" + Valores[idx] + "'";
+                    }
+                }
+                idx++;
+            }
+            oInfoMetodoBE.MetodoANDParams = Metodo.Replace("[P]", ParamValor);
+            oInfoMetodoBE.VoidParams = "{" + _SoloParams + "}";
+            return oInfoMetodoBE;
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
     }
 }

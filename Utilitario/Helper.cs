@@ -24,38 +24,31 @@ using System.Xml;
 
 namespace Utilitario
 {
+
+
+    //public class ResposeBE
+    //{
+    //    public ResposeBE() { }
+
+    //    // public string Status { get; set; }
+    //    public HttpStatusCode Status { get; set; }
+    //    public string ObjResult { get; set; }
+    //    public Dictionary<string, string> Mensaje { get; set; }
+    //}
+
     public class Helper
     {
-        private static DataRow createRowClone(DataRow sourceRow, DataRow newRow, string[] fieldNames)
+
+        public struct Configuracion
         {
-            foreach (string fieldName in fieldNames)
-                newRow[fieldName] = sourceRow[fieldName];
-            return newRow;
-        }
+            public struct Autenticacion
+            {
+                public static string getLDAP
+                {
 
-        private static void setLastValues(object[] lastValues, DataRow sourceRow, string[] fieldNames)
-        {
-            for (int index = 0; index < fieldNames.Length; ++index)
-                lastValues[index] = sourceRow[fieldNames[index]];
-        }
+                    get { return BaseConfig("Autenticacion", "CadenaLDAP"); }
 
-        public static string MensajesIngresarMetodo() => "Ingresó al Metodo.";
-
-        public static string MensajesSalirMetodo() => "Salió del Metodo.";
-
-        public static DataTable CallServiceRestOracle(string Metodo, string oParams)
-        {
-            string xpath = "//Table";
-            string result = Helper.LoadBackGroundWS(Metodo, oParams).Result;
-            XmlDocument node = new XmlDocument();
-            node.LoadXml(result);
-            node.SelectNodes(xpath);
-            DataSet dataSet = new DataSet();
-            int num = (int)dataSet.ReadXml((XmlReader)new XmlNodeReader((XmlNode)node));
-            DataTable table = dataSet.Tables[0];
-            table.TableName = "Table";
-            return table;
-        }
+                }
 
                 /*public static string BaseConfig(string Seccion,string Key)
                 {
@@ -435,28 +428,31 @@ namespace Utilitario
         }
 
 
-        public struct WebAppi{
+        public struct WebAppi
+        {
 
-            public struct Rest {
-                    public static ResposeBE Send(ApiInfoBE _ApiInfoBE) {
-                        ResposeBE oResposeBE = new ResposeBE();
-                        try
-                            {
-                            oResposeBE = (ResposeBE)BackGroudRest(_ApiInfoBE).Result;
-                        }
-                        catch (Exception ex)
-                        {
-                            int i = 0;
-
-                        }
-                        return oResposeBE;
+            public struct Rest
+            {
+                public static ResposeBE Send(ApiInfoBE _ApiInfoBE)
+                {
+                    ResposeBE oResposeBE = new ResposeBE();
+                    try
+                    {
+                        oResposeBE = (ResposeBE)BackGroudRest(_ApiInfoBE).Result;
                     }
+                    catch (Exception ex)
+                    {
+                        int i = 0;
+
+                    }
+                    return oResposeBE;
+                }
 
             }
-            public static async Task<ResposeBE> BackGroudRest( ApiInfoBE oApiInfoBE)
+            public static async Task<ResposeBE> BackGroudRest(ApiInfoBE oApiInfoBE)
             {
-                var baseAddress = oApiInfoBE.Url; 
-                var endpoint = oApiInfoBE.Metodo; 
+                var baseAddress = oApiInfoBE.Url;
+                var endpoint = oApiInfoBE.Metodo;
 
                 var client = new HttpClient
                 {
@@ -485,8 +481,8 @@ namespace Utilitario
 
                 if (!response.IsSuccessStatusCode)
                 {
-                     //return $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}";
-                   // oResposeBE.Mensaje = response.Content.ReadAsStringAsync().Result.ToString();
+                    //return $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}";
+                    // oResposeBE.Mensaje = response.Content.ReadAsStringAsync().Result.ToString();
                     oResposeBE.Status = response.StatusCode;
                     return oResposeBE;
                 }
@@ -518,31 +514,31 @@ namespace Utilitario
                 return oResposeBE;
             }
 
-      
+
             static async Task<ResposeBE> _PostGet(string _Url, object EntityBE)
             {
                 /*rEFERENCIA PARA OBVIAR EL BLOQUEO: https://stackoverflow.com/questions/30653770/httpclient-postasjsonasync-never-sees-when-the-post-is-succeeding-and-responding
                  */
                 ResposeBE oResposeBE = new ResposeBE();
-                var strResult= "";
+                var strResult = "";
 
                 HttpClientHandler clientHandler = new HttpClientHandler();//para evitar la certificacion
-                    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
 
-                    using (var httpClient = new HttpClient(clientHandler))
-                    {
-                        var respuesta = await httpClient.PostAsJsonAsync(_Url, EntityBE).ConfigureAwait(false);
-                        var strrptBE = await respuesta.Content.ReadAsStringAsync();
+                using (var httpClient = new HttpClient(clientHandler))
+                {
+                    var respuesta = await httpClient.PostAsJsonAsync(_Url, EntityBE).ConfigureAwait(false);
+                    var strrptBE = await respuesta.Content.ReadAsStringAsync();
 
-                        strResult = respuesta.RequestMessage.ToString();
-                        oResposeBE.Mensaje = Utilitario.Helper.WebAppi.SeriaizedDiccionario(strResult);
-                        oResposeBE.Mensaje.Add("StatusOperacion", strrptBE);
-                        oResposeBE.Status = respuesta.StatusCode;
-                        oResposeBE.ObjResult = strrptBE;
+                    strResult = respuesta.RequestMessage.ToString();
+                    oResposeBE.Mensaje = Utilitario.Helper.WebAppi.SeriaizedDiccionario(strResult);
+                    oResposeBE.Mensaje.Add("StatusOperacion", strrptBE);
+                    oResposeBE.Status = respuesta.StatusCode;
+                    oResposeBE.ObjResult = strrptBE;
 
-                        return oResposeBE; ;
-                    }
+                    return oResposeBE; ;
+                }
             }
 
             static async Task<string> _PostGete(string _Url, object EntityBE)
@@ -638,7 +634,7 @@ namespace Utilitario
                     {
                         value = Fiel_Value[1];
                     }
-                    DataDiconario[Fiel_Value[0].Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(),"")] = value.Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(), "").Replace("'", "");
+                    DataDiconario[Fiel_Value[0].Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(), "")] = value.Replace(Utilitario.Constante.Caracteres.ComillasDobles.ToString(), "").Replace("'", "");
                 }
                 return DataDiconario;
             }

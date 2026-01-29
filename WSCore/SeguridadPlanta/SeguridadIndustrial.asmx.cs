@@ -71,13 +71,16 @@ namespace WSCore.SeguridadPlanta
 
                 foreach (personal oPersonal in oMensajeResultBE.data.personal)
                 {
-                    //verificar su existencia en la bd de trabajador
-                    string id = (new CInduccion()).ModificaInsertar(oPersonal);
-                    if (id.Length > 0)
+                    if (oPersonal.aprobado == 1)
                     {
-                        ActualizarEstado(apiInfoUp,Centro, oPersonal.nroDoc.Replace("\"", ""));
+                        //verificar su existencia en la bd de trabajador
+                        string id = (new CInduccion()).ModificaInsertar(oPersonal);
+                        if (id.Length > 0)
+                        {
+                            ActualizarEstado(apiInfoUp, Centro, oPersonal.nroDoc.Replace("\"", ""));
+                        }
+                      //  break;
                     }
-                    //break;
                 }
             }
             catch (Exception ex) {

@@ -204,13 +204,21 @@ namespace AccesoDatos.NoTransaccional.General
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I))
                                                                  );
 
-                OracleParameter[] oParam = new OracleParameter[2];
+                OracleParameter[] oParam = new OracleParameter[4];
                 oParam[0] = new OracleParameter("pIDTBL", OracleDbType.Int64);
                 oParam[0].Direction = ParameterDirection.Input;
                 oParam[0].Value = IdTbl;
 
-                oParam[1] = new OracleParameter("rstOut", OracleDbType.RefCursor);
-                oParam[1].Direction = ParameterDirection.Output;
+                oParam[1] = new OracleParameter("QuerySelect", OracleDbType.Int64);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = "0";
+
+                oParam[2] = new OracleParameter("pCOM", OracleDbType.Int64);
+                oParam[2].Direction = ParameterDirection.Input;
+                oParam[2].Value = "0";
+
+                oParam[3] = new OracleParameter("rstOut", OracleDbType.RefCursor);
+                oParam[3].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
 

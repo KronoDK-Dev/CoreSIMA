@@ -188,9 +188,12 @@
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\InterbancarioNTAD.cs" />
     <Compile Include="NoTransaccional\GestionGobernanza\AccionIndicadorNTAD.cs" />
     <Compile Include="NoTransaccional\GestionGobernanza\AccionResponsableNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\AreaIndicadorMetaNTAD.cs" />
     <Compile Include="NoTransaccional\GestionGobernanza\AreaIndicadorPlazoNTAD.cs" />
     <Compile Include="NoTransaccional\GestionGobernanza\IndicadorConfigCondicionNTAD.cs" />
     <Compile Include="NoTransaccional\GestionGobernanza\ObjetivosAccionesNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\ResponsableAreaNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionGobernanza\ResponsablexAreaNTAD.cs" />
     <Compile Include="NoTransaccional\GestionLogistica\AlmacenNTAD.cs" />
     <Compile Include="NoTransaccional\GestionLogistica\BienesNTAD.cs" />
     <Compile Include="NoTransaccional\GestionLogistica\GeneralNTAD.cs" />
@@ -275,10 +278,12 @@
     <Compile Include="Transaccional\GestionGobernanza\AccionResponsableTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\AccionTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\AreaIndicadorPlazoTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\AreaIndicadorxPeriodoTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\AreaInfoComplementaTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\IndicadorConfigCondicionTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\IndicadorTAD.cs" />
     <Compile Include="Transaccional\GestionGobernanza\ObjetivoTAD.cs" />
+    <Compile Include="Transaccional\GestionGobernanza\ResponsablexAreaTAD.cs" />
     <Compile Include="Transaccional\GestionPersonal\AtributoTAD.cs" />
     <Compile Include="Transaccional\GestionPersonal\Contabilizacion\CBDetalleADTAD.cs" />
     <Compile Include="Transaccional\GestionPersonal\Contabilizacion\CostoPlanillaTAD.cs" />

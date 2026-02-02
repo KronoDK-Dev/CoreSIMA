@@ -129,6 +129,17 @@
             <a class="btn" href="GestionComercial/Comercial.asmx" target="_blank">Comercial</a>
         </div>
     </div>
+
+     <div class="card">
+     <div class="content">
+         <h2 class="title">Seguridad Planta</h2>
+         <p class="copy">Métodos del Servicio Seguridad Planta</p>
+         <a class="btn" href="SeguridadPlanta/SeguridadIndustrial.asmx" target="_blank">Datos Generales</a>
+         <a class="btn" href="SeguridadPlanta/Visitas.asmx" target="_blank">Programacion Visitas</a>
+         <a class="btn" href="SeguridadPlanta/Comercial.asmx" target="_blank">Comercial</a>
+     </div>
+ </div>
+
 </main>
 </body>
 </html>

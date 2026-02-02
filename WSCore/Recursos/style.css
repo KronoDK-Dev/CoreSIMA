@@ -148,6 +148,9 @@ body {
     background-image: url('Comercial1.png');
 }
 
+.card:nth-child(16):before {
+    background-image: url('SeguridadPlanta1.png');
+}
 
 /*  -----------------------   */
 .content {

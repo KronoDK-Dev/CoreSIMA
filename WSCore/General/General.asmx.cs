@@ -68,6 +68,19 @@ namespace WSCore.General
             return (new CItemTablaGeneral()).ListarTablasdeApoyo(IdtblModulo, UserName);
         }
 
+        [WebMethod(Description = "Listar items de Tablas generales desde ORACLE")]
+        public DataTable ListarTodosOracleQS(int IdtblModulo, int QuerySelector, string UserName)
+        {
+            return (new CItemTablaGeneral()).ListarTodosOracle(IdtblModulo, QuerySelector, 0, UserName);
+        }
+
+        [WebMethod(Description = "Listar items de Tablas generales desde ORACLE")]
+        public DataTable ListarTodosOracle(int IdtblModulo, string UserName)
+        {
+            return (new CItemTablaGeneral()).ListarTodosOracle(IdtblModulo, 0, 0, UserName);
+        }
+
+
         [WebMethod(Description = "Mantenimiento de Tabla tablas Items")]
         public int InsertaModificaItemsTabla(TablaItemBE oTablaItemBE)
         {
@@ -833,11 +846,11 @@ namespace WSCore.General
             return ((new cGeneralParam()).Listar_Reg_TabGeneral(V_COD_TABLA, V_ESTADO, V_ORDEN, UserName));
         }
 
-        [WebMethod(Description = "Listar items de Tablas generales desde ORACLE")]
+       /* [WebMethod(Description = "Listar items de Tablas generales desde ORACLE")]
         public DataTable ListarTodosOracle(int IdtblModulo, string UserName)
         {
             return (new CItemTablaGeneral()).ListarTodosOracle(IdtblModulo, UserName);
-        }
+        }*/
 
         [WebMethod(Description = "Listar items hijos de Tablas generales desde ORACLE")]
         public DataTable ListarItemChildxItemRelacionadoOracle(int IdTblPadre, int IdItemPadre, string UserName)

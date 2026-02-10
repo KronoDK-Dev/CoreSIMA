@@ -258,8 +258,13 @@
     <Compile Include="NoTransaccional\HelpDesk\Sistemas\ActividadElementosNTAD.cs" />
     <Compile Include="NoTransaccional\HelpDesk\Sistemas\SistemaProcesoSubProcesoNTAD.cs" />
     <Compile Include="NoTransaccional\HelpDesk\Sistemas\StakeHolderNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\GENERAL\BusquedaNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\CalendarioNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ContratistaNTAD.cs" />
     <Compile Include="NoTransaccional\Seguridad\AD.cs" />
     <Compile Include="NoTransaccional\Seguridad\UsuarioNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionTrabajadorNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\TrabajadorNTAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaccional\General\ItemTablaGeneralTAD.cs" />
     <Compile Include="Transaccional\GestionCalidad\InspeccionAnexoTAD.cs" />
@@ -326,6 +331,11 @@
     <Compile Include="Transaccional\HelpDesk\TaskHistoryParticipanteTAD.cs" />
     <Compile Include="Transaccional\SeguridadPlanta\InduccionTAD.cs" />
     <Compile Include="Transaccional\Seguridad\UsuarioTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\AutorizaFeriadoTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ContratistaTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ProgramacionTrabajadorTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ProveedorClienteTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\TrabajadorTAD.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntidadNegocio\EntidadNegocio.csproj">
@@ -345,6 +355,5 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

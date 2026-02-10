@@ -180,8 +180,15 @@
     <Compile Include="HelpDesk\Sistemas\CSistemaProcesoSubProceso.cs" />
     <Compile Include="HelpDesk\Sistemas\CStakeHolder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SeguridadPlanta\CInduccion.cs" />
+    <Compile Include="SIMANET\GENERAL\CBusqueda.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CAutorizaFeriado.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCalendario.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\Ccontratista.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CInduccion.cs" />
     <Compile Include="Seguridad\CUsuario.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CProgramacionTrabajador.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CProveedorCliente.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CTrabajador.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj">

@@ -40,11 +40,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("V_CEO", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = V_CEO;
 
                 Param[1] = new OracleParameter("V_OC", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = V_OC;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -99,11 +99,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
 
                 Param[1] = new OracleParameter("Fecha_de_Proceso", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Fecha_de_Proceso;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -157,11 +157,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("V_MES", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = V_MES;
 
                 Param[1] = new OracleParameter("V_ANIO", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = V_ANIO;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -215,11 +215,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("D_Periodo_Saldo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = D_Periodo_Saldo;
 
                 Param[1] = new OracleParameter("D_Mes_Periodo", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = D_Mes_Periodo;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -273,15 +273,15 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[4];
                 Param[0] = new OracleParameter("Fec_inic", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Fec_inic;
 
                 Param[1] = new OracleParameter("Fec_Final", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Fec_Final;
 
                 Param[2] = new OracleParameter("Codigo_OT", OracleDbType.Varchar2);
-                Param[2].Direction = ParameterDirection.Output;
+                Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = Codigo_OT;
 
                 Param[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -336,11 +336,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
 
                 Param[1] = new OracleParameter("Fecha_de_Proceso", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Fecha_de_Proceso;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -395,19 +395,19 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[5];
                 Param[0] = new OracleParameter("N_CEO", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = N_CEO;
 
                 Param[1] = new OracleParameter("N_CODMAT", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = N_CODMAT;
 
                 Param[2] = new OracleParameter("D_FECHAINI", OracleDbType.Varchar2);
-                Param[2].Direction = ParameterDirection.Output;
+                Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = D_FECHAINI;
 
                 Param[3] = new OracleParameter("D_FECHAFIN", OracleDbType.Varchar2);
-                Param[3].Direction = ParameterDirection.Output;
+                Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = D_FECHAFIN;
 
                 Param[4] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -462,11 +462,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
 
                 Param[1] = new OracleParameter("Codigo_Clase_Material", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Codigo_Clase_Material;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -520,11 +520,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
 
                 Param[1] = new OracleParameter("Codigo_Clase", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = Codigo_Clase;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -578,11 +578,11 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("ORDEN_COMPRA", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = ORDEN_COMPRA;
 
                 Param[1] = new OracleParameter("NUMERO_GUIA", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = NUMERO_GUIA;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -636,7 +636,7 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[2];
                 Param[0] = new OracleParameter("Fecha_Guia", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Fecha_Guia;
 
                 Param[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -691,19 +691,19 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[5];
                 Param[0] = new OracleParameter("v_CEO", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = v_CEO;
 
                 Param[1] = new OracleParameter("V_PERIODO", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = V_PERIODO;
 
                 Param[2] = new OracleParameter("V_Estado_VDE", OracleDbType.Varchar2);
-                Param[2].Direction = ParameterDirection.Output;
+                Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = V_Estado_VDE;
 
                 Param[3] = new OracleParameter("V_Numero_VDE", OracleDbType.Varchar2);
-                Param[3].Direction = ParameterDirection.Output;
+                Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = V_Numero_VDE;
 
                 Param[4] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
@@ -757,15 +757,15 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[3];
                 Param[0] = new OracleParameter("V_AÑO", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = V_AÑO;
 
                 Param[1] = new OracleParameter("V_MES", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = V_MES;
 
                 Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Param[2].Direction = ParameterDirection.Output;
+                Param[2].Direction = ParameterDirection.Input;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName

@@ -81,7 +81,8 @@ namespace AccesoDatos.NoTransaccional.GestionSeguridadPlanta
                 // PARAMETROS: @NroProgramacion=0,@Periodo=2026,@idUsuario=86,@TipoProgramacion=1
 
 
-                int iParam1 = int.TryParse(Id1, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id1) ? _id1 : 0;
+                //int iParam1 = int.TryParse(Id1, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id1) ? _id1 : 0;
+                string iParam1 = string.IsNullOrWhiteSpace(Id1) ? "" : Id1.Trim();
                 int iParam2 = int.TryParse(Id2, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id2) ? _id2 : 0;
                 int iParam3 = int.TryParse(Id3, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id3) ? _id3 : 2; // default = 2
                 int iusuario = int.TryParse(idUser, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _usr) ? _usr : 0;

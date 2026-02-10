@@ -751,5 +751,12 @@ namespace WSCore.General
             return (new CItemTablaGeneral()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
         }
 
+        [WebMethod(Description = "Buscar el campo VAR1 del registro de Detalle de Catalogo")]
+        public string Buscar_Var1_DetalleCatologo(string IdMaestra, string IdDetalle, string UserName)
+        {
+            return (new CItemTablaGeneral()).Buscar_Var1_DetalleCatologo(IdMaestra, IdDetalle, UserName);
+        }
+
+
     }
 }

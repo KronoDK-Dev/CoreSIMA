@@ -312,5 +312,69 @@ namespace AccesoDatos.NoTransaccional.General
         {
             throw new NotImplementedException();
         }
+
+         public string Buscar_Var1_DetalleCatologo(string IdMaestra, string IdDetalle, string username)
+        {
+            // buscar el campo VAR1 por IdMaestra y IdDetalle, ejemplo: para obtener tipo de visitante de programación de visitas
+            // MaestroCatalogo
+            // DetalleCatalogo
+            try
+            {
+                DataTable dtempty = new DataTable();
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, IdMaestra.ToString(), IdDetalle.ToString(), username);
+                string PackagName = "dbo.GENuspNTADObtVar1CodigoTablaTablas";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(username
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+                // PARAMETROS: @idTabla=705,@Codigo=5
+
+
+                object oResultado = Sql(SQLVersion.sqlSIMANET).ExecuteScalar(PackagName, IdMaestra, IdDetalle);
+                int irows = 1;
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(username
+                                                                                         , oInfoMetodoBE.FullName
+                                                                                         , NombreMetodo
+                                                                                         , PackagName
+                                                                                         , ""
+                                                                                         , "rstCount:" + irows.ToString()
+                                                                                         , Helper.MensajesSalirMetodo()
+                                                                                         , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+                // Caso 1: no hay filas → null
+                // Caso 2: hay fila pero valor SQL NULL → DBNull.Value
+                string var1 = (oResultado == null || oResultado == DBNull.Value)
+                                ? string.Empty                  // ← tu default
+                                : Convert.ToString(oResultado); // ← valor real
+
+                // Si quieres normalizar:
+                var1 = var1?.Trim();
+
+
+                return var1;
+            }
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(username, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(username, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+
+        }
     }
 }

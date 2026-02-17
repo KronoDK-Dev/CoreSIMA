@@ -151,7 +151,7 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
 
                 InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo);
 
-                string PackageName = sConsulta + ".Pkg_PRODUCCION.SP_EST_ACTIVIDAD_01";
+                string PackageName = sConsulta + ".Pkg_PRODUCCION.SP_LISTA_OTS_SE_01";
 
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                     , oInfoMetodoBE.FullName

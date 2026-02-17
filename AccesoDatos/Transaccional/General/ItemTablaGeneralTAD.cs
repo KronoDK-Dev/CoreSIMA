@@ -1,19 +1,22 @@
 ﻿using EntidadNegocio;
+using EntidadNegocio.General;
 using Log;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EntidadNegocio.General;
 using Utilitario;
 
 namespace AccesoDatos.Transaccional.General
 {
     public class ItemTablaGeneralTAD : BaseAD, IMantenimientoTAD
     {
+        // Operaciones sobre tablas GENERALES de la base de datos SIMANET
         public int Eliminar()
         {
             throw new NotImplementedException();
@@ -108,5 +111,7 @@ namespace AccesoDatos.Transaccional.General
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

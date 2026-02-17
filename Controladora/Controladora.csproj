@@ -47,10 +47,6 @@
   <ItemGroup>
     <Compile Include="General\CInformacionGeneral.cs" />
     <Compile Include="GestionFinanciera\cReporte.cs" />
-    <Compile Include="GestionGobernanza\CAreaIndicadorMeta.cs" />
-    <Compile Include="GestionGobernanza\CAreaIndicadorxPeriodo.cs" />
-    <Compile Include="GestionGobernanza\CResponsableArea.cs" />
-    <Compile Include="GestionGobernanza\CResponsablexArea.cs" />
     <Compile Include="GestionProyecto\CAdquisiciones.cs" />
     <Compile Include="General\CBuscar.cs" />
     <Compile Include="General\cCentroCosto.cs" />

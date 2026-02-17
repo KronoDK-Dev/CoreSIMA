@@ -1,12 +1,13 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.General;
+using Controladora.General;
+using EntidadNegocio.General;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using Controladora.General;
-using EntidadNegocio.General;
 
 namespace WSCore.General
 {
@@ -751,5 +752,28 @@ namespace WSCore.General
             return (new CItemTablaGeneral()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
         }
 
+        [WebMethod]
+        public DataTable ConsultarTrabajadorXApellido(string ApellidoyNombres, string UserName)
+        {
+            return (new cGeneralParam()).ConsultarTrabajadorXApellido(ApellidoyNombres, UserName);
+        }
+
+        [WebMethod]
+        public DataTable ListarAreaYPseudoArea(string NombreArea, string nCEO, string UserName)
+        {
+            return (new cGeneralParam()).ListarAreaYPseudoArea(NombreArea, nCEO, UserName);
+        }
+
+        [WebMethod]
+        public DataTable ListarProveedoresSIMANET(string V_NOMBRE, string V_CRITERIO, string UserName)
+        {
+            return (new cGeneralParam()).ListarProveedoresSIMANET(V_NOMBRE, V_CRITERIO, UserName);
+        }
+
+        [WebMethod]
+        public DataTable BuscarPersonal(string V_NOMBRE, string UserName)
+        {
+            return (new cGeneralParam()).BuscarPersonal(V_NOMBRE, UserName);
+        }
     }
 }

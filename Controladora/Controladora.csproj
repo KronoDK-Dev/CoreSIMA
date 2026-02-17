@@ -151,6 +151,7 @@
     <Compile Include="GestionReportes\CObjetoPrivilegio.cs" />
     <Compile Include="GestionReportes\CObjetoReporteCompartido.cs" />
     <Compile Include="GestionReportes\CUsuarioReporte.cs" />
+    <Compile Include="GestionSeguridadIndustrial\CCCTT_TrabajadorAntecedente.cs" />
     <Compile Include="GestionTesoreria\cBalance.cs" />
     <Compile Include="GestionTesoreria\cCobros.cs" />
     <Compile Include="GestionTesoreria\cPagos.cs" />

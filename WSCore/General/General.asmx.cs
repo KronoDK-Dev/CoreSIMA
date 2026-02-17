@@ -733,7 +733,7 @@ namespace WSCore.General
             return (new cGeneralParam()).ListaOperaciones_Lst(V_DESCRIPCION, UserName);
         }
 
-        [WebMethod(Description = "lista Registros detalle de la Tabla general")]
+        [WebMethod(Description = "lista Registros detalle de la Tabla general Unisys")]
         public DataTable Listar_Reg_TabGeneral(string V_COD_TABLA, string V_ESTADO, string V_ORDEN, string UserName)
         {
             return ((new cGeneralParam()).Listar_Reg_TabGeneral(V_COD_TABLA, V_ESTADO, V_ORDEN, UserName));
@@ -750,6 +750,13 @@ namespace WSCore.General
         {
             return (new CItemTablaGeneral()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
         }
+
+        [WebMethod(Description = "Buscar el campo VAR1 del registro Detalle de Tablas Generales SQL SERVER")]
+        public string Buscar_Var1_DetalleCatologo(string IdMaestra, string IdDetalle, string UserName)
+        {
+            return (new CItemTablaGeneral()).Buscar_Var1_DetalleCatologo(IdMaestra, IdDetalle, UserName);
+        }
+
 
     }
 }

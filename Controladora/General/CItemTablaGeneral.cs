@@ -42,5 +42,11 @@ namespace Controladora.General
         {
             return (new ItemTablaGeneralNTAD()).ListaConfiguracion(PageName, UserName);
         }
+
+        public string Buscar_Var1_DetalleCatologo(string IdMaestra, string IdDetalle, string UserName)
+        {
+            return (new ItemTablaGeneralNTAD()).Buscar_Var1_DetalleCatologo(IdMaestra, IdDetalle, UserName);
+        }
+
     }
 }

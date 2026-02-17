@@ -40,27 +40,27 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
 
                 OracleParameter[] Param = new OracleParameter[7];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
-                Param[0].Direction = ParameterDirection.Output;
+                Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
 
                 Param[1] = new OracleParameter("división", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Output;
+                Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = división;
 
                 Param[2] = new OracleParameter("Proyecto", OracleDbType.Varchar2);
-                Param[2].Direction = ParameterDirection.Output;
+                Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = Proyecto;
 
                 Param[3] = new OracleParameter("Nro_Orden", OracleDbType.Varchar2);
-                Param[3].Direction = ParameterDirection.Output;
+                Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = Nro_Orden;
 
                 Param[4] = new OracleParameter("Procedencia", OracleDbType.Varchar2);
-                Param[4].Direction = ParameterDirection.Output;
+                Param[4].Direction = ParameterDirection.Input;
                 Param[4].Value = Procedencia;
 
                 Param[5] = new OracleParameter("Tipo_Orden", OracleDbType.Varchar2);
-                Param[5].Direction = ParameterDirection.Output;
+                Param[5].Direction = ParameterDirection.Input;
                 Param[5].Value = Tipo_Orden;
 
                 Param[6] = new OracleParameter("cRegistros", OracleDbType.RefCursor);

@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Web;
 using System.Web.Services;
+using System.Web.Script.Services; // para ser invocado desde JavaScript
 using System.Xml;
 using CActividad = Controladora.GestionProduccion.CActividad;
 
@@ -661,13 +662,13 @@ namespace WSCore.GestionProduccion
 
                 if (dt == null)
                 {
-                    dt = new DataTable("Listar_Detalle_Ot_Recursos_Pry_fec");
+                    dt = new DataTable("SP_Detalle_Ot_Recursos_Pry_fec");
                     dt.Columns.Add("Detalle  :", typeof(string));
                     dt.Rows.Add("El método Listar_detalle_ots_recursos_pryc devolvió null");
                 }
 
                 DataTable dtCopy = dt.Copy();
-                dtCopy.TableName = "Listar_Detalle_Ot_Recursos_Pry_fec";
+                dtCopy.TableName = "SP_Detalle_Ot_Recursos_Pry_fec";
 
                 DataSet dset = new DataSet();
                 dset.Tables.Add(dtCopy);
@@ -683,7 +684,7 @@ namespace WSCore.GestionProduccion
             }
             catch (Exception ex)
             {
-                DataTable dtError = new DataTable("Listar_Detalle_Ot_Recursos_Pry_fec");
+                DataTable dtError = new DataTable("SP_Detalle_Ot_Recursos_Pry_fec");
                 dtError.Columns.Add("Detalle  :", typeof(string));
                 dtError.Rows.Add(ex.Message);
 

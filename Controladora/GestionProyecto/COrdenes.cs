@@ -1,10 +1,11 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.GestionProyecto;
+using Oracle.DataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.GestionProyecto;
 
 namespace Controladora.GestionProyecto
 {
@@ -34,5 +35,12 @@ namespace Controladora.GestionProyecto
         {
             return (new OrdenesNTAD()).Listar_detalle_ose_femision(D_FECHAFIN, D_FECHAINI, N_CEO, UserName);
         }
+
+         public OracleDataReader Listar_Ordenes_CS_Coproductor(string N_CEO, string UserName)
+        {
+            return (new OrdenesNTAD()).Listar_Ordenes_CS_Coproductor(N_CEO, UserName);
+        }
+
+
     }
 }

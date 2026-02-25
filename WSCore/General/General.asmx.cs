@@ -1,12 +1,20 @@
-﻿using System;
+﻿using AccesoDatos.NoTransaccional.General;
+using Controladora.General;
+using Controladora.SeguridadPlanta;
+using EntidadNegocio.General;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Odbc;
+using System.Data.OleDb;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Services;
 using System.Web.Services;
-using Controladora.General;
-using EntidadNegocio.General;
 
 namespace WSCore.General
 {
@@ -343,16 +351,44 @@ namespace WSCore.General
         [WebMethod(Description = "Lista Líneas de Negocio por Centro Operativo y Unidad Operativa")]
         public DataTable ListaLineasNegxCEOxUO(string V_CEO, string V_UNDOPE, string UserName)
         {
-            if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "1")
+            try
             {
-                V_UNDOPE = "C";
-            }
-            else if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "3")
-            {
-                V_UNDOPE = "A";
-            }
+                if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "1")
+                {
+                    V_UNDOPE = "C";
+                }
+                else if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "3")
+                {
+                    V_UNDOPE = "A";
+                }
 
-            return (new cGeneralParam()).ListaLineasNegxCEOxUO(V_CEO, V_UNDOPE, UserName); ;
+                return (new cGeneralParam()).ListaLineasNegxCEOxUO(V_CEO, V_UNDOPE, UserName); ;
+
+            }
+            catch (Exception ex)
+            {
+                // Decidimos aquí (sin filtro 'when') si procede failover
+                if (EsErrorDeConectividad(ex))
+                {
+                    LogWarn($"Failover: ListaUnidad_OpexCEO() en base primaria falló. " +
+                            $"V_CODIGO={V_CEO}, user={UserName}, amb={V_UNDOPE}. Causa: {ex.Message}", ex);
+
+                    try
+                    {
+                        // Contingencia: usa tu método alterno (otra fuente/base)
+                        return (new InformacionGeneralNTAD()).ListarTablaGeneral("1000", V_CEO, V_UNDOPE);
+                    }
+                    catch (Exception exAlt)
+                    {
+                        // Si la contingencia también cae, registramos y re-lanzamos una excepción clara
+                        LogWarn("Contingencia ListarTablaGeneral(1000, …) también falló.", exAlt);
+                        throw; // o: throw new ApplicationException("Primario y contingencia fallaron", exAlt);
+                    }
+                }
+
+                // Si NO es un error de conectividad/proveedor, re-lanzar (es de negocio/validación)
+                throw;
+            }
         }
 
         [WebMethod(Description = "Lista Líneas de Negocio por Centro Operativo y Sublinea")]
@@ -365,22 +401,80 @@ namespace WSCore.General
         [WebMethod(Description = "Lista Unidad Operativa por Centro Operativo")]
         public DataTable ListaUnidad_OpexCEO(string V_CODIGO, string UserName)
         {
-            return (new cGeneralParam()).ListaUnidad_OpexCEO(V_CODIGO, UserName, sAmbiente);
+            try
+            {
+                // Primario (capa/controladora que usa Oracle)
+                return (new cGeneralParam()).ListaUnidad_OpexCEO(V_CODIGO, UserName, sAmbiente);
+            }
+            catch (Exception ex)
+            {
+                // Decidimos aquí (sin filtro 'when') si procede failover
+                if (EsErrorDeConectividad(ex))
+                {
+                    LogWarn($"Failover: ListaUnidad_OpexCEO() en base primaria falló. " +
+                            $"V_CODIGO={V_CODIGO}, user={UserName}, amb={sAmbiente}. Causa: {ex.Message}", ex);
+
+                    try
+                    {
+                        // Contingencia: usa tu método alterno (otra fuente/base)
+                        return (new InformacionGeneralNTAD()).ListarTablaGeneral("205", V_CODIGO, UserName);
+                    }
+                    catch (Exception exAlt)
+                    {
+                        // Si la contingencia también cae, registramos y re-lanzamos una excepción clara
+                        LogWarn("Contingencia ListarTablaGeneral(205, …) también falló.", exAlt);
+                        throw; // o: throw new ApplicationException("Primario y contingencia fallaron", exAlt);
+                    }
+                }
+
+                // Si NO es un error de conectividad/proveedor, re-lanzar (es de negocio/validación)
+                throw;
+            }
         }
+
 
         [WebMethod(Description = "Lista Sub Lineas por Centro Operativo, Unidad Operativa y Linea Negocio")]
         public DataTable ListaSubLineasNegxCEOxUOxL(string V_CEO, string V_UNDOPE, string V_LINEA, string UserName)
         {
-            if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "1")
-            {
-                V_UNDOPE = "C";
+            try { 
+                    if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "1")
+                    {
+                        V_UNDOPE = "C";
+                    }
+                    else if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "3")
+                    {
+                        V_UNDOPE = "A";
+                    }
+
+                    return (new cGeneralParam()).ListaSubLineasNegxCEOxUOxL(V_CEO, V_UNDOPE, V_LINEA, UserName);
+
             }
-            else if (string.IsNullOrEmpty(V_UNDOPE) && V_CEO == "3")
+            catch (Exception ex)
             {
-                V_UNDOPE = "A";
+                // Decidimos aquí (sin filtro 'when') si procede failover
+                if (EsErrorDeConectividad(ex))
+                {
+                    LogWarn($"Failover: ListaUnidad_OpexCEO() en base primaria falló. " +
+                            $"V_CODIGO={V_CEO}, user={UserName}, amb={sAmbiente}. Causa: {ex.Message}", ex);
+
+                    try
+                    {
+                        // Contingencia: usa tu método alterno (otra fuente/base)
+                        return (new InformacionGeneralNTAD()).ListarTablaGeneral("202", V_UNDOPE, V_LINEA);
+                    }
+                    catch (Exception exAlt)
+                    {
+                        // Si la contingencia también cae, registramos y re-lanzamos una excepción clara
+                        LogWarn("Contingencia ListarTablaGeneral(202, …) también falló.", exAlt);
+                        throw; // o: throw new ApplicationException("Primario y contingencia fallaron", exAlt);
+                    }
+                }
+
+                // Si NO es un error de conectividad/proveedor, re-lanzar (es de negocio/validación)
+                throw;
             }
 
-            return (new cGeneralParam()).ListaSubLineasNegxCEOxUOxL(V_CEO, V_UNDOPE, V_LINEA, UserName);
+
         }
 
         [WebMethod(Description = "Lista SubLineas Negocio Callao")]
@@ -758,5 +852,103 @@ namespace WSCore.General
         }
 
 
+        [WebMethod(Description = "Lista Area Usuaria Visitante por Nombre (JSON) ")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = false)]
+        public string ListarAreaPorNombre(int iIdCentroOperativo, string sNombreArea, string UserName)
+        {
+            try
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                var data = new CItemTablaGeneral().ListarAreaPorNombre_JSON(iIdCentroOperativo, sNombreArea,  UserName);
+
+                return (data == null)
+                    ? JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = "Ocurrió un error al consultar los datos." } })
+                    : JsonConvert.SerializeObject(new { success = true, data });
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = ex.Message } });
+            }
+        }
+
+         #region VERIFICA_ERROR
+              
+            private static bool EsErrorDeConectividad(Exception ex)
+    {
+        // 1) Root e inspección completa
+        Exception root = ex;
+        while (root.InnerException != null) root = root.InnerException;
+
+        // Decodifica HTML (p.ej., &#39;) y unifica a minúsculas
+        string msgRoot = HttpUtility.HtmlDecode(root.Message ?? string.Empty).ToLowerInvariant();
+        string allText = HttpUtility.HtmlDecode(ex.ToString() ?? string.Empty).ToLowerInvariant();
+
+        // 2) Heurística: tu excepción de dominio
+        bool esSimaExcep = ex.GetType().Name.IndexOf("simaexcepciondominio", StringComparison.OrdinalIgnoreCase) >= 0
+                           || allText.Contains("simaexcepciondominio");
+
+        // 3) SQL Server: conectividad típica
+        if (root is SqlException sqlEx)
+        {
+            if (sqlEx.Number == 53   // host/instancia no accesible
+             || sqlEx.Number == -2   // timeout
+             || sqlEx.Number == 18456// login failed
+             || sqlEx.Number == 4060)// cannot open database
+                return true;
+        }
+
+        // 4) Oracle vía OLE DB/ODBC o wrapper
+        if (root is OleDbException || root is OdbcException || esSimaExcep)
+        {
+            if (msgRoot.Contains("ora-") || msgRoot.Contains("tns") || msgRoot.Contains("listener"))
+                return true;
+
+            if (msgRoot.Contains("timeout") || msgRoot.Contains("time-out")
+             || msgRoot.Contains("no se pudo") || msgRoot.Contains("no se puede")
+             || msgRoot.Contains("could not") || msgRoot.Contains("unable to")
+             || msgRoot.Contains("network") || msgRoot.Contains("transport"))
+                return true;
+        }
+
+        // 5) PROVEEDOR/ENSAMBLADO: Oracle.DataAccess, PublicKeyToken, 0x80131040
+        //    **NO** lo limites a tipos FileLoad/FileNotFound/BadImageFormat,
+        //    porque la excepción puede venir envuelta en SIMAExcepcionDominio.
+        if (msgRoot.Contains("oracle.dataaccess")
+         || msgRoot.Contains("publickeytoken=89b483f429c47342")
+         || msgRoot.Contains("0x80131040")
+         || msgRoot.Contains("la definición del manifiesto del ensamblado no coincide")
+         || msgRoot.Contains("the located assembly's manifest definition does not match"))
+            return true;
+
+        // 6) Heurísticas genéricas de red (CORREGIDO: '&&' en C#)
+        if (msgRoot.Contains("timeout") || msgRoot.Contains("time-out")
+         || msgRoot.Contains("no such host") || msgRoot.Contains("host not found")
+         || msgRoot.Contains("unable to connect") || msgRoot.Contains("could not connect")
+         || (msgRoot.Contains("connection") && (msgRoot.Contains("fail") || msgRoot.Contains("closed"))))
+            return true;
+
+        // 7) Backup: busca en todo el ToString por si el dato no está en root.Message
+        if (allText.Contains("oracle.dataaccess") || allText.Contains("publickeytoken=89b483f429c47342")
+         || allText.Contains("0x80131040") || allText.Contains("ora-") || allText.Contains("tns")
+         || allText.Contains("listener"))
+            return true;
+
+        return false;
+    }
+
+           private static void LogWarn(string message, Exception ex = null)
+        {
+            try
+            {
+                System.Diagnostics.Trace.TraceWarning(message);
+                if (ex != null) System.Diagnostics.Trace.TraceWarning(ex.ToString());
+            }
+            catch
+            {
+                // Evitar que logging falle la operación
+            }
+        }
+
+        #endregion 
     }
 }

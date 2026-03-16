@@ -1,8 +1,10 @@
 ﻿using EntidadNegocio;
+using EntidadNegocio.GestionComercial;
 using Log;
 using Newtonsoft.Json.Linq;
 using Oracle.DataAccess.Client;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -11,7 +13,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EntidadNegocio.GestionComercial;
 using Utilitario;
 using static AccesoDatos.BaseAD;
 
@@ -1032,7 +1033,6 @@ namespace AccesoDatos.NoTransaccional.GestionProyecto
             }
         }
 
-
         public DataTable Listar_ColaboradoresProyecto(string V_SUCURSAL, string V_PROYECTO)
         {
             try
@@ -1092,5 +1092,81 @@ namespace AccesoDatos.NoTransaccional.GestionProyecto
                 return null;
             }
         }
+
+
+        public DataTable Get_ProyectoPresupuesto(string V_FTPresupuesto_CodProyecto, string V_FTPresupuesto_Sucursal, string UserName)
+        {
+            try
+            {
+                string PackageName = sComercial + ".PKG_COMERCIAL.PR_GET_PROYECTO_PRESUPUESTO";
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo);
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(""
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , oInfoMetodoBE.VoidParams
+                    , ""
+                    , Helper.MensajesIngresarMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                OracleParameter[] Param = new OracleParameter[3];
+                Param[0] = new OracleParameter("V_CodProyecto", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = V_FTPresupuesto_CodProyecto };
+
+                Param[1] = new OracleParameter("V_Sucursal", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = V_FTPresupuesto_Sucursal };
+                
+                Param[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor)
+                { Direction = ParameterDirection.Output };
+
+         
+                // Ejecutar (siguiendo TU patrón: true)
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
+
+              
+
+
+
+                if (ds == null || ds.Tables.Count == 0)
+                {
+                    // devuelve DT vacío CON nombre (para que ASMX pueda serializarlo)
+                    var empty = new DataTable("ProyectoPresupuesto");
+                    return empty;
+                }
+
+                // Asegura nombre de la tabla
+                if (string.IsNullOrWhiteSpace(ds.Tables[0].TableName))
+                    ds.Tables[0].TableName = "ProyectoPresupuesto";
+
+                return ds.Tables[0];
+            }
+            catch (OracleException ex)
+            {
+                // Igual que tu patrón de consultas
+                LogTransaccional.LanzarSIMAExcepcionDominio("",
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString()
+                        + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + ex.Number.ToString()),
+                    "Código de Error:" + ex.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Línea:1" + Utilitario.Constante.Caracteres.SeperadorSimple + ex.Message
+                );
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio("",
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(),
+                    exception.Message
+                );
+                return null;
+            }
+        }
+
     }
 }

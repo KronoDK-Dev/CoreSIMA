@@ -391,5 +391,110 @@ namespace AccesoDatos.NoTransaccional.GestionProyecto
                 return null;
             }
         }
+
+        public OracleDataReader Listar_Ordenes_CS_Coproductor(string N_CEO, string UserName)
+        {
+            string nombreMetodo = new StackTrace().GetFrame(0).GetMethod().Name;
+            InfoMetodoBE info = (InfoMetodoBE)this.MetodoInfo(nombreMetodo);
+
+            string connString = ConnectionHelper.GetOracleConnectionString("OJDE");
+            string packageName = sConsulta + ".Pkg_PROYECTOS.SP_Ordenes_CS";
+
+            OracleConnection cn = null;
+            OracleCommand cmd = null;
+
+            try
+            {
+                // Log de entrada (similar a tu otro modelo)
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName, info.FullName, nombreMetodo, packageName,
+                    $"N_CEO={N_CEO}", "", Helper.MensajesIngresarMetodo(), Convert.ToString(Enumerados.NivelesErrorLog.I)
+                ));
+
+                cn = new OracleConnection(connString);
+                cn.Open();
+
+                cmd = new OracleCommand(packageName, cn)
+                {
+                    CommandType = CommandType.StoredProcedure,
+                    BindByName = true
+                };
+
+                cmd.Parameters.Add("N_CEO", OracleDbType.Varchar2, ParameterDirection.Input).Value = N_CEO;
+                // cmd.Parameters.Add("UserName", OracleDbType.Varchar2, ParameterDirection.Input).Value = UserName; // si el SP lo requiere
+                cmd.Parameters.Add("cRegistros", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+
+                // IMPORTANTE:
+                // - SequentialAccess: optimiza lectura “streaming”
+                // - CloseConnection: cierra la conexión cuando el caller haga reader.Close() o using(reader)
+                var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.CloseConnection);
+
+                // El comando se puede disponer sin afectar al reader
+                cmd.Dispose();
+                cmd = null;
+
+                // Log de salida (no contamos filas aquí porque no hemos leído; si quieres, puedes leer y bufferizar, pero perderías streaming)
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(
+                    UserName,
+                    info.FullName,
+                    nombreMetodo,
+                    packageName,
+                    "",
+                    "Reader abierto (caller debe cerrarlo).",
+                    Helper.MensajesSalirMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I)
+                ));
+
+                return reader; // El caller DEBE cerrar el reader para liberar la conexión.
+            }
+            catch (OracleException ex)
+            {
+                // Cierra recursos si falló antes de devolver el reader
+                try { cmd?.Dispose(); } catch { /* ignore */ }
+                try
+                {
+                    if (cn != null)
+                    {
+                        if (cn.State != ConnectionState.Closed) cn.Close();
+                        cn.Dispose();
+                    }
+                }
+                catch { /* ignore */ }
+
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    UserName,
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() +
+                        Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + ex.Number.ToString()),
+                    "Código de Error:" + ex.Number + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:1" +
+                    Utilitario.Constante.Caracteres.SeperadorSimple + ex.Message
+                );
+
+                return null; // Mantén la misma semántica que tu otro modelo
+            }
+            catch (Exception ex)
+            {
+                try { cmd?.Dispose(); } catch { /* ignore */ }
+                try
+                {
+                    if (cn != null)
+                    {
+                        if (cn.State != ConnectionState.Closed) cn.Close();
+                        cn.Dispose();
+                    }
+                }
+                catch { /* ignore */ }
+
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    UserName,
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(),
+                    ex.Message
+                );
+
+                return null;
+            }
+        }
     }
 }

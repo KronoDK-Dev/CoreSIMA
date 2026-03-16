@@ -1,12 +1,13 @@
-﻿using EntidadNegocio;
+﻿using AccesoDatos.NoTransaccional.GestionProyecto;
+using AccesoDatos.Transaccional.GestionProyecto;
+using EntidadNegocio;
+using EntidadNegocio.GestionProyecto;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.GestionProyecto;
-using AccesoDatos.Transaccional.GestionProyecto;
 
 namespace Controladora.GestionProyecto
 {
@@ -86,38 +87,48 @@ namespace Controladora.GestionProyecto
             return (new ProyectoNTAD()).Listar_ColaboradoresProyecto(V_SUCURSAL, V_PROYECTO);
         }
 
+        public DataTable Get_ProyectoPresupuesto(string V_FTPresupuesto_CodProyecto, string V_FTPresupuesto_Sucursal,string UserName)
+        {
+            return (new ProyectoNTAD()).Get_ProyectoPresupuesto(V_FTPresupuesto_CodProyecto, V_FTPresupuesto_Sucursal, UserName);
+        }
+
         #region TRANSACCIONALES
 
         public string InsertarProyecto(BaseBE oBaseBE, string accion, string sAmbiente = "T")
-        {
-            return (new ProyectoTAD()).InsertarProyecto(oBaseBE, accion, sAmbiente);
-        }
+            {
+                return (new ProyectoTAD()).InsertarProyecto(oBaseBE, accion, sAmbiente);
+            }
 
-        public string InsertarAdendaProyecto(BaseBE oBaseBE, string accion, string sAmbiente = "T")
-        {
-            return (new ProyectoTAD()).InsertarAdendaProyecto(oBaseBE, accion, sAmbiente);
-        }
+            public string InsertarAdendaProyecto(BaseBE oBaseBE, string accion, string sAmbiente = "T")
+            {
+                return (new ProyectoTAD()).InsertarAdendaProyecto(oBaseBE, accion, sAmbiente);
+            }
 
-        public string Ins_upd_ColaboradorProy(BaseBE oBaseBE)
-        {
-            return (new ProyectoTAD()).Ins_upd_ColaboradorProy(oBaseBE);
-        }
+            public string Ins_upd_ColaboradorProy(BaseBE oBaseBE)
+            {
+                return (new ProyectoTAD()).Ins_upd_ColaboradorProy(oBaseBE);
+            }
 
-        public string Del_ColaboradorProy(BaseBE oBaseBE)
-        {
-            return (new ProyectoTAD()).Del_ColaboradorProy(oBaseBE);
-        }
+            public string Del_ColaboradorProy(BaseBE oBaseBE)
+            {
+                return (new ProyectoTAD()).Del_ColaboradorProy(oBaseBE);
+            }
 
-        public string DEL_ADENDAPROYECTO(string P_CODPRY, string P_NROADENDA, string UserName, string V_AMBIENTE = "T")
-        {
-            return (new ProyectoTAD()).DEL_ADENDAPROYECTO(P_CODPRY, P_NROADENDA, UserName, V_AMBIENTE);
-        }
+            public string DEL_ADENDAPROYECTO(string P_CODPRY, string P_NROADENDA, string UserName, string V_AMBIENTE = "T")
+            {
+                return (new ProyectoTAD()).DEL_ADENDAPROYECTO(P_CODPRY, P_NROADENDA, UserName, V_AMBIENTE);
+            }
 
-        public string InsertarUsuarioProyecto(string userId, string proyId, string UserName)
-        {
-            return (new ProyectoTAD()).InsertarUsuarioProyecto(userId, proyId, UserName);
-        }
+            public string InsertarUsuarioProyecto(string userId, string proyId, string UserName)
+            {
+                return (new ProyectoTAD()).InsertarUsuarioProyecto(userId, proyId, UserName);
+            }
 
-        #endregion 
+            public string InsUpdDel_ProyectoPresupuesto(ProyectoPresupuestoBE oBE)
+            {
+                return (new ProyectoTAD()).InsUpdDel_ProyectoPresupuesto(oBE);
+            }
+
+            #endregion
+        }
     }
-}

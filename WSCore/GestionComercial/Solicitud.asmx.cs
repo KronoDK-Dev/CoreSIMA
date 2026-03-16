@@ -1,15 +1,23 @@
-﻿using Controladora.General;
+﻿using AccesoDatos.NoTransaccional.General;
+using Controladora.General;
+using Controladora.GestionComercial;
+using EntidadNegocio.GestionComercial;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Odbc;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Services;
 using System.Web.Services;
 using System.Xml;
-using Controladora.GestionComercial;
-using EntidadNegocio.GestionComercial;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace WSCore.GestionComercial
 {
@@ -38,15 +46,40 @@ namespace WSCore.GestionComercial
         }
 
         [WebMethod(Description = "Lista de Solicitudes de Trabajo por CEO")]
-        public DataTable ListarSolicitudTrabajo(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI,
-            string V_FEC_STR_FIN, string UserName)
+        public DataTable ListarSolicitudTrabajo(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI,  string V_FEC_STR_FIN, string UserName)
         {
-            return (new cSolicitud()).ListarSolicitudTrabajo(sAmbiente, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+          try 
+          { 
+              return (new cSolicitud()).ListarSolicitudTrabajo(sAmbiente, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+          }
+          catch (Exception ex)
+          {
+                // Decidimos aquí (sin filtro 'when') si procede failover
+                if (EsErrorDeConectividad(ex))
+                {
+                    LogWarn($"Failover: ListarSolicitudTrabajo() en base primaria falló. " +
+                            $"V_CODIGO={V_FILTRO}, user={UserName}, amb={sAmbiente}. Causa: {ex.Message}", ex);
+
+                    try
+                    {
+                        // Contingencia: usa tu método alterno (otra fuente/base)
+                        return (new cSolicitud()).ListarSolicitudTrabajo_SQL(sAmbiente, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+                    }
+                    catch (Exception exAlt)
+                    {
+                        // Si la contingencia también cae, registramos y re-lanzamos una excepción clara
+                        LogWarn("Contingencia ListarTablaGeneral(205, …) también falló.", exAlt);
+                        throw; // o: throw new ApplicationException("Primario y contingencia fallaron", exAlt);
+                    }
+                }
+
+                // Si NO es un error de conectividad/proveedor, re-lanzar (es de negocio/validación)
+                throw;
+            }
         }
 
         [WebMethod(Description = "Lista de Solicitudes de Trabajo , por Metodo xml string")]
-        public string ListarSolicitudTrabajo2(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI,
-            string V_FEC_STR_FIN, string UserName)
+        public string ListarSolicitudTrabajo2(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI, string V_FEC_STR_FIN, string UserName)
         {
             try
             {
@@ -66,10 +99,74 @@ namespace WSCore.GestionComercial
                         return sw.ToString();
                     }
                 }
+
             }
             catch (Exception ex)
             {
-                throw new HttpException(500, "Error interno del servidor", ex);
+                // Decidimos aquí (sin filtro 'when') si procede failover
+                if (EsErrorDeConectividad(ex))
+                {
+                    LogWarn($"Failover: ListarSolicitudTrabajo2() en base primaria falló. " +
+                            $"V_CODIGO={V_FILTRO}, user={UserName}, amb={sAmbiente}. Causa: {ex.Message}", ex);
+
+                    try
+                    {
+                        // Contingencia: usa tu método alterno (otra fuente/base)
+
+
+
+                        List<Dictionary<string, object>> lista =
+                            (new cSolicitud()).ListarSolicitudTrabajo_JSON(sAmbiente, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+
+                        // 2) Convertimos esa lista a DataTable
+                        DataTable dtFailover = ListDictToDataTable(lista);
+                        dtFailover.TableName = "PR_GET_SOLICITUD";
+
+                        // 3) Escribimos el MISMO XML que en el camino primario
+                        var ds = new DataSet();
+                        ds.Tables.Add(dtFailover);
+
+                        using (var sw = new StringWriter())
+                        using (var xw = XmlWriter.Create(sw))
+                        {
+                            ds.WriteXml(xw, XmlWriteMode.IgnoreSchema);
+                            return sw.ToString();
+                        }
+
+
+                       
+
+                    }
+                    catch (Exception exAlt)
+                    {
+                        // Si la contingencia también cae, registramos y re-lanzamos una excepción clara
+                        LogWarn("Contingencia ListarSolicitudTrabajo2(…) también falló.", exAlt);
+                        throw; // o: throw new ApplicationException("Primario y contingencia fallaron", exAlt);
+                    }
+                }
+
+                // Si NO es un error de conectividad/proveedor, re-lanzar (es de negocio/validación)
+                throw;
+            }
+
+        }
+
+        [WebMethod(Description = "Lista de Solicitudes de Trabajo , por Metodo  (JSON) ")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = false)]
+        public string ListarSolicitudTrabajo_JSON(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI, string V_FEC_STR_FIN, string UserName)
+        {
+            try
+            {
+                Context.Response.ContentType = "application/json; charset=utf-8";
+                var data = new cSolicitud().ListarSolicitudTrabajo_JSON(sAmbiente, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+
+                return (data == null)
+                    ? JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = "Ocurrió un error al consultar los datos." } })
+                    : JsonConvert.SerializeObject(new { success = true, data });
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = ex.Message } });
             }
         }
 
@@ -192,5 +289,388 @@ namespace WSCore.GestionComercial
         {
             return (new cSolicitud()).Lista_Lineas_Usuario(sUsuario, UserName);
         }
+
+
+        #region VERIFICA_ERROR
+
+        private static bool EsErrorDeConectividad(Exception ex)
+        {
+            // 1) Root e inspección completa
+            Exception root = ex;
+            while (root.InnerException != null) root = root.InnerException;
+
+            // Decodifica HTML (p.ej., &#39;) y unifica a minúsculas
+            string msgRoot = HttpUtility.HtmlDecode(root.Message ?? string.Empty).ToLowerInvariant();
+            string allText = HttpUtility.HtmlDecode(ex.ToString() ?? string.Empty).ToLowerInvariant();
+
+            // 2) Heurística: tu excepción de dominio
+            bool esSimaExcep = ex.GetType().Name.IndexOf("simaexcepciondominio", StringComparison.OrdinalIgnoreCase) >= 0
+                               || allText.Contains("simaexcepciondominio");
+
+            // 3) SQL Server: conectividad típica
+            if (root is SqlException sqlEx)
+            {
+                if (sqlEx.Number == 53   // host/instancia no accesible
+                 || sqlEx.Number == -2   // timeout
+                 || sqlEx.Number == 18456// login failed
+                 || sqlEx.Number == 4060)// cannot open database
+                    return true;
+            }
+
+            // 4) Oracle vía OLE DB/ODBC o wrapper
+            if (root is OleDbException || root is OdbcException || esSimaExcep)
+            {
+                if (msgRoot.Contains("ora-") || msgRoot.Contains("tns") || msgRoot.Contains("listener"))
+                    return true;
+
+                if (msgRoot.Contains("timeout") || msgRoot.Contains("time-out")
+                 || msgRoot.Contains("no se pudo") || msgRoot.Contains("no se puede")
+                 || msgRoot.Contains("could not") || msgRoot.Contains("unable to")
+                 || msgRoot.Contains("network") || msgRoot.Contains("transport"))
+                    return true;
+            }
+
+            // 5) PROVEEDOR/ENSAMBLADO: Oracle.DataAccess, PublicKeyToken, 0x80131040
+            //    **NO** lo limites a tipos FileLoad/FileNotFound/BadImageFormat,
+            //    porque la excepción puede venir envuelta en SIMAExcepcionDominio.
+            if (msgRoot.Contains("oracle.dataaccess")
+             || msgRoot.Contains("publickeytoken=89b483f429c47342")
+             || msgRoot.Contains("0x80131040")
+             || msgRoot.Contains("la definición del manifiesto del ensamblado no coincide")
+             || msgRoot.Contains("the located assembly's manifest definition does not match"))
+                return true;
+
+            // 6) Heurísticas genéricas de red (CORREGIDO: '&&' en C#)
+            if (msgRoot.Contains("timeout") || msgRoot.Contains("time-out")
+             || msgRoot.Contains("no such host") || msgRoot.Contains("host not found")
+             || msgRoot.Contains("unable to connect") || msgRoot.Contains("could not connect")
+             || (msgRoot.Contains("connection") && (msgRoot.Contains("fail") || msgRoot.Contains("closed"))))
+                return true;
+
+            // 7) Backup: busca en todo el ToString por si el dato no está en root.Message
+            if (allText.Contains("oracle.dataaccess") || allText.Contains("publickeytoken=89b483f429c47342")
+             || allText.Contains("0x80131040") || allText.Contains("ora-") || allText.Contains("tns")
+             || allText.Contains("listener"))
+                return true;
+
+            return false;
+        }
+        private static void LogWarn(string message, Exception ex = null)
+        {
+            try
+            {
+                System.Diagnostics.Trace.TraceWarning(message);
+                if (ex != null) System.Diagnostics.Trace.TraceWarning(ex.ToString());
+            }
+            catch
+            {
+                // Evitar que logging falle la operación
+            }
+        }
+        private string JsonListToXmlString(string json, string tableName)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                // XML vacío consistente (sin filas)
+                DataSet dsEmpty = new DataSet();
+                DataTable dtEmpty = new DataTable(tableName);
+                dsEmpty.Tables.Add(dtEmpty);
+
+                using (var sw = new StringWriter())
+                using (var xw = XmlWriter.Create(sw))
+                {
+                    dsEmpty.WriteXml(xw, XmlWriteMode.IgnoreSchema);
+                    return sw.ToString();
+                }
+            }
+
+            // Intentamos deserializar la forma más común: arreglo de objetos
+            DataTable dt = TryDeserializeArrayToDataTable(json);
+
+            if (dt == null)
+            {
+                // Si no es arreglo directo, buscamos el primer array de objetos dentro de un objeto
+                var token = JToken.Parse(json);
+
+                if (token.Type == JTokenType.Object)
+                {
+                    var obj = (JObject)token;
+
+                    // 1) Intentar con propiedad "data" si existe
+                    if (obj.TryGetValue("data", StringComparison.OrdinalIgnoreCase, out var dataToken) &&
+                        dataToken is JArray dataArr && dataArr.Count > 0 && dataArr[0].Type == JTokenType.Object)
+                    {
+                        dt = dataArr.ToObject<DataTable>();
+                    }
+                    else
+                    {
+                        // 2) Buscar el primer array de objetos en cualquier propiedad
+                        foreach (var prop in obj.Properties())
+                        {
+                            if (prop.Value is JArray arr && arr.Count > 0 && arr[0].Type == JTokenType.Object)
+                            {
+                                dt = arr.ToObject<DataTable>();
+                                break;
+                            }
+                        }
+
+                        // 3) Si aún no hay tabla y el objeto podría ser una sola fila, convertirlo
+                        if (dt == null)
+                        {
+                            var singleRow = new DataTable();
+                            // crear columnas a partir de las propiedades
+                            foreach (var p in obj.Properties())
+                            {
+                                // Definir tipo como string para evitar conflictos (fechas, numéricos)
+                                if (!singleRow.Columns.Contains(p.Name))
+                                    singleRow.Columns.Add(p.Name, typeof(string));
+                            }
+                            var row = singleRow.NewRow();
+                            foreach (var p in obj.Properties())
+                            {
+                                row[p.Name] = TokenToScalarString(p.Value);
+                            }
+                            singleRow.Rows.Add(row);
+                            dt = singleRow;
+                        }
+                    }
+                }
+                else if (token is JArray jarr && jarr.Count > 0 && jarr[0].Type == JTokenType.Object)
+                {
+                    dt = jarr.ToObject<DataTable>();
+                }
+                else
+                {
+                    // Array de escalares → 1 columna
+                    if (token is JArray scalarsArr)
+                    {
+                        var t = new DataTable();
+                        t.Columns.Add("Value", typeof(string));
+                        foreach (var v in scalarsArr)
+                        {
+                            var r = t.NewRow();
+                            r["Value"] = TokenToScalarString(v);
+                            t.Rows.Add(r);
+                        }
+                        dt = t;
+                    }
+                }
+            }
+
+            if (dt == null)
+            {
+                // Como último recurso, devolver XML vacío coherente
+                DataSet dsEmpty = new DataSet();
+                DataTable dtEmpty = new DataTable(tableName);
+                dsEmpty.Tables.Add(dtEmpty);
+
+                using (var sw = new StringWriter())
+                using (var xw = XmlWriter.Create(sw))
+                {
+                    dsEmpty.WriteXml(xw, XmlWriteMode.IgnoreSchema);
+                    return sw.ToString();
+                }
+            }
+
+            dt.TableName = tableName;
+
+            var ds = new DataSet();
+            ds.Tables.Add(dt);
+
+            using (var sw = new StringWriter())
+            using (var xw = XmlWriter.Create(sw))
+            {
+                ds.WriteXml(xw, XmlWriteMode.IgnoreSchema);
+                return sw.ToString();
+            }
+        }
+        private DataTable TryDeserializeArrayToDataTable(string json)
+        {
+            try
+            {
+                var token = JToken.Parse(json);
+                if (token is JArray arr && arr.Count > 0 && arr[0].Type == JTokenType.Object)
+                {
+                    return arr.ToObject<DataTable>();
+                }
+            }
+            catch
+            {
+                // ignorar y seguir con otros enfoques
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Convierte un JToken escalar a string (para poner en celda).
+        /// </summary>
+        private static string TokenToScalarString(JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null)
+                return string.Empty;
+
+            if (token.Type == JTokenType.Boolean)
+                return token.Value<bool>() ? "true" : "false";
+
+            if (token.Type == JTokenType.Date)
+                return token.Value<DateTime>().ToString("yyyy-MM-ddTHH:mm:ss");
+
+            if (token.Type == JTokenType.Integer || token.Type == JTokenType.Float || token.Type == JTokenType.String)
+                return token.ToString();
+
+            // Para objetos/arrays anidados, serializamos compactos para no perder información
+            return token.ToString(Formatting.None);
+        }
+
+        private static DataTable ListDictToDataTable(IEnumerable<Dictionary<string, object>> rows)
+        {
+            var dt = new DataTable();
+            if (rows == null)
+                return dt;
+
+            // 1) Unir todas las llaves para definir el esquema
+            var allCols = new LinkedHashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var r in rows)
+            {
+                if (r == null) continue;
+                foreach (var k in r.Keys)
+                    allCols.Add(k);
+            }
+
+            // 2) Crear columnas como string (robusto frente a tipos mixtos)
+            foreach (var col in allCols)
+                dt.Columns.Add(col, typeof(string));
+
+            // 3) Poblar filas
+            foreach (var r in rows)
+            {
+                var dr = dt.NewRow();
+                if (r != null)
+                {
+                    foreach (var kv in r)
+                    {
+                        if (!dt.Columns.Contains(kv.Key)) continue;
+                        dr[kv.Key] = ObjToCellString(kv.Value);
+                    }
+                }
+                dt.Rows.Add(dr);
+            }
+
+            return dt;
+        }
+
+    
+        /// Conversión segura a string para celdas XML (compatible con C# 7.3).
+        /// - Null → ""
+        /// - bool → "true"/"false"
+        /// - DateTime/DateTimeOffset → ISO
+        /// - Números → InvariantCulture
+        /// - string → tal cual
+        /// - Objetos/colecciones → JSON compacto
+        /// </summary>
+        private static string ObjToCellString(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return string.Empty;
+
+            // bool
+            if (value is bool b)
+                return b ? "true" : "false";
+
+            // DateTime
+            if (value is DateTime dt)
+                return dt.ToString("yyyy-MM-ddTHH:mm:ss");
+
+            // DateTimeOffset
+            if (value is DateTimeOffset dto)
+                return dto.ToString("yyyy-MM-ddTHH:mm:sszzz");
+
+            // string
+            if (value is string s)
+                return s;
+
+            // Números: usar TypeCode para cubrir todos los tipos primitivos
+            var tc = Type.GetTypeCode(value.GetType());
+            switch (tc)
+            {
+                case TypeCode.SByte:
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    return Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
+
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    // IFormattable para asegurar InvariantCulture
+                    var f = value as IFormattable;
+                    return (f != null)
+                        ? f.ToString(null, System.Globalization.CultureInfo.InvariantCulture)
+                        : Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            // Objetos complejos / colecciones → JSON compacto para no perder información
+            try
+            {
+                return Newtonsoft.Json.JsonConvert.SerializeObject(value,
+                    new Newtonsoft.Json.JsonSerializerSettings { Formatting = Newtonsoft.Json.Formatting.None });
+            }
+            catch
+            {
+                // Fallback final
+                return value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Conjunto que preserva orden de inserción.
+        /// </summary>
+        private sealed class LinkedHashSet<T> : ICollection<T>
+        {
+            private readonly Dictionary<T, object> _map;
+            private static readonly object _dummy = new object();
+
+            public LinkedHashSet() : this(null) { }
+            public LinkedHashSet(IEqualityComparer<T> comparer)
+            {
+                _map = new Dictionary<T, object>(comparer);
+                Order = new List<T>();
+            }
+
+            private List<T> Order { get; }
+
+            public int Count => _map.Count;
+            public bool IsReadOnly => false;
+
+            public bool Add(T item)
+            {
+                if (_map.ContainsKey(item)) return false;
+                _map[item] = _dummy;
+                Order.Add(item);
+                return true;
+            }
+
+            void ICollection<T>.Add(T item) => Add(item);
+
+            public bool Contains(T item) => _map.ContainsKey(item);
+            public void Clear() { _map.Clear(); Order.Clear(); }
+            public void CopyTo(T[] array, int arrayIndex) => Order.CopyTo(array, arrayIndex);
+            public bool Remove(T item)
+            {
+                if (!_map.Remove(item)) return false;
+                Order.Remove(item);
+                return true;
+            }
+
+            public IEnumerator<T> GetEnumerator() => Order.GetEnumerator();
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        #endregion 
+
     }
 }

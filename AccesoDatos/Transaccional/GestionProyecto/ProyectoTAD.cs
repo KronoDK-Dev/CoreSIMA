@@ -1,5 +1,7 @@
 ﻿using EntidadNegocio;
 using EntidadNegocio.GestionComercial;
+using EntidadNegocio.GestionProduccion;
+using EntidadNegocio.GestionProyecto;
 using Log;
 using Newtonsoft.Json.Linq;
 using Oracle.DataAccess.Client;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilitario;
+using static AccesoDatos.BaseAD;
 
 namespace AccesoDatos.Transaccional.GestionProyecto
 {
@@ -549,5 +552,85 @@ namespace AccesoDatos.Transaccional.GestionProyecto
                 return "Fallo en procesamiento: " + ex.Message;
             }
         }
+
+
+        public string InsUpdDel_ProyectoPresupuesto(ProyectoPresupuestoBE oBE)
+        {
+            try
+            {
+                string PackageName = sComercial + ".PKG_COMERCIAL.PR_CRUD_PROYECTO_PRESUPUESTO";
+
+                // 12 parámetros en total, exactamente como tu SP:
+                OracleParameter[] Params = new OracleParameter[12];
+
+               // 1) N_ACCION (1=INS, 2=UPD, 3=DEL)
+                    Params[0] = new OracleParameter("N_ACCION", OracleDbType.Int32)
+                    { Direction = ParameterDirection.Input, Value = oBE.N_ACCION };
+
+                // 2) 3) PK
+                Params[1] = new OracleParameter("V_CodProyecto", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = oBE.V_FTPresupuesto_CodProyecto };
+
+                Params[2] = new OracleParameter("V_Sucursal", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = oBE.V_FTPresupuesto_Sucursal };
+
+                // 4)–7) Costos (NUMBER(18,2))
+                Params[3] = new OracleParameter("N_CostoMOB", OracleDbType.Decimal)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoMOB ?? DBNull.Value };
+
+                Params[4] = new OracleParameter("N_CostoMAT", OracleDbType.Decimal)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoMAT ?? DBNull.Value };
+
+                Params[5] = new OracleParameter("N_CostoSER", OracleDbType.Decimal)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoSER ?? DBNull.Value };
+
+                Params[6] = new OracleParameter("N_CostoIND", OracleDbType.Decimal)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoIND ?? DBNull.Value };
+
+                // 8)–10) Auditoría
+                Params[7] = new OracleParameter("V_USUARIO_AUDI", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_USUARIO_AUDI ?? DBNull.Value };
+
+                Params[8] = new OracleParameter("V_ESTACIONW", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_ESTACIONW ?? DBNull.Value };
+
+                Params[9] = new OracleParameter("V_AUDITORIA", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_AUDITORIA ?? DBNull.Value };
+
+                // 11) OUT: V_RESULTADO
+                    Params[10] = new OracleParameter("V_RESULTADO", OracleDbType.Varchar2)
+                    { Direction = ParameterDirection.Output, Size = 50 };
+
+                    // 12) OUT: cRegistros (aunque no se usa en 1/2/3 debe declararse)
+                    Params[11] = new OracleParameter("cRegistros", OracleDbType.RefCursor)
+                    { Direction = ParameterDirection.Output };
+
+               
+                    // Ejecutar (siguiendo TU patrón: true)
+                    string result = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackageName, Params);
+
+                    // Si viene JSON, parsear; si no, tomar el OUT directamente
+                    if (!string.IsNullOrWhiteSpace(result))
+                    {
+                        JObject json = JObject.Parse(result);
+                        return (string)json["V_RESULTADO"];
+                    }
+                    return Params[10].Value?.ToString() ?? "OK";
+               
+                
+
+            }
+            catch (OracleException ex)
+            {
+                // Manejo análogo a tu patrón de InsertarUsuarioProyecto
+                if (ex.Number == 20001) return "Registro duplicado";
+                return "Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return "Fallo en procesamiento: " + ex.Message;
+            }
+        }
+
     }
 }

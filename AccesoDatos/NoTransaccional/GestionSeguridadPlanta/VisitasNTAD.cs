@@ -116,12 +116,87 @@ namespace AccesoDatos.NoTransaccional.GestionSeguridadPlanta
                 }
 
             }
+        // para objetos JSON
+        public List<Dictionary<string, object>> ListarTodos_JSON(string Id1, string Id2, string Id3, string idUser)
+        {
+            try
+            {
+                var empty = new List<Dictionary<string, object>>();
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
-        #endregion 
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id2.ToString(), Id2.ToString(), idUser);
+                string PackagName = "seg_planta.uspNTADConsultarProgramacionVisita_CVST";
 
-        
-     // Helper opcional
-    private static int TryParseInt(string s, int defaultValue = 0)
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(idUser
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+                string iParam1 = string.IsNullOrWhiteSpace(Id1) ? "" : Id1.Trim();
+                int iParam2 = int.TryParse(Id2, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id2) ? _id2 : 0;
+                int iParam3 = int.TryParse(Id3, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _id3) ? _id3 : 2;
+                int iusuario = int.TryParse(idUser, NumberStyles.Integer, CultureInfo.InvariantCulture, out var _usr) ? _usr : 0;
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, iParam1, iParam2, iusuario, iParam3);
+                int irows = ds?.Tables?.Count > 0 ? ds.Tables[0].Rows.Count : 0;
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(idUser
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + irows.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+                if (ds == null || ds.Tables.Count == 0)
+                    return empty;
+
+                var dt = ds.Tables[0];
+                var list = new List<Dictionary<string, object>>(dt.Rows.Count);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                    foreach (DataColumn c in dt.Columns)
+                    {
+                        object val = row[c] == DBNull.Value ? null : row[c];
+
+                        // Normaliza fechas a ISO 8601 si vienen como DateTime
+                        if (val is DateTime dtVal)
+                            val = dtVal.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+
+                       
+                        dict[c.ColumnName] = val;
+                    }
+                    list.Add(dict);
+                }
+
+                return list;
+            }
+            catch (SqlException oracleException) 
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(idUser, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception) 
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(idUser, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+        #endregion
+
+
+        // Helper opcional
+        private static int TryParseInt(string s, int defaultValue = 0)
         {
             if (int.TryParse(s, out var v)) return v;
             return defaultValue; // o lanza excepción si debe ser obligatorio

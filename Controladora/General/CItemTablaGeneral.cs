@@ -1,13 +1,14 @@
 ﻿using AccesoDatos;
+using AccesoDatos.NoTransaccional.General;
+using AccesoDatos.NoTransaccional.GestionSeguridadPlanta;
+using AccesoDatos.Transaccional.General;
+using EntidadNegocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AccesoDatos.NoTransaccional.General;
-using AccesoDatos.Transaccional.General;
-using EntidadNegocio;
 
 namespace Controladora.General
 {
@@ -47,6 +48,24 @@ namespace Controladora.General
         {
             return (new ItemTablaGeneralNTAD()).Buscar_Var1_DetalleCatologo(IdMaestra, IdDetalle, UserName);
         }
+
+        // Retorno de objeto dicccionario para JSON
+        // DataTable tiene overhead de esquema, columnas, estados de fila, índices; está pensado para data-binding y operaciones in-memory(relaciones, constraints).
+        // List<Dictionary<...>> mantiene solo los datos: para el uso típico de “consultar y serializar a JSON”, es más liviano en memoria y CPU.
+        public List<Dictionary<string, object>> ListarAreaPorNombre_JSON(int iIdCentroOperativo, string sNombreArea, string UserName)
+        {
+            return (new ItemTablaGeneralNTAD()).ListarAreaPorNombre_JSON(iIdCentroOperativo, sNombreArea, UserName);
+        }
+
+        public DataTable ListarTablaGeneral(string codTabla, string codVar, string UserName)
+        {
+            
+                return (new InformacionGeneralNTAD()).ListarTablaGeneral(codTabla, codVar, UserName);
+          
+        }
+
+
+      
 
     }
 }

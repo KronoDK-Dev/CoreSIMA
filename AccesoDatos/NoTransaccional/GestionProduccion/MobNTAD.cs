@@ -502,7 +502,7 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
                 );
 
-                OracleParameter[] Param = new OracleParameter[4];
+                OracleParameter[] Param = new OracleParameter[5];
                 Param[0] = new OracleParameter("V_rol", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = V_rol;

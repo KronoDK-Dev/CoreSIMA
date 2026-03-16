@@ -1,11 +1,16 @@
-﻿using Controladora.GestionPersonal;
+﻿using AccesoDatos.NoTransaccional.GestionProyecto;
+using AccesoDatos.Transaccional.GestionProyecto;
+using Controladora.GestionPersonal;
 using Controladora.GestionProyecto;
 using EntidadNegocio.GestionComercial;
+using EntidadNegocio.GestionProyecto;
 using Log;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -148,6 +153,97 @@ namespace WSCore.GestionProyecto
         public DataTable Listar_detalle_ose_femision(string D_FECHAFIN, string D_FECHAINI, string N_CEO, string UserName)
         {
             return (new COrdenes()).Listar_detalle_ose_femision(D_FECHAFIN, D_FECHAINI, N_CEO, UserName);
+        }
+
+        [WebMethod(Description = "Listar Ordenes  de Compra y Servicio del Coproductor en JSON Streaming")]
+        public void Listar_Ordenes_CS_Coproductor(string N_CEO, string UserName)
+        {
+            HttpContext context = HttpContext.Current;
+
+            context.Response.BufferOutput = false;
+            context.Response.ContentType = "application/json";
+            context.Response.Charset = "utf-8";
+
+            context.Server.ScriptTimeout = 1800;
+
+            IDataReader reader = null;
+
+            try
+            {
+                reader = (new COrdenes()).Listar_Ordenes_CS_Coproductor(N_CEO, UserName);
+
+                context.Response.Write("{\"success\": true, \"data\": [");
+                context.Response.Flush();
+
+                bool first = true;
+
+                while (reader.Read())
+                {
+                    if (!context.Response.IsClientConnected)
+                        return;
+
+                    if (!first)
+                        context.Response.Write(",");
+
+                    first = false;
+
+                    var row = new Dictionary<string, object>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                        row[reader.GetName(i)] = reader.IsDBNull(i) ? null : reader.GetValue(i);
+
+                    string json = JsonConvert.SerializeObject(row);
+                    context.Response.Write(json);
+
+                    context.Response.Flush();
+                }
+
+                context.Response.Write("]}");
+                context.Response.Flush();
+            }
+            catch (HttpException httpEx)
+            {
+                if (!context.Response.IsClientConnected)
+                    return;
+
+                context.Response.Write("{\"success\": false, \"error\": \"Cliente desconectado\"}");
+            }
+            catch (Exception ex)
+            {
+                if (!context.Response.IsClientConnected)
+                    return;
+
+                context.Response.Write(JsonConvert.SerializeObject(new
+                {
+                    success = false,
+                    errorMessage = ex.Message
+                }));
+            }
+            finally
+            {
+                if (reader != null) reader.Close();
+            }
+        }
+
+        [WebMethod(Description = "Listar Ordenes CS (retorna DataTable)")]
+        public DataTable Listar_Ordenes_CS_Coproductor_DT(string N_CEO, string UserName)
+        {
+            IDataReader reader = null;
+            var dt = new DataTable("SP_Ordenes_CS");
+            try
+            {
+                reader = (new COrdenes()).Listar_Ordenes_CS_Coproductor(N_CEO, UserName); // tu capa de datos
+                if (reader == null) return dt;
+                dt.Load(reader, LoadOption.Upsert);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                if (reader != null) reader.Close(); // IMPORTANTÍSIMO: libera la conexión
+            }
         }
 
         #endregion
@@ -376,6 +472,50 @@ namespace WSCore.GestionProyecto
             return (new CPersonal()).Buscar_Colaborador_xCod(V_CEO, V_CODIGO);
         }
 
+
+        [WebMethod(Description = "Obtiene Presupuesto de Proyecto por PK (CodProyecto + Sucursal).")]
+        public DataTable Get_ProyectoPresupuesto(string V_FTPresupuesto_CodProyecto, string V_FTPresupuesto_Sucursal, string UserName)
+        {
+            try
+            {
+                // 1) Validaciones de entrada
+                if (string.IsNullOrWhiteSpace(V_FTPresupuesto_CodProyecto))
+                    throw new ArgumentNullException(nameof(V_FTPresupuesto_CodProyecto), "Código de proyecto es requerido.");
+
+                if (string.IsNullOrWhiteSpace(V_FTPresupuesto_Sucursal))
+                    throw new ArgumentNullException(nameof(V_FTPresupuesto_Sucursal), "Sucursal es requerida.");
+
+                // 2) Log de entrada mínimo (evita null)
+                var usuario = string.IsNullOrWhiteSpace(UserName) ? "(anon)" : UserName;
+                // LogTransaccional.GrabarLogTransaccionalArchivo(... "IN Get_ProyectoPresupuesto cod=" + V_FTPresupuesto_CodProyecto + ", suc=" + V_FTPresupuesto_Sucursal + ", usr=" + usuario);
+
+                // 3) Llamada a controladora
+                var dt = (new CProyecto()).Get_ProyectoPresupuesto(V_FTPresupuesto_CodProyecto, V_FTPresupuesto_Sucursal, usuario);
+
+                // 4) Defensive: evita NRE hacia el cliente
+
+                // Si viene null, devuelve DT vacío con nombre
+                if (dt == null)
+                    return new DataTable("ProyectoPresupuesto");
+
+                // Si viene sin nombre, ponle uno (ASMX lo requiere)
+                if (string.IsNullOrWhiteSpace(dt.TableName))
+                    dt.TableName = "ProyectoPresupuesto";
+
+
+                // LogTransaccional.GrabarLogTransaccionalArchivo(... "OUT rows=" + dt.Rows.Count);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                // Log detallado
+                // LogTransaccional.GrabarLogTransaccionalArchivo(... "ERROR Get_ProyectoPresupuesto: " + ex.ToString());
+
+                // No retornes null si tu cliente no lo espera; envía tabla vacía o deja que burbujee si quieres SOAP Fault
+                throw;
+            }
+        }
+
         #endregion
 
         #region Procedimientos almacenados TRANSACCIONALES: Proyecto
@@ -517,6 +657,71 @@ namespace WSCore.GestionProyecto
             return (new CProyecto()).InsertarUsuarioProyecto(userId, proyId, UserName);
         }
 
+
+        [WebMethod(Description = "Inserta, actualiza o elimina Presupuesto de Proyecto (N_ACCION = 1/2/3).")]
+        public string InsUpdDel_ProyectoPresupuesto(
+                  string X_N_ACCION,
+                  string X_V_FTPresupuesto_CodProyecto,
+                  string X_V_FTPresupuesto_Sucursal,
+                  string X_N_FTPresupuesto_CostoMOB,
+                  string X_N_FTPresupuesto_CostoMAT,
+                  string X_N_FTPresupuesto_CostoSER,
+                  string X_N_FTPresupuesto_CostoIND,
+                  string X_V_FTPresupuesto_USUARIO_AUDI,
+                  string X_V_FTPresupuesto_ESTACIONW,
+                  string X_V_FTPresupuesto_AUDITORIA
+              )
+        {
+            // Mapeo estilo patrón: construir el BE con los X_*
+            var oBE = new ProyectoPresupuestoBE
+            {
+                // Acción (1=INS, 2=UPD, 3=DEL)
+                N_ACCION = ToInt32Safe(X_N_ACCION),
+
+                // PK
+                V_FTPresupuesto_CodProyecto = X_V_FTPresupuesto_CodProyecto,
+                V_FTPresupuesto_Sucursal = X_V_FTPresupuesto_Sucursal,
+
+                // Costos (parse seguros a decimal?; null si viene vacío)
+                N_FTPresupuesto_CostoMOB = ToDecimalNullable(X_N_FTPresupuesto_CostoMOB),
+                N_FTPresupuesto_CostoMAT = ToDecimalNullable(X_N_FTPresupuesto_CostoMAT),
+                N_FTPresupuesto_CostoSER = ToDecimalNullable(X_N_FTPresupuesto_CostoSER),
+                N_FTPresupuesto_CostoIND = ToDecimalNullable(X_N_FTPresupuesto_CostoIND),
+
+                // Auditoría
+                V_FTPresupuesto_USUARIO_AUDI = X_V_FTPresupuesto_USUARIO_AUDI,
+                V_FTPresupuesto_ESTACIONW = X_V_FTPresupuesto_ESTACIONW,
+                V_FTPresupuesto_AUDITORIA = X_V_FTPresupuesto_AUDITORIA
+            };
+
+            // Delegar a la controladora según tu patrón
+            return (new CProyecto()).InsUpdDel_ProyectoPresupuesto(oBE);
+        }
+
         #endregion
+
+
+        // ============================
+        // Helpers de parseo seguros
+        // ============================
+        private static int ToInt32Safe(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return 0;
+            int n;
+            return Int32.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out n) ? n : 0;
+        }
+
+        private static decimal? ToDecimalNullable(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+
+            // Aceptar tanto coma como punto; normalizamos a punto para InvariantCulture
+            var v = value.Replace(',', '.');
+            decimal d;
+            return Decimal.TryParse(v, NumberStyles.Number, CultureInfo.InvariantCulture, out d) ? d : (decimal?)null;
+        }
+    
+
+       //------------------------------------------
     }
 }

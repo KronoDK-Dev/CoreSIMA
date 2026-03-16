@@ -7,10 +7,12 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilitario;
+using static AccesoDatos.BaseAD;
 
 namespace AccesoDatos.NoTransaccional.GestionComercial
 { 
@@ -150,8 +152,7 @@ namespace AccesoDatos.NoTransaccional.GestionComercial
             }
         }
 
-        public DataTable ListarSolicitudTrabajo(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI,
-            string V_FEC_STR_FIN, string UserName)
+        public DataTable ListarSolicitudTrabajo(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI,    string V_FEC_STR_FIN, string UserName)
         {
             try
             {
@@ -230,7 +231,150 @@ namespace AccesoDatos.NoTransaccional.GestionComercial
             }
         }
 
-        public DataTable Lista_Lineas_Usuario(string s_USUARIO, string UserName)
+        public DataTable ListarSolicitudTrabajo_SQL(string V_AMBIENTE, string V_FILTRO, string V_CEO, string V_UND_OPER, string V_FEC_STR_INI, string V_FEC_STR_FIN, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, V_AMBIENTE, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN,UserName);
+                string PackagName = "UNISYS.PR_GET_SOLICITUD";
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackagName
+                    , oInfoMetodoBE.VoidParams
+                    , ""
+                    , Helper.MensajesIngresarMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, V_AMBIENTE, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackagName
+                    , ""
+                    , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                    , Helper.MensajesSalirMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+                return ds.Tables[0];
+            }
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+        public List<Dictionary<string, object>> ListarSolicitudTrabajo_JSON(string V_AMBIENTE,string V_FILTRO,string V_CEO, string V_UND_OPER, string V_FEC_STR_INI, string V_FEC_STR_FIN,  string UserName)
+            {
+                try
+                {
+                    var empty = new List<Dictionary<string, object>>(0);
+
+                    // ====== Trazas
+                    StackTrace stack = new StackTrace();
+                    string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                    InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(
+                        NombreMetodo, V_AMBIENTE, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+
+                    string PackagName = "UNISYS.PR_GET_SOLICITUD";
+
+                    LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(
+                        UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackagName,
+                        oInfoMetodoBE.VoidParams,
+                        "",
+                        Helper.MensajesIngresarMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I)
+                    ));
+
+                    // ====== Ejecución del SP
+                    DataSet ds = Sql(SQLVersion.sqlSIMANET)
+                        .ExecuteDataSet(PackagName, V_AMBIENTE, V_FILTRO, V_CEO, V_UND_OPER, V_FEC_STR_INI, V_FEC_STR_FIN, UserName);
+
+                    int irows = (ds != null && ds.Tables != null && ds.Tables.Count > 0) ? ds.Tables[0].Rows.Count : 0;
+
+                    LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(
+                        UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackagName,
+                        "",
+                        "rstCount:" + irows.ToString(CultureInfo.InvariantCulture),
+                        Helper.MensajesSalirMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I)
+                    ));
+
+                    if (ds == null || ds.Tables.Count == 0)
+                        return empty;
+
+                    // ====== Transformación DataTable -> List<Dictionary<string,object>>
+                    var dt = ds.Tables[0];
+                    var list = new List<Dictionary<string, object>>(dt.Rows.Count);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+                        foreach (DataColumn c in dt.Columns)
+                        {
+                            object val = row[c] == DBNull.Value ? null : row[c];
+
+                            // Normaliza DateTime a ISO 8601, mismo patrón que tu ejemplo
+                            if (val is DateTime dtVal)
+                            {
+                                // Si deseas mantener zona local, puedes quitar la 'Z'.
+                                val = dtVal.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+                            }
+
+                            dict[c.ColumnName] = val;
+                        }
+
+                        list.Add(dict);
+                    }
+
+                    return list;
+                }
+                catch (SqlException sqlEx)
+                {
+                    LogTransaccional.LanzarSIMAExcepcionDominio(
+                        UserName,
+                        this.GetType().Name,
+                        Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                        Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString()
+                            + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + sqlEx.Number.ToString(CultureInfo.InvariantCulture)),
+                        "Código de Error:" + sqlEx.Number.ToString(CultureInfo.InvariantCulture)
+                            + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1"
+                            + Utilitario.Constante.Caracteres.SeperadorSimple + sqlEx.Message
+                    );
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    LogTransaccional.LanzarSIMAExcepcionDominio(
+                        UserName,
+                        this.GetType().Name,
+                        Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                        Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(),
+                        ex.Message
+                    );
+                    return null;
+                }
+            }
+    public DataTable Lista_Lineas_Usuario(string s_USUARIO, string UserName)
         {
             try
             {

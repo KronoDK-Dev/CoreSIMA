@@ -524,5 +524,26 @@ namespace Controladora.General
         {
             return (new InformacionGeneralNTAD()).Listar_Reg_TabGeneral(V_COD_TABLA, V_ESTADO, V_ORDEN, UserName);
         }
+
+        public DataTable ConsultarTrabajadorXApellido(string ApellidoyNombres, string UserName)
+        {
+            return (new InformacionGeneralNTAD()).ConsultarTrabajadorXApellido(ApellidoyNombres, UserName);
+        }
+
+        public DataTable ListarAreaYPseudoArea(string NombreArea, string nCEO, string UserName)
+        {
+            return (new InformacionGeneralNTAD()).ListarAreaYPseudoArea(NombreArea, nCEO, UserName);
+        }
+
+        public DataTable ListarProveedoresSIMANET(string V_NOMBRE, string V_CRITERIO, string UserName)
+        {
+            return (new InformacionGeneralNTAD()).ListarProveedoresSIMANET(V_NOMBRE, V_CRITERIO, UserName);
+        }
+
+        public DataTable BuscarPersonal(string V_NOMBRE, string UserName)
+        {
+            return (new InformacionGeneralNTAD()).BuscarPersonal(V_NOMBRE, UserName);
+
+        }
     }
 }

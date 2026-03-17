@@ -153,7 +153,8 @@
     <Content Include="Recursos\seguridad.png" />
     <Content Include="Recursos\style.css" />
     <Content Include="Recursos\Tesoreria.png" />
-    <Content Include="SeguridadPlanta\SeguridadIndustrial.asmx" />
+    <Content Include="SIMANET\SeguridadPlanta\SeguridadIndustrial.asmx" />
+    <Content Include="SIMANET\SeguridadPlanta\Contratista.asmx" />
     <Content Include="Seguridad\Seguridad.asmx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -214,16 +215,6 @@
       <DependentUpon>Interbancario.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\Archivo.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\demo.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\DetDocBenef.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\LecturaError.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanCabProv.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanDetProv.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanillaPagos.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\PlanillaPagosOperationResult.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\RespuestaBE.cs" />
-    <Compile Include="GestionFinanciera\Tesoreria\Pagos\StringOperationResult.cs" />
     <Compile Include="GestionGobernanza\Indicadores.asmx.cs">
       <DependentUpon>Indicadores.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -297,8 +288,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SeguridadPlanta\SeguridadIndustrial.asmx.cs">
+    <Compile Include="SIMANET\SeguridadPlanta\SeguridadIndustrial.asmx.cs">
       <DependentUpon>SeguridadIndustrial.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SIMANET\SeguridadPlanta\Contratista.asmx.cs">
+      <DependentUpon>Contratista.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Seguridad\Seguridad.asmx.cs">
@@ -326,7 +321,7 @@
       <Name>Controladora</Name>
     </ProjectReference>
     <ProjectReference Include="..\EntidadNegocio\EntidadNegocio.csproj">
-      <Project>{F5DBA14F-FD14-423E-81FE-FC4C83E8DF33}</Project>
+      <Project>{f5dba14f-fd14-423e-81fe-fc4c83e8df33}</Project>
       <Name>EntidadNegocio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Log\Log.csproj">

@@ -59,11 +59,13 @@ namespace WSCore.GestionGobernanza
             return (new CActividad()).ModificaInserta(oObjAccIndRecBE);
         }
         [WebMethod]
-        public string  Reesposable_ins(int IdItem, string CodigoArea, string Descripcion, int IdAccion,string UserName)
+        public string  Reesposable_ins(int IdItem, string CodigoArea,string CodEmp,string CodCeo, string Descripcion, int IdAccion,string UserName)
         {
             ObjAccIndRecBE oObjAccIndRecBE = new ObjAccIndRecBE();
             oObjAccIndRecBE.IdItemTabla = IdItem;
             oObjAccIndRecBE.Nombre = CodigoArea;
+            oObjAccIndRecBE.Val1 = CodEmp;
+            oObjAccIndRecBE.Val2 = CodCeo;
             oObjAccIndRecBE.Descripcion = Descripcion;
             oObjAccIndRecBE.IdItemRelacion = IdAccion;
             oObjAccIndRecBE.UserName = UserName;
@@ -119,11 +121,11 @@ namespace WSCore.GestionGobernanza
         }
 
         [WebMethod]
-        public DataTable ListarIndicadoresPorArea(string CodArea, string UserName)
+        public DataTable ListarIndicadoresPorArea(string CodArea,string CodEmp,string CodSuc, string UserName)
         {
-            return (new CAccionIndicador()).ListarIndicadoresPorArea(CodArea, UserName);
+            return (new CAccionIndicador()).ListarIndicadoresPorArea(CodArea, CodEmp,  CodSuc, UserName);
         }
-
+         
 
         [WebMethod]
         public DataTable ListarIndicadorCondicion(int IdArea ,int IdIndicador, string UserName)
@@ -242,20 +244,21 @@ namespace WSCore.GestionGobernanza
 
 
         [WebMethod]
-        public DataTable ResponsablePorArea_Lst(string CodEmp,string CodCeo,string CodArea, string UserName)
+        public DataTable ResponsablePorArea_Lst(string CodArea, string UserName)
         {
-            return (new Controladora.GestionGobernanza.CResponsableArea()).ListarTodos(CodEmp, CodCeo, CodArea, UserName);
+            return (new CResponsableArea()).ListarTodos(CodArea, UserName);
         }
 
         [WebMethod]
-        public string ResponsablePorArea_Ins(string IdItem, string CodArea, string CodEmp, string CodCeo, string IdUsuarioRepon, string UserName)
+        public string ResponsablePorArea_Ins(int IdItem, string CodArea,string CodEmp,string CodSuc,string IdUsuarioRepon,int IdUsuario, string UserName)
         {
             ObjAccIndRecBE oObjResponAreaBE = new ObjAccIndRecBE();
             oObjResponAreaBE.IdItemTabla = Convert.ToInt32(IdItem);
-            oObjResponAreaBE.Nombre = CodArea;
-            oObjResponAreaBE.Val1 = CodEmp;
-            oObjResponAreaBE.Val2 = CodCeo;
-            oObjResponAreaBE.Val3 = IdUsuarioRepon;
+            oObjResponAreaBE.Val1 = CodArea;
+            oObjResponAreaBE.Val2 = CodEmp;
+            oObjResponAreaBE.Val3 = CodSuc;
+            oObjResponAreaBE.Val4 = IdUsuarioRepon;
+            oObjResponAreaBE.IdUsuario = IdUsuario;
             oObjResponAreaBE.UserName = UserName;
             return (new CResponsablexArea()).ModificaInserta(oObjResponAreaBE);
         }
@@ -265,5 +268,13 @@ namespace WSCore.GestionGobernanza
         {
             return (new CResponsablexArea()).Eliminar(IdTabla, IdItem, UserName);
         }
+
+
+        [WebMethod(Description = "Buscar en el Maestro de Areas de UNISYS")]
+        public DataTable BuscarArea(string Nombre_Area, string CodEmp,string CodSuc , string UserName)
+        {
+            return (new CResponsableArea()).BuscarArea(CodEmp, CodSuc, Nombre_Area, UserName);
+        }
+
     }
 }

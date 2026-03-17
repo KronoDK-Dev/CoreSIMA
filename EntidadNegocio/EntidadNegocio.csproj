@@ -120,6 +120,12 @@
     <Compile Include="SeguridadPlanta\MensajeResultBE.cs" />
     <Compile Include="SeguridadPlanta\personal.cs" />
     <Compile Include="Seguridad\UsuarioBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\AutorizaIngFeriadoBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCTT_ProgramacionBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCTT_ProgramacionTrabajadoresContratistaBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCTT_Programacion_CtrlEquiposBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCTT_TrabajadorBE.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\ProveedorClienteBE.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utilitario\Utilitario.csproj">

@@ -1,0 +1,240 @@
+﻿using EntidadNegocio;
+using EntidadNegocio.SIMANET.SeguridadPlanta;
+using Log;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utilitario;
+
+namespace AccesoDatos.NoTransaccional.SIMANET.SeguridadPlanta
+{
+    public class ProgramacionTrabajadorNTAD : BaseAD, IMantenimientoNTAD
+    {
+        public DataTable Buscar(string TextFind, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BaseBE Detalle(string Id1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BaseBE Detalle(string Id1, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BaseBE Detalle(string Id1, string Id2, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BaseBE Detalle(string Id1, string Id2, string Id3, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1, Id2, Id3, UserName);
+
+                string PackagName = "CCTTuspNTADConsultarDetalleProgramacionTrabajador";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                    , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, Id1, Id2, Id3);
+
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                if (ds.Tables[0].Rows.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    DataRow dr = ds.Tables[0].Rows[0];
+                    CCTT_ProgramacionTrabajadoresContratistaBE oCCTT_ProgramacionTrabajadoresContratistaBE = new CCTT_ProgramacionTrabajadoresContratistaBE();
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.ApellidosyNombres = dr["ApellidosyNombres"].ToString();
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.Periodo = Convert.ToInt32(Id1);
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.NroProgramacion = Convert.ToInt32(Id2);
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.NroDNI = Id3;
+
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.FechaInicio = Convert.ToDateTime(dr["tFechaInicio"]);
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.FechaTermino = Convert.ToDateTime(dr["tFechaTermino"]);
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.HoraInicio = dr["tHoraInicio"].ToString();
+                    oCCTT_ProgramacionTrabajadoresContratistaBE.HoraTermino = dr["tHoraTolerancia"].ToString();
+
+                    return oCCTT_ProgramacionTrabajadoresContratistaBE;
+                }
+            }
+
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+        public DataTable ListarTodos()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos(string Id1, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos(string Id1, string Id2, string UserName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataTable ListarTodos(string Id1, string Id2, string Id3, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1, Id2, Id3, UserName);
+
+                // string PackagName = "GOBERNANZA.PKG_INDICADOR_NTAD.IIndicadorCondicion";
+                string PackagName = "CCTTuspNTADConsultarProgramacionTrabajadoresContratista";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                    , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, Id1, Id2, Id3);
+
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                return ds.Tables[0];
+            }
+
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+
+        public DataTable ListarValidaSCTREXAM(string NroDNI, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, NroDNI, UserName);
+
+                string PackagName = "CCTT_uspNTADVerificarFichaMedica_Induccion";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                    , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+
+
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, NroDNI);
+
+
+                //Graba en el Log Salida del Metodo
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+
+
+
+                return ds.Tables[0];
+            }
+
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+    }
+}

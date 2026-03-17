@@ -96,7 +96,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I))
                                                                  );
-/*
+
                 
                 OracleParameter[] oParam = new OracleParameter[4];
 
@@ -114,8 +114,9 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                 oParam[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
                 oParam[3].Direction = ParameterDirection.Output;
-                */
-                
+               
+
+                /*
                 OracleParameter[] oParam = new OracleParameter[3];
 
                 
@@ -129,7 +130,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                 oParam[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
                 oParam[2].Direction = ParameterDirection.Output;
-
+                */
                 
 
                 DataSet ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, oParam);
@@ -185,7 +186,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I))
                                                                  );
 
-                /*
+                
                     OracleParameter[] oParam = new OracleParameter[4];
                     oParam[0] = new OracleParameter("p_cod_bco", OracleDbType.Varchar2);
                     oParam[0].Direction = ParameterDirection.Input;
@@ -202,9 +203,9 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
                     oParam[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
                     oParam[3].Direction = ParameterDirection.Output;
 
-                    */
+                    
 
-                   
+                  /* 
                 OracleParameter[] oParam = new OracleParameter[3];
 
                 oParam[0] = new OracleParameter("p_nro_lot", OracleDbType.Varchar2);
@@ -217,7 +218,7 @@ namespace AccesoDatos.NoTransaccional.GestionFinanciera.Tesoreria
 
                 oParam[2] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
                 oParam[2].Direction = ParameterDirection.Output;
-                
+                */
 
 
                 DataSet ds = Oracle(ORACLEVersion.O7).ExecuteDataSet(true, PackagName, oParam);

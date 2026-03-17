@@ -24,9 +24,9 @@ namespace Controladora.GestionGobernanza
             return (new AccionIndicadorNTAD()).ListarTodos(Id1, Id2, UserName);
         }
 
-        public DataTable ListarIndicadoresPorArea(string CodArea, string UserName)
+        public DataTable ListarIndicadoresPorArea(string CodArea, string CodEmp, string CodSuc, string UserName)
         {
-            return (new AccionIndicadorNTAD()).ListarIndicadoresPorArea(CodArea, UserName);
+            return (new AccionIndicadorNTAD()).ListarIndicadoresPorArea(CodArea, CodEmp, CodSuc, UserName);
         }
      }
 }

@@ -144,10 +144,10 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = 3;
 
-                Param[1] = new OracleParameter("CODIGO", OracleDbType.Varchar2);
-                Param[1].Direction = ParameterDirection.Input;
+               Param[1] = new OracleParameter("CODIGO", OracleDbType.Varchar2);
+                Param[1].Direction = ParameterDirection.InputOutput;
                 Param[1].Value = oObjAccIndRecBE.Codigo;
-
+ 
                 Param[2] = new OracleParameter("IDITEM", OracleDbType.Int64);
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = oObjAccIndRecBE.IdItemTabla;
@@ -156,11 +156,11 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 Param[3].Direction = ParameterDirection.Input;
                 Param[3].Value = oObjAccIndRecBE.Nombre;
 
-                Param[4] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
+              Param[4] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
                 Param[4].Direction = ParameterDirection.Input;
                 Param[4].Value = oObjAccIndRecBE.Descripcion;
 
-
+ 
                 Param[5] = new OracleParameter("IDACCION", OracleDbType.Int64);
                 Param[5].Direction = ParameterDirection.Input;
                 Param[5].Value = oObjAccIndRecBE.IdItemRelacion;

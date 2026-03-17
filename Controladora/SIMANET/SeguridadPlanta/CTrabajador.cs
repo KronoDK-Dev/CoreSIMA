@@ -1,4 +1,6 @@
 ﻿using AccesoDatos.NoTransaccional.SIMANET.SeguridadPlanta;
+using AccesoDatos.Transaccional.SIMANET.SeguridadPlanta;
+using EntidadNegocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,11 +19,17 @@ namespace Controladora.SIMANET.SeguridadPlanta
 
         public DataTable BuscarTrabajador(string FindX, string Criterio, string FechaProgIni, string FechaProgFin, string UserName)
         {
-            return (new TrabajadorNTAD()).BuscarTrabajador(FindX, Criterio,  FechaProgIni, FechaProgFin, UserName);
+            return (new TrabajadorNTAD()).BuscarTrabajador(FindX, Criterio, FechaProgIni, FechaProgFin, UserName);
         }
         public DataTable BuscarTrabajadorxDNI(string NroDNI, string UserName)
         {
-            return (new TrabajadorNTAD()).BuscarTrabajadorxDNI(NroDNI,  UserName);
+            return (new TrabajadorNTAD()).BuscarTrabajadorxDNI(NroDNI, UserName);
         }
-      }
+        
+
+        public int Insertar(BaseBE oBaseBE)
+        {
+            return (new TrabajadorTAD()).Insertar(oBaseBE);
+        }
+    }
 }

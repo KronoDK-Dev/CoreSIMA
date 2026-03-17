@@ -49,14 +49,14 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
         {
             throw new NotImplementedException();
         }
-        public DataTable ListarIndicadoresPorArea(string CodArea, string UserName)
+        public DataTable ListarIndicadoresPorArea(string CodArea, string CodEmp, string CodSuc, string UserName)
         {
             try
             {
                 StackTrace stack = new StackTrace();
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
-                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, CodArea.ToString(), UserName);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, CodArea, CodEmp, CodSuc, UserName);
 
                 string PackagName = "GOBERNANZA.PKG_INDICADOR_NTAD.IlistaIndicadorXArea";
 
@@ -72,16 +72,23 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
                                                                  );
 
 
-                OracleParameter[] oParam = new OracleParameter[2];
-                oParam[0] = new OracleParameter("pCod_Area", OracleDbType.Int64);
+                OracleParameter[] oParam = new OracleParameter[4];
+                oParam[0] = new OracleParameter("pCodArea", OracleDbType.Varchar2);
                 oParam[0].Direction = ParameterDirection.Input;
                 oParam[0].Value = CodArea;
 
-                oParam[1] = new OracleParameter("rstOut", OracleDbType.RefCursor);
-                oParam[1].Direction = ParameterDirection.Output;
+                oParam[1] = new OracleParameter("PCodEmp", OracleDbType.Varchar2);
+                oParam[1].Direction = ParameterDirection.Input;
+                oParam[1].Value = CodEmp;
+
+                oParam[2] = new OracleParameter("pCodSuc", OracleDbType.Varchar2);
+                oParam[2].Direction = ParameterDirection.Input;
+                oParam[2].Value = CodSuc;
+
+                oParam[3] = new OracleParameter("rstOut", OracleDbType.RefCursor);
+                oParam[3].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
-
 
                 //Graba en el Log Salida del Metodo
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName

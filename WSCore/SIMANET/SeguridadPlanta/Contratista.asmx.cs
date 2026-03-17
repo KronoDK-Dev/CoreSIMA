@@ -39,6 +39,11 @@ namespace WSCore.SIMANET.SeguridadPlanta
         }
 
         [WebMethod]
+        public int ProgramacionContratista_Del(int Periodo, int IdProgramacion, int IdUsuario, string UserName) {
+            return (new Ccontratista()).Eliminar(Periodo, IdProgramacion, IdUsuario, UserName);
+        }
+
+        [WebMethod]
         public string ProgramacionContratista_act(int NroProgramacion
                                                     , int Periodo
                                                     , int IdEntidad
@@ -222,6 +227,42 @@ namespace WSCore.SIMANET.SeguridadPlanta
             return (new CProgramacionTrabajador()).ModificaInserta(oCCTT_ProgramacionTrabajadoresContratistaBE);
         }
         [WebMethod]
+        public string ReProgramarTrabajador_Act(int Periodo, int IdProgramacion, string NroDNI, string FIni, string FFin, string HIni, string HFin, int IdUsuario, string UserName)
+        {
+            CCTT_ProgramacionTrabajadoresContratistaBE oCCTT_ProgramacionTrabajadoresContratistaBE = new CCTT_ProgramacionTrabajadoresContratistaBE();
+            oCCTT_ProgramacionTrabajadoresContratistaBE.NroProgramacion = IdProgramacion;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.Periodo = Periodo;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.NroDNI = NroDNI;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.FechaInicio = Convert.ToDateTime(FIni);
+            oCCTT_ProgramacionTrabajadoresContratistaBE.FechaTermino = Convert.ToDateTime(FFin);
+            oCCTT_ProgramacionTrabajadoresContratistaBE.HoraInicio = HIni;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.HoraTermino = HFin;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.IdUsuario = IdUsuario;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.SCTRSalud = "Sin SCTR";
+            oCCTT_ProgramacionTrabajadoresContratistaBE.SCTRPension = "Sin SCTR";
+            return (new CProgramacionTrabajador()).Reprogramar(oCCTT_ProgramacionTrabajadoresContratistaBE);
+        }
+
+        [WebMethod]
+        public CCTT_ProgramacionTrabajadoresContratistaBE ReProgramarTrabajador_Det(int Periodo, int IdProgramacion, string NroDNI, string UserName)
+        {
+            return (CCTT_ProgramacionTrabajadoresContratistaBE)(new CProgramacionTrabajador()).ReprogramacionDetalleTrabajador(IdProgramacion.ToString(), Periodo.ToString(), NroDNI, UserName);
+        }
+        
+        [WebMethod]
+        public int ProgramacionTrabajador_eli(int Periodo, int IdProgramacion, string NroDNI, int IdEstado, int IdUsuario, string UserName)
+        {
+            CCTT_ProgramacionTrabajadoresContratistaBE oCCTT_ProgramacionTrabajadoresContratistaBE = new CCTT_ProgramacionTrabajadoresContratistaBE();
+            oCCTT_ProgramacionTrabajadoresContratistaBE.Periodo = Periodo;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.NroProgramacion = IdProgramacion;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.NroDNI = NroDNI;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.Observacion = "Eliminado desde NetSuite";
+            oCCTT_ProgramacionTrabajadoresContratistaBE.IdEstado = IdEstado;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.IdUsuario = IdUsuario;
+            oCCTT_ProgramacionTrabajadoresContratistaBE.UserName = UserName;
+            return (new CProgramacionTrabajador()).Eliminar(oCCTT_ProgramacionTrabajadoresContratistaBE);
+        }
+        [WebMethod]
         public DataTable ProgramacionTrabajador_lst(int Periodo, int IdProgramacion, string NroDNI, string UserName)
         {
             return (new CProgramacionTrabajador()).ListarTodos(IdProgramacion.ToString(), Periodo.ToString(), NroDNI, UserName);
@@ -231,6 +272,20 @@ namespace WSCore.SIMANET.SeguridadPlanta
         public DataTable ProgramacionTrabajadorRequisitos_lst(string NroDNI, string UserName)
         {
             return (new CProgramacionTrabajador()).ListarValidaSCTREXAM(NroDNI, UserName);
+        }
+
+
+
+        [WebMethod]
+        public DataTable ProgramacionEquipos_lst(int  Periodo,int IdProgreamacion,string IdEquipo, string UserName)
+        {
+            return (new CProgramacionEquipos()).ListarTodos(Periodo.ToString(), IdProgreamacion.ToString(), IdEquipo, UserName);
+        }
+
+        [WebMethod]
+        public CCTT_Programacion_CtrlEquiposBE ProgramacionEquipos_Det(int Periodo, int IdProgreamacion, string IdEquipo, string UserName)
+        {
+            return (CCTT_Programacion_CtrlEquiposBE)(new CProgramacionEquipos()).Detalle(Periodo.ToString(), IdProgreamacion.ToString(), IdEquipo, UserName);
         }
 
 
@@ -260,5 +315,83 @@ namespace WSCore.SIMANET.SeguridadPlanta
 
             return (new CAutorizaFeriado()).ModificaInserta(oAutorizaIngFeriadoBE);
         }
+
+        [WebMethod]
+        public DataTable AutorizacionFeriadosPorTrabajador_lst(string NroDNI, string FechaIniProg, string FechaFinProg, string UserName)
+        {
+            return (new CAutorizaFeriado()).ListaFeriadoPorTrabajador(NroDNI, Convert.ToDateTime(FechaIniProg), Convert.ToDateTime(FechaFinProg), UserName);
+        }
+
+        [WebMethod]
+        public string ContratistaEquipos_insMod(int NroProgramacion
+                                                , int Periodo
+                                                , int NroItem
+                                                , string Codigo
+                                                , string Descripcion
+                                                , int Cantidad
+                                                , int IdTipoInOut
+                                                , int IdUsuario
+                                                , string UserName
+                                                , string Modo
+                                        )
+        {
+
+            CCTT_Programacion_CtrlEquiposBE oCCTT_Programacion_CtrlEquiposBE = new CCTT_Programacion_CtrlEquiposBE();
+
+            oCCTT_Programacion_CtrlEquiposBE.NroProgramacion = NroProgramacion;
+            oCCTT_Programacion_CtrlEquiposBE.Periodo = Periodo;
+            oCCTT_Programacion_CtrlEquiposBE.NroItem = NroItem;
+            oCCTT_Programacion_CtrlEquiposBE.Codigo = Codigo;
+            oCCTT_Programacion_CtrlEquiposBE.Descripcion = Descripcion;
+            oCCTT_Programacion_CtrlEquiposBE.Cantidad = Cantidad;
+            oCCTT_Programacion_CtrlEquiposBE.IdTipoInOut = IdTipoInOut;
+            oCCTT_Programacion_CtrlEquiposBE.NroProgramacionRel = 0;
+            oCCTT_Programacion_CtrlEquiposBE.PeriodoRel = 0;
+            oCCTT_Programacion_CtrlEquiposBE.IdUsuario = IdUsuario;
+            oCCTT_Programacion_CtrlEquiposBE.UserName = UserName;
+            if (Modo == "N")
+            {
+                return (new CProgramacionEquipos()).Inserta(oCCTT_Programacion_CtrlEquiposBE);
+            }
+            else {
+                return (new CProgramacionEquipos()).Modifica(oCCTT_Programacion_CtrlEquiposBE);
+            }
+        }
+
+        [WebMethod]
+        public string ContratistaEquipos_Del(int Periodo
+                                              , int NroProgramacion
+                                              , int NroItem
+                                              , int IdUsuario
+                                              , string UserName
+                                      )
+        {
+            return (new CProgramacionEquipos()).Eliminar(Periodo.ToString(), NroProgramacion.ToString(), NroItem.ToString(), IdUsuario, UserName).ToString();
+        }
+
+        [WebMethod]
+        public int ContratistaTrabajador_ins(string NroDNI
+                                             , string ApellidoPaterno
+                                             , string ApellidoMaterno
+                                             , string Nombres
+                                             , int IdNacionalidad
+                                             ,int IdUsuario
+                                             , string UserName
+                                     )
+        {
+            CCTT_TrabajadorBE oCCTT_TrabajadorBE = new CCTT_TrabajadorBE();
+
+            oCCTT_TrabajadorBE.NroDNI = NroDNI;
+            oCCTT_TrabajadorBE.ApellidosyNombres = ApellidoPaterno + " " + ApellidoMaterno + " " + Nombres;
+            oCCTT_TrabajadorBE.IdNacionalidad =IdNacionalidad;
+            oCCTT_TrabajadorBE.IdUsuario = IdUsuario;
+            oCCTT_TrabajadorBE.ApellidoPaterno = ApellidoPaterno;
+            oCCTT_TrabajadorBE.ApellidoMaterno = ApellidoMaterno;
+            oCCTT_TrabajadorBE.Nombres = Nombres;
+
+            return (new CTrabajador()).Insertar(oCCTT_TrabajadorBE);
+        }
+
+
     }
 }

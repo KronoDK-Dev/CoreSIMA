@@ -12,6 +12,18 @@ namespace Controladora.SIMANET.SeguridadPlanta
 {
     public class CProgramacionTrabajador
     {
+        public int Eliminar(BaseBE oBaseBE)
+        {
+            return (new ProgramacionTrabajadorTAD()).Eliminar(oBaseBE);
+        }
+        public string Reprogramar(BaseBE oBaseBE)
+        {
+            return (new ProgramacionTrabajadorTAD()).Reprogramar(oBaseBE);
+        }
+        public BaseBE ReprogramacionDetalleTrabajador(string Id1, string Id2, string Id3, string UserName)
+        {
+            return (new ProgramacionTrabajadorNTAD()).Detalle(Id1, Id2, Id3, UserName);
+        }
         public string ModificaInserta(BaseBE oBaseBE)
         {
             return (new ProgramacionTrabajadorTAD()).ModificaInserta(oBaseBE);

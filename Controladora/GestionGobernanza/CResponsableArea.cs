@@ -14,8 +14,8 @@ namespace Controladora.GestionGobernanza
         {
             return (new ResponsableAreaNTAD()).BuscarArea(CodEmpresa, CodCentro, TextFind, UserName);
         }
-        public DataTable ListarTodos(string CodEmp, string CodCeo, string CodArea, string UserName) {
-            return (new ResponsableAreaNTAD()).ListarTodos(CodEmp, CodCeo,CodArea, UserName);
+        public DataTable ListarTodos(string CodArea, string UserName) {
+            return (new ResponsableAreaNTAD()).ListarTodos(CodArea, UserName);
         }
     }
 }

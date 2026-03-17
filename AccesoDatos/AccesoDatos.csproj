@@ -259,10 +259,12 @@
     <Compile Include="NoTransaccional\HelpDesk\Sistemas\SistemaProcesoSubProcesoNTAD.cs" />
     <Compile Include="NoTransaccional\HelpDesk\Sistemas\StakeHolderNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\GENERAL\BusquedaNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\AutorizaFeriadoNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\CalendarioNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ContratistaNTAD.cs" />
     <Compile Include="NoTransaccional\Seguridad\AD.cs" />
     <Compile Include="NoTransaccional\Seguridad\UsuarioNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionEquiposNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionTrabajadorNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\TrabajadorNTAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -333,6 +335,7 @@
     <Compile Include="Transaccional\Seguridad\UsuarioTAD.cs" />
     <Compile Include="Transaccional\SIMANET\SeguridadPlanta\AutorizaFeriadoTAD.cs" />
     <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ContratistaTAD.cs" />
+    <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ProgramacionEquiposTAD.cs" />
     <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ProgramacionTrabajadorTAD.cs" />
     <Compile Include="Transaccional\SIMANET\SeguridadPlanta\ProveedorClienteTAD.cs" />
     <Compile Include="Transaccional\SIMANET\SeguridadPlanta\TrabajadorTAD.cs" />

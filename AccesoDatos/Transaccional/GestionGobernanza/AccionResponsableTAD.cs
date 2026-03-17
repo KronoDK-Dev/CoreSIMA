@@ -71,7 +71,7 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
-                OracleParameter[] Param = new OracleParameter[6];
+                OracleParameter[] Param = new OracleParameter[8];
 
                 Param[0] = new OracleParameter("oModo", OracleDbType.Int64);
                 Param[0].Direction = ParameterDirection.Input;
@@ -85,18 +85,27 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = oObjAccIndRecBE.Nombre;
 
-                Param[3] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
+
+                Param[3] = new OracleParameter("CODEMP", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
-                Param[3].Value = oObjAccIndRecBE.Descripcion;
+                Param[3].Value = oObjAccIndRecBE.Val1;
 
-
-                Param[4] = new OracleParameter("IDACCION", OracleDbType.Int64);
+                Param[4] = new OracleParameter("CODCEO", OracleDbType.Varchar2);
                 Param[4].Direction = ParameterDirection.Input;
-                Param[4].Value = oObjAccIndRecBE.IdItemRelacion;
+                Param[4].Value = oObjAccIndRecBE.Val2;
 
-                Param[5] = new OracleParameter("IdOut", OracleDbType.Varchar2);
-                Param[5].Direction = ParameterDirection.Output;
-                Param[5].Size = 15;
+                Param[5] = new OracleParameter("DESCRIPCION", OracleDbType.Varchar2);
+                Param[5].Direction = ParameterDirection.Input;
+                Param[5].Value = oObjAccIndRecBE.Descripcion;
+
+
+                Param[6] = new OracleParameter("IDACCION", OracleDbType.Int64);
+                Param[6].Direction = ParameterDirection.Input;
+                Param[6].Value = oObjAccIndRecBE.IdItemRelacion;
+
+                Param[7] = new OracleParameter("IdOut", OracleDbType.Varchar2);
+                Param[7].Direction = ParameterDirection.Output;
+                Param[7].Size = 15;
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 

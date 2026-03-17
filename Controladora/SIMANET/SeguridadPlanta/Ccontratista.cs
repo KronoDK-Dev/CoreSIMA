@@ -36,9 +36,13 @@ namespace Controladora.SIMANET.SeguridadPlanta
         {
             return (new ContratistaTAD()).Inserta(oBaseBE);
         }
-
         public string Modificar(BaseBE oBaseBE) {
             return (new ContratistaTAD()).Modifica(oBaseBE);
+        }
+
+        public int Eliminar(int Periodo, int IdProgramacion, int IdUsuario, string UserName)
+        {
+            return (new ContratistaTAD()).Eliminar(Periodo, IdProgramacion, IdUsuario, UserName);
         }
     }
 }

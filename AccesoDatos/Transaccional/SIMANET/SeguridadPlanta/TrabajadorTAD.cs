@@ -1,9 +1,14 @@
 ﻿using EntidadNegocio;
+using EntidadNegocio.SIMANET.SeguridadPlanta;
+using Log;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilitario;
 
 namespace AccesoDatos.Transaccional.SIMANET.SeguridadPlanta
 {
@@ -36,7 +41,56 @@ namespace AccesoDatos.Transaccional.SIMANET.SeguridadPlanta
 
         public int Insertar(BaseBE oBaseBE)
         {
-            throw new NotImplementedException();
+            CCTT_TrabajadorBE oCCTT_TrabajadorBE = (CCTT_TrabajadorBE)oBaseBE;
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oCCTT_TrabajadorBE.ToString(true));
+                string PackagName = "CCTTuspTADInsTrabajador";
+
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oCCTT_TrabajadorBE.UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , oInfoMetodoBE.VoidParams
+                                                                                     , ""
+                                                                                     , Helper.MensajesIngresarMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                                                                 );
+                object idResult = Sql(SQLVersion.sqlSIMANET).ExecuteScalar(PackagName
+                                                                              , oCCTT_TrabajadorBE.NroDNI
+                                                                                , oCCTT_TrabajadorBE.ApellidosyNombres
+                                                                                , oCCTT_TrabajadorBE.IdNacionalidad
+                                                                                , oCCTT_TrabajadorBE.IdUsuario
+                                                                                , oCCTT_TrabajadorBE.ApellidoPaterno
+                                                                                , oCCTT_TrabajadorBE.ApellidoMaterno
+                                                                                , oCCTT_TrabajadorBE.Nombres
+                                                                                );
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oCCTT_TrabajadorBE.UserName
+                                                                                     , oInfoMetodoBE.FullName
+                                                                                     , NombreMetodo
+                                                                                     , PackagName
+                                                                                     , ""
+                                                                                     , "Return ID:" + idResult
+                                                                                     , Helper.MensajesSalirMetodo()
+                                                                                     , Convert.ToString(Enumerados.NivelesErrorLog.I)));
+
+                return Convert.ToInt32(idResult);
+            }
+            catch (SqlException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(oCCTT_TrabajadorBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return -1;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(oCCTT_TrabajadorBE.UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return -1;
+            }
         }
 
         public string Modifica(BaseBE oBaseBE)

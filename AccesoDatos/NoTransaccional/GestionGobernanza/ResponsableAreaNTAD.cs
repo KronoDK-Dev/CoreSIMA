@@ -109,16 +109,19 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
                 return null;
             }
         }
-
-
         public DataTable ListarTodos(string Id1, string Id2, string Id3, string UserName)
+        {
+            return null;
+        }
+
+        public DataTable ListarTodos(string Id1, string UserName)
         {
             try
             {
                 StackTrace stack = new StackTrace();
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
-                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id2.ToString(), Id3.ToString(), UserName);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), UserName);
 
                 string PackagName = "GOBERNANZA.PKG_INDICADOR_NTAD.ILstRepxArea";
 
@@ -134,21 +137,13 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
                                                                  );
 
 
-                OracleParameter[] oParam = new OracleParameter[4];
+                OracleParameter[] oParam = new OracleParameter[2];
                 oParam[0] = new OracleParameter("pCod_Area", OracleDbType.Varchar2);
                 oParam[0].Direction = ParameterDirection.Input;
-                oParam[0].Value = Id3;
+                oParam[0].Value = Id1;
 
-                oParam[1] = new OracleParameter("pCodEmp", OracleDbType.Varchar2);
-                oParam[1].Direction = ParameterDirection.Input;
-                oParam[1].Value = Id1;
-
-                oParam[2] = new OracleParameter("pCodCeo", OracleDbType.Varchar2);
-                oParam[2].Direction = ParameterDirection.Input;
-                oParam[2].Value = Id2;
-
-                oParam[3] = new OracleParameter("rstOut", OracleDbType.RefCursor);
-                oParam[3].Direction = ParameterDirection.Output;
+                oParam[1] = new OracleParameter("rstOut", OracleDbType.RefCursor);
+                oParam[1].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackagName, oParam);
 
@@ -185,9 +180,6 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
         {
             throw new NotImplementedException();
         }
-        public DataTable ListarTodos(string Id1, string UserName)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

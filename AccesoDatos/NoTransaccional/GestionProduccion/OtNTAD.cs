@@ -494,8 +494,7 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
             }
         }
 
-        public DataTable Listar_det_gasto_pry_ot_sin_factsu(string V_CENTRO_OPERATIVO, string V_DIVISION,
-            string V_PROYECTO, string UserName)
+        public DataTable Listar_det_gasto_pry_ot_sin_factsu(string V_CENTRO_OPERATIVO, string V_DIVISION, string V_PROYECTO, string D_FECHAINI, string D_FECHAFIN, string UserName)
         {
             try
             {
@@ -517,7 +516,7 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
                 );
                 V_PROYECTO = "'" + V_PROYECTO + "'";
 
-                OracleParameter[] Param = new OracleParameter[4];
+                OracleParameter[] Param = new OracleParameter[6];
                 Param[0] = new OracleParameter("V_CEO", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = V_CENTRO_OPERATIVO;
@@ -530,8 +529,16 @@ namespace AccesoDatos.NoTransaccional.GestionProduccion
                 Param[2].Direction = ParameterDirection.Input;
                 Param[2].Value = V_PROYECTO;
 
-                Param[3] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Param[3].Direction = ParameterDirection.Output;
+                Param[3] = new OracleParameter("D_FECHAINI", OracleDbType.Varchar2);
+                Param[3].Direction = ParameterDirection.Input;
+                Param[3].Value = D_FECHAINI;
+
+                Param[4] = new OracleParameter("D_FECHAFIN", OracleDbType.Varchar2);
+                Param[4].Direction = ParameterDirection.Input;
+                Param[4].Value = D_FECHAFIN;
+
+                Param[5] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                Param[5].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
 

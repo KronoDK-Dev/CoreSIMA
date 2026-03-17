@@ -519,9 +519,16 @@ namespace WSCore.GestionProduccion
         }
 
         [WebMethod(Description = "1 Proyecto OT's  (submarinos)")]
-        public DataTable Listar_det_gasto_pry_ot_sin_factsu(string V_CENTRO_OPERATIVO, string V_DIVISION, string V_PROYECTO, string UserName)
+        public DataTable Listar_det_gasto_pry_ot_sin_factsu(string V_CENTRO_OPERATIVO, string V_DIVISION, string V_PROYECTO, string D_FECHAINI, string D_FECHAFIN, string UserName)
         {
-            return (new COt()).Listar_det_gasto_pry_ot_sin_factsu(V_CENTRO_OPERATIVO, V_DIVISION, V_PROYECTO, UserName);
+            try
+            {
+                return (new COt()).Listar_det_gasto_pry_ot_sin_factsu(V_CENTRO_OPERATIVO, V_DIVISION, V_PROYECTO, D_FECHAINI, D_FECHAFIN, UserName);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(500, "Error interno del servidor", ex);
+            }
         }
 
         [WebMethod(Description = "10 FACTURACION DE OT'S POR PROYECTOS SUBMARINOS")]

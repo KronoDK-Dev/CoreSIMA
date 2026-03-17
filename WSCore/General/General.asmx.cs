@@ -15,6 +15,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
+using static ManejadorException.ManejoExcepcion.Configuracion.Seccion;
 
 namespace WSCore.General
 {
@@ -949,6 +950,12 @@ namespace WSCore.General
             }
         }
 
-        #endregion 
+        #endregion
+
+        [WebMethod(Description = "Lista de Proveedores SIMANET")]
+        public DataTable ListarProveedoresSIMANET(string V_NOMBRE, string V_CRITERIO, string UserName)
+        {
+            return (new cGeneralParam()).ListarProveedoresSIMANET(V_NOMBRE, V_CRITERIO, UserName);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace AccesoDatos.Transaccional.GestionProduccion
     public class OtTAD : BaseAD, IMantenimientoTAD
     {
         readonly string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
-
+        readonly string sComercial = ConfigurationManager.AppSettings["E_COMERCIAL"];
         public int Eliminar()
         {
             throw new NotImplementedException();
@@ -158,5 +158,67 @@ namespace AccesoDatos.Transaccional.GestionProduccion
         {
             throw new NotImplementedException();
         }
+
+        public string ExcluyeOT_ReporteBI(string V_Sucursal, string V_Linea, string V_OT, string UserName)
+        {
+            try
+            {
+                // Si el SP está en paquete, usa:
+                // string PackageName = sComercial + ".PKG_comercial.PR_Excluye_OT_ReporteBI";
+                // Si el SP es standalone:
+                string PackageName = sComercial + ".PKG_comercial.PR_Excluye_OT_ReporteBI";
+
+                // PR_Excluye_OT_ReporteBI(
+                //   V_Sucursal IN VARCHAR2,
+                //   V_Linea    IN VARCHAR2,
+                //   V_OT       IN VARCHAR2,
+                //   V_RESULTADO OUT VARCHAR2)
+
+                OracleParameter[] Params = new OracleParameter[4];
+
+                // IN
+                Params[0] = new OracleParameter("V_Sucursal", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_Sucursal ?? DBNull.Value };
+
+                Params[1] = new OracleParameter("V_Linea", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_Linea ?? DBNull.Value };
+
+                Params[2] = new OracleParameter("V_OT", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_OT ?? DBNull.Value };
+
+                // OUT
+                Params[3] = new OracleParameter("V_RESULTADO", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Output, Size = 50 };
+
+                // Ejecuta según tu helper
+                string result = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackageName, Params);
+
+                // Si tu capa puede devolver JSON, intenta leerlo; si no, toma el OUT directamente
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    try
+                    {
+                        var json = JObject.Parse(result);
+                        return (string)json["V_RESULTADO"];
+                    }
+                    catch
+                    {
+                        // No era JSON, continúa con OUT
+                    }
+                }
+
+                return Params[3].Value?.ToString() ?? "0"; // "1"=actualizó, "0"=sin cambio/error
+            }
+            catch (OracleException ex)
+            {
+                if (ex.Number == 20001) return "Registro duplicado";
+                return "Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return "Fallo en procesamiento: " + ex.Message;
+            }
+        }
+
     }
 }

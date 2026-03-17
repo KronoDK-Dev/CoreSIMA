@@ -560,12 +560,12 @@ namespace AccesoDatos.Transaccional.GestionProyecto
             {
                 string PackageName = sComercial + ".PKG_COMERCIAL.PR_CRUD_PROYECTO_PRESUPUESTO";
 
-                // 12 parámetros en total, exactamente como tu SP:
-                OracleParameter[] Params = new OracleParameter[12];
+                // 13 parámetros en total, exactamente como tu SP:
+                OracleParameter[] Params = new OracleParameter[13];
 
-               // 1) N_ACCION (1=INS, 2=UPD, 3=DEL)
-                    Params[0] = new OracleParameter("N_ACCION", OracleDbType.Int32)
-                    { Direction = ParameterDirection.Input, Value = oBE.N_ACCION };
+                // 1) N_ACCION (1=INS, 2=UPD, 3=DEL)
+                Params[0] = new OracleParameter("N_ACCION", OracleDbType.Int32)
+                { Direction = ParameterDirection.Input, Value = oBE.N_ACCION };
 
                 // 2) 3) PK
                 Params[1] = new OracleParameter("V_CodProyecto", OracleDbType.Varchar2)
@@ -587,37 +587,40 @@ namespace AccesoDatos.Transaccional.GestionProyecto
                 Params[6] = new OracleParameter("N_CostoIND", OracleDbType.Decimal)
                 { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoIND ?? DBNull.Value };
 
-                // 8)–10) Auditoría
-                Params[7] = new OracleParameter("V_USUARIO_AUDI", OracleDbType.Varchar2)
+                Params[7] = new OracleParameter("N_CostoNAC", OracleDbType.Decimal)
+                { Direction = ParameterDirection.Input, Value = (object)oBE.N_FTPresupuesto_CostoNAC ?? DBNull.Value };
+
+                // 9)–11) Auditoría
+                Params[8] = new OracleParameter("V_USUARIO_AUDI", OracleDbType.Varchar2)
                 { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_USUARIO_AUDI ?? DBNull.Value };
 
-                Params[8] = new OracleParameter("V_ESTACIONW", OracleDbType.Varchar2)
+                Params[9] = new OracleParameter("V_ESTACIONW", OracleDbType.Varchar2)
                 { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_ESTACIONW ?? DBNull.Value };
 
-                Params[9] = new OracleParameter("V_AUDITORIA", OracleDbType.Varchar2)
+                Params[10] = new OracleParameter("V_AUDITORIA", OracleDbType.Varchar2)
                 { Direction = ParameterDirection.Input, Value = (object)oBE.V_FTPresupuesto_AUDITORIA ?? DBNull.Value };
 
-                // 11) OUT: V_RESULTADO
-                    Params[10] = new OracleParameter("V_RESULTADO", OracleDbType.Varchar2)
-                    { Direction = ParameterDirection.Output, Size = 50 };
+                // 12) OUT: V_RESULTADO
+                Params[11] = new OracleParameter("V_RESULTADO", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Output, Size = 50 };
 
-                    // 12) OUT: cRegistros (aunque no se usa en 1/2/3 debe declararse)
-                    Params[11] = new OracleParameter("cRegistros", OracleDbType.RefCursor)
-                    { Direction = ParameterDirection.Output };
+                // 12) OUT: cRegistros (aunque no se usa en 1/2/3 debe declararse)
+                Params[12] = new OracleParameter("cRegistros", OracleDbType.RefCursor)
+                { Direction = ParameterDirection.Output };
 
-               
-                    // Ejecutar (siguiendo TU patrón: true)
-                    string result = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackageName, Params);
 
-                    // Si viene JSON, parsear; si no, tomar el OUT directamente
-                    if (!string.IsNullOrWhiteSpace(result))
-                    {
-                        JObject json = JObject.Parse(result);
-                        return (string)json["V_RESULTADO"];
-                    }
-                    return Params[10].Value?.ToString() ?? "OK";
-               
-                
+                // Ejecutar (siguiendo TU patrón: true)
+                string result = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackageName, Params);
+
+                // Si viene JSON, parsear; si no, tomar el OUT directamente
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    JObject json = JObject.Parse(result);
+                    return (string)json["V_RESULTADO"];
+                }
+                return Params[11].Value?.ToString() ?? "OK";
+
+
 
             }
             catch (OracleException ex)
@@ -631,6 +634,68 @@ namespace AccesoDatos.Transaccional.GestionProyecto
                 return "Fallo en procesamiento: " + ex.Message;
             }
         }
+
+        public string ExcluyeOT_ReporteBI(string V_Sucursal, string V_Linea, string V_OT)
+        {
+            try
+            {
+                // Si el SP está en paquete, usa:
+                // string PackageName = sComercial + ".PKG_REPORTE_BI.PR_Excluye_OT_ReporteBI";
+                // Si el SP es standalone:
+                string PackageName = sComercial + ".PKG_COMERCIAL.PR_Excluye_OT_ReporteBI";
+
+                // PR_Excluye_OT_ReporteBI(
+                //   V_Sucursal IN VARCHAR2,
+                //   V_Linea    IN VARCHAR2,
+                //   V_OT       IN VARCHAR2,
+                //   V_RESULTADO OUT VARCHAR2)
+
+                OracleParameter[] Params = new OracleParameter[4];
+
+                // IN
+                Params[0] = new OracleParameter("V_Sucursal", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_Sucursal ?? DBNull.Value };
+
+                Params[1] = new OracleParameter("V_Linea", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_Linea ?? DBNull.Value };
+
+                Params[2] = new OracleParameter("V_OT", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Input, Value = (object)V_OT ?? DBNull.Value };
+
+                // OUT
+                Params[3] = new OracleParameter("V_RESULTADO", OracleDbType.Varchar2)
+                { Direction = ParameterDirection.Output, Size = 50 };
+
+                // Ejecuta según tu helper
+                string result = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackageName, Params);
+
+                // Si tu capa puede devolver JSON, intenta leerlo; si no, toma el OUT directamente
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    try
+                    {
+                        var json = JObject.Parse(result);
+                        return (string)json["V_RESULTADO"];
+                    }
+                    catch
+                    {
+                        // No era JSON, continúa con OUT
+                    }
+                }
+
+                return Params[3].Value?.ToString() ?? "0"; // "1"=actualizó, "0"=sin cambio/error
+            }
+            catch (OracleException ex)
+            {
+                if (ex.Number == 20001) return "Registro duplicado";
+                return "Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return "Fallo en procesamiento: " + ex.Message;
+            }
+        }
+
 
     }
 }

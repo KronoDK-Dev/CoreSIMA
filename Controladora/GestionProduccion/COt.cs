@@ -169,5 +169,11 @@ namespace Controladora.GestionProduccion
         {
             return (new OtNTAD()).Impresion_OTs(V_OT, V_COD_DIV, UserName);
         }
+
+        public static string ExcluyeOT_ReporteBI(string vSucursal, string vLinea, string vOT, string UserName)
+        {
+            return (new OtTAD()).ExcluyeOT_ReporteBI(vSucursal, vLinea, vOT, UserName);
+        }
+
     }
 }

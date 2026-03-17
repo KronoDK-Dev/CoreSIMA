@@ -15,6 +15,7 @@ namespace EntidadNegocio.GestionProyecto
         public decimal? N_FTPresupuesto_CostoMAT { get; set; }
         public decimal? N_FTPresupuesto_CostoSER { get; set; }
         public decimal? N_FTPresupuesto_CostoIND { get; set; }
+        public decimal? N_FTPresupuesto_CostoNAC { get; set; }
         public string V_FTPresupuesto_USUARIO_AUDI { get; set; } // 15
         public string V_FTPresupuesto_ESTACIONW { get; set; }    // 15
         public string V_FTPresupuesto_AUDITORIA { get; set; }    // 200

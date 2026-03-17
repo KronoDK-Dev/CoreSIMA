@@ -884,6 +884,13 @@ namespace WSCore.GestionProduccion
             }
         }
 
+        [WebMethod(Description = "Excluye una Ot de los reportes BI")]
+        public string ExcluyeOT_ReporteBI(string V_Sucursal, string V_Linea, string V_OT, string UserName)
+        {
+            return COt.ExcluyeOT_ReporteBI(V_Sucursal, V_Linea, V_OT, UserName);
+        }
+
+
         #endregion
 
         #region Procedimientos almacenados de clasificacion: Valorizacion

@@ -14,6 +14,38 @@ namespace AccesoDatos
 {
     public static class AccesoDatosBaseExtended
     {
+        public static DataSet ExecuteDataSet(this Database odbGeneral,
+            bool Sup,
+            string storeProcedureName,
+            SqlParameter[] Params)
+        {
+            try
+            {
+                DataSet dataSet = new DataSet();
+                SqlConnection connection = (SqlConnection)odbGeneral.CreateConnection();
+                connection.Open();
+                SqlCommand selectCommand = new SqlCommand(storeProcedureName, connection);
+                selectCommand.CommandType = CommandType.StoredProcedure;
+                if(Params != null)
+                {
+                    foreach (SqlParameter sqlParameter in Params)
+                    {
+                        if (sqlParameter.SqlDbType == SqlDbType.VarChar)
+                            sqlParameter.Value = (object)sqlParameter.Value.ToString().Replace("[s]", " ");
+                        selectCommand.Parameters.Add(sqlParameter);
+                    }
+                }
+                new SqlDataAdapter(selectCommand).Fill(dataSet);
+                connection.Close();
+                connection.Dispose();
+                return dataSet;
+            }
+            catch (Exception ex)
+            {
+                return (DataSet)null;
+            }
+        }
+
         public static DataSet ExecuteDataSet(
           this Database odbGeneral,
           bool Sup,

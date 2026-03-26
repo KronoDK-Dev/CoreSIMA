@@ -660,44 +660,42 @@ namespace WSCore.GestionProyecto
 
         [WebMethod(Description = "Inserta, actualiza o elimina Presupuesto de Proyecto (N_ACCION = 1/2/3).")]
         public string InsUpdDel_ProyectoPresupuesto(
-                        string X_N_ACCION,
-                        string X_V_FTPresupuesto_CodProyecto,
-                        string X_V_FTPresupuesto_Sucursal,
-                        string X_N_FTPresupuesto_CostoMOB,
-                        string X_N_FTPresupuesto_CostoMAT,
-                        string X_N_FTPresupuesto_CostoSER,
-                        string X_N_FTPresupuesto_CostoIND,
-                        string X_N_FTPresupuesto_CostoNAC,
-                        string X_V_FTPresupuesto_USUARIO_AUDI,
-                        string X_V_FTPresupuesto_ESTACIONW,
-                        string X_V_FTPresupuesto_AUDITORIA
-                    )
+                  string X_N_ACCION,
+                  string X_V_FTPresupuesto_CodProyecto,
+                  string X_V_FTPresupuesto_Sucursal,
+                  string X_N_FTPresupuesto_CostoMOB,
+                  string X_N_FTPresupuesto_CostoMAT,
+                  string X_N_FTPresupuesto_CostoSER,
+                  string X_N_FTPresupuesto_CostoIND,
+                  string X_V_FTPresupuesto_USUARIO_AUDI,
+                  string X_V_FTPresupuesto_ESTACIONW,
+                  string X_V_FTPresupuesto_AUDITORIA
+              )
         {
-                    // Mapeo estilo patrón: construir el BE con los X_*
-                    var oBE = new ProyectoPresupuestoBE
-                    {
-                        // Acción (1=INS, 2=UPD, 3=DEL)
-                        N_ACCION = ToInt32Safe(X_N_ACCION),
+            // Mapeo estilo patrón: construir el BE con los X_*
+            var oBE = new ProyectoPresupuestoBE
+            {
+                // Acción (1=INS, 2=UPD, 3=DEL)
+                N_ACCION = ToInt32Safe(X_N_ACCION),
 
-                        // PK
-                        V_FTPresupuesto_CodProyecto = X_V_FTPresupuesto_CodProyecto,
-                        V_FTPresupuesto_Sucursal = X_V_FTPresupuesto_Sucursal,
+                // PK
+                V_FTPresupuesto_CodProyecto = X_V_FTPresupuesto_CodProyecto,
+                V_FTPresupuesto_Sucursal = X_V_FTPresupuesto_Sucursal,
 
-                        // Costos (parse seguros a decimal?; null si viene vacío)
-                        N_FTPresupuesto_CostoMOB = ToDecimalNullable(X_N_FTPresupuesto_CostoMOB),
-                        N_FTPresupuesto_CostoMAT = ToDecimalNullable(X_N_FTPresupuesto_CostoMAT),
-                        N_FTPresupuesto_CostoSER = ToDecimalNullable(X_N_FTPresupuesto_CostoSER),
-                        N_FTPresupuesto_CostoIND = ToDecimalNullable(X_N_FTPresupuesto_CostoIND),
-                        N_FTPresupuesto_CostoNAC = ToDecimalNullable(X_N_FTPresupuesto_CostoNAC),
+                // Costos (parse seguros a decimal?; null si viene vacío)
+                N_FTPresupuesto_CostoMOB = ToDecimalNullable(X_N_FTPresupuesto_CostoMOB),
+                N_FTPresupuesto_CostoMAT = ToDecimalNullable(X_N_FTPresupuesto_CostoMAT),
+                N_FTPresupuesto_CostoSER = ToDecimalNullable(X_N_FTPresupuesto_CostoSER),
+                N_FTPresupuesto_CostoIND = ToDecimalNullable(X_N_FTPresupuesto_CostoIND),
 
-                        // Auditoría
-                        V_FTPresupuesto_USUARIO_AUDI = X_V_FTPresupuesto_USUARIO_AUDI,
-                        V_FTPresupuesto_ESTACIONW = X_V_FTPresupuesto_ESTACIONW,
-                        V_FTPresupuesto_AUDITORIA = X_V_FTPresupuesto_AUDITORIA
-                    };
+                // Auditoría
+                V_FTPresupuesto_USUARIO_AUDI = X_V_FTPresupuesto_USUARIO_AUDI,
+                V_FTPresupuesto_ESTACIONW = X_V_FTPresupuesto_ESTACIONW,
+                V_FTPresupuesto_AUDITORIA = X_V_FTPresupuesto_AUDITORIA
+            };
 
-                    // Delegar a la controladora según tu patrón
-                    return (new CProyecto()).InsUpdDel_ProyectoPresupuesto(oBE);
+            // Delegar a la controladora según tu patrón
+            return (new CProyecto()).InsUpdDel_ProyectoPresupuesto(oBE);
         }
 
         #endregion

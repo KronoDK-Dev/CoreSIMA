@@ -34,6 +34,22 @@ namespace Controladora.General
             return (new ItemTablaGeneralNTAD()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
         }
 
+
+        public DataTable ListarTodosOracle(int IdTbl, int IdQuerySelector, int pCOM, string UserName)
+        {
+            return (new ItemTablaGeneralNTAD()).ListarTodosOracle(IdTbl, IdQuerySelector, pCOM, UserName);
+        }
+     /*   public DataTable ListarTodosOracle(int IdTbl, string UserName)
+        {
+            return (new ItemTablaGeneralNTAD()).ListarTodosOracle(IdTbl, UserName);
+        }
+        public DataTable ListarTodosOracle(int IdTblPadre, int IdItemPadre, string UserName)
+        {
+            return (new ItemTablaGeneralNTAD()).ListarTodosOracle(IdTblPadre, IdItemPadre, UserName);
+        }
+        */
+
+
         public int Modificar(BaseBE oBaseBE)
         {
             return (new ItemTablaGeneralTAD()).Modificar(oBaseBE);

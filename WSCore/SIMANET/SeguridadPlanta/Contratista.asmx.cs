@@ -37,6 +37,11 @@ namespace WSCore.SIMANET.SeguridadPlanta
         {
             return (CCTT_ProgramacionBE)(new Ccontratista()).Detalle(NroProgramacion, Periodo, IdUsuario, IdTipoProgramacion, UserName);
         }
+        [WebMethod]
+        public string CopiarProgramacion(int Periodo, int NroProgramacion, int IdUsuario, string UserName)
+        {
+            return (new Ccontratista()).Copiar( Periodo, NroProgramacion, IdUsuario, UserName);
+        }
 
         [WebMethod]
         public int ProgramacionContratista_Del(int Periodo, int IdProgramacion, int IdUsuario, string UserName) {

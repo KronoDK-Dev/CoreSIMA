@@ -31,6 +31,10 @@ namespace Controladora.SIMANET.SeguridadPlanta
         }
 
 
+        public string Copiar(int Periodo, int IdProgramacion, int IdUsuario, string UserName)
+        {
+            return (new ContratistaTAD()).Copiar(Periodo, IdProgramacion, IdUsuario, UserName);
+        }
 
         public string Insertar(BaseBE oBaseBE)
         {

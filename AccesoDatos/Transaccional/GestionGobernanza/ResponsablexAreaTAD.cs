@@ -72,36 +72,43 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
                                                                                      , Helper.MensajesIngresarMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
-                OracleParameter[] Param = new OracleParameter[7];
+                OracleParameter[] Param = new OracleParameter[8];
 
                 Param[0] = new OracleParameter("oModo", OracleDbType.Int64);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = 3;
 
-                Param[1] = new OracleParameter("IDITEM", OracleDbType.Varchar2);
+                Param[1] = new OracleParameter("IDITEM", OracleDbType.Int64);
                 Param[1].Direction = ParameterDirection.Input;
                 Param[1].Value = oObjAccIndRecBE.IdItemTabla;
 
-                Param[2] = new OracleParameter("CODAREA", OracleDbType.Int64);
+                Param[2] = new OracleParameter("CODAREA", OracleDbType.Varchar2);
                 Param[2].Direction = ParameterDirection.Input;
-                Param[2].Value = oObjAccIndRecBE.Nombre;
+                Param[2].Value = oObjAccIndRecBE.Val1;
+
 
                 Param[3] = new OracleParameter("CODEMP", OracleDbType.Varchar2);
                 Param[3].Direction = ParameterDirection.Input;
-                Param[3].Value = oObjAccIndRecBE.Val1;
+                Param[3].Value = oObjAccIndRecBE.Val2;
 
-                Param[4] = new OracleParameter("CODCENTRO", OracleDbType.Varchar2);
+
+                Param[4] = new OracleParameter("CODSUC", OracleDbType.Varchar2);
                 Param[4].Direction = ParameterDirection.Input;
-                Param[4].Value = oObjAccIndRecBE.Val2;
+                Param[4].Value = oObjAccIndRecBE.Val3;
 
 
-                Param[5] = new OracleParameter("IDUSUARIO", OracleDbType.Int64);
+                Param[5] = new OracleParameter("IDRESP", OracleDbType.Varchar2);
                 Param[5].Direction = ParameterDirection.Input;
-                Param[5].Value = oObjAccIndRecBE.Val3;
+                Param[5].Value = oObjAccIndRecBE.Val4;
 
-                Param[6] = new OracleParameter("IdOut", OracleDbType.Varchar2);
-                Param[6].Direction = ParameterDirection.Output;
-                Param[6].Size = 15;
+
+                Param[6] = new OracleParameter("IDUSUARIO", OracleDbType.Int64);
+                Param[6].Direction = ParameterDirection.Input;
+                Param[6].Value = oObjAccIndRecBE.IdUsuario;
+
+                Param[7] = new OracleParameter("IdOut", OracleDbType.Varchar2);
+                Param[7].Direction = ParameterDirection.Output;
+                Param[7].Size = 15;
 
                 string ParamsOut = (string)Oracle(ORACLEVersion.oJDE).ExecuteNonQuery(true, PackagName, Param);
 
@@ -119,7 +126,7 @@ namespace AccesoDatos.Transaccional.GestionGobernanza
 
 
 
-                return Param[6].Value.ToString();
+                return Param[4].Value.ToString();
             }
 
             catch (SqlException oracleException)

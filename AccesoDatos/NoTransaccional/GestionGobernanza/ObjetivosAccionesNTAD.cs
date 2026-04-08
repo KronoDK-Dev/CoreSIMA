@@ -114,7 +114,7 @@ namespace AccesoDatos.NoTransaccional.GestionGobernanza
                 StackTrace stack = new StackTrace();
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
-                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id1.ToString(), UserName);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, Id1.ToString(), Id2.ToString(), UserName);
 
                 string PackagName = "GOBERNANZA.PKG_INDICADOR_NTAD.IAccion";
 

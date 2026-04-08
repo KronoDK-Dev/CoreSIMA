@@ -25,21 +25,21 @@ namespace WSCore.GestionFinanciera.Tesoreria
         string cmll = Utilitario.Constante.Caracteres.ComillasDobles;
 
         [WebMethod]
-        public void IniciarTransferencia(string CodigoBanco, string NroLote, string UserName)
+        public void IniciarTransferencia(string CodBanco, string NroLote, string UserName)
         {
             try
             {
                 string strOperacionBE = "";
                 ResposeBE oresposeBE = null;
                 var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco, NroLote, "0", UserName);
+                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodBanco, NroLote, "0", UserName);
                 if (dt != null)
                 {
                     DataRow dr = dt.Rows[0];
                     PlanCabProv oPlanCabProv = (new PlanCabProv()).SetAttrValue(dr);
                     //Cargar Detella 
                     List<PlanDetProv> oLstPlanDetProv = new List<PlanDetProv>();
-                    DataTable dtdet = (new CInterbancario()).DetalleLotePago(CodigoBanco, NroLote, UserName);
+                    DataTable dtdet = (new CInterbancario()).DetalleLotePago(CodBanco, NroLote, UserName);
                     if (dtdet.Rows.Count > 0)
                     {
                         foreach (DataRow drd in dtdet.Rows)
@@ -54,7 +54,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
                         EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo oArchivo = new EntidadNegocio.GestionFinanciera.Tesoreria.Pagos.Archivo("C", dr["nombrePlanilla"].ToString(), ".txt");
 
                         PlanillaPagos oPlanillaPagos = new PlanillaPagos();
-                        oPlanillaPagos.BANCO = CodigoBanco;
+                        oPlanillaPagos.BANCO = CodBanco;
                         oPlanillaPagos.datos = oPlanCabProv;
                         oPlanillaPagos.archivo = oArchivo;
 
@@ -113,14 +113,14 @@ namespace WSCore.GestionFinanciera.Tesoreria
 
 
         [WebMethod]
-        public void LeerTransferencia(string CodigoBanco, string LotePago, string Estado = "1", string UserName = "Banco")
+        public void LeerTransferencia(string CodBanco, string LotePago, string Estado = "1", string UserName = "Banco")
         {
             try
             {
                 string strOperacionBE = "{Id:2,Mensaje:" + cmll + "No existe envios que procesar.." + cmll + "}";
                 ResposeBE oresposeBE = null;
                 var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodigoBanco, LotePago, Estado, UserName);
+                DataTable dt = (new CInterbancario()).CabeceraLotePago(CodBanco, LotePago, Estado, UserName);
                 if (dt != null)
                 {
 
@@ -129,7 +129,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
                         PlanCabProv oPlanCabProv = (new PlanCabProv()).SetAttrValue(dr);
                         Archivo oArchivo = new Archivo("C", oPlanCabProv.cCodPlanilla, ".txt");
                         //Llamar al servicio
-                        oArchivo.BANCO = CodigoBanco;
+                        oArchivo.BANCO = CodBanco;
                         object objBE = oArchivo;
 
                         var HttpServer = Utilitario.Helper.Archivo.Configuracion.getKey("Tesoreria", "WSServerH2H");
@@ -150,14 +150,14 @@ namespace WSCore.GestionFinanciera.Tesoreria
                                 if (oStringOperationResult.resultType.Equals(-7))//val
                                 {
                                     var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
-                                    DataTable dtRegPrv = (new CInterbancario()).DetalleLotePago(CodigoBanco, NroLote, UserName);
+                                    DataTable dtRegPrv = (new CInterbancario()).DetalleLotePago(CodBanco, NroLote, UserName);
                                     foreach (LecturaError err in cab.error)
                                     {
                                         DataRow[] drs = dtRegPrv.Select("NroLinea=" + err.linea.ToString());
                                         if (drs.Length > 0)
                                         {
                                             DataRow drErr = drs[0];
-                                            // * (new CInterbancario()).DetActulizaEstado(NroLote, drErr["cNroDocProv"].ToString(), err.mensaje.ToString(), UserName);
+                                             (new CInterbancario()).DetActulizaEstado(NroLote, drErr["cNroDocProv"].ToString(), err.mensaje.ToString(), UserName);
                                         }
                                     }
                                     strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
@@ -165,13 +165,13 @@ namespace WSCore.GestionFinanciera.Tesoreria
                                 else if (oStringOperationResult.resultType.Equals(0))//res
                                 {
                                     var cab = JsonSerializer.Deserialize<PlanillaPagos>(oStringOperationResult.result.ToString(), jsonSerializerOptions);
-                                    //* (new CInterbancario()).CabActulizaEstado(NroLote, 3, cab.datos.cEstado, UserName);
+                                     (new CInterbancario()).CabActulizaEstado(NroLote, 3, cab.datos.cEstado, UserName);
                                     foreach (PlanDetProv opdp in cab.datos.listPlanDetProv)
                                     {
                                         string Obs = opdp.cEstado + '-' + opdp.cObserva.Replace("Ninguna", "");
                                         Obs = ((Obs.Length <= 80) ? Obs : Obs.Substring(0, 79));
 
-                                        //* (new CInterbancario()).DetActulizaEstado(NroLote, opdp.cNroDocProv, Obs, UserName);
+                                         (new CInterbancario()).DetActulizaEstado(NroLote, opdp.cNroDocProv, Obs, UserName);
                                     }
                                     strOperacionBE = "{Id:90,Mensaje:" + cmll + "Proceso exitoso" + cmll + "}";
                                 }
@@ -180,7 +180,7 @@ namespace WSCore.GestionFinanciera.Tesoreria
 
                                     string msgReturn = ((oStringOperationResult.message.Length <= 80) ? oStringOperationResult.message : oStringOperationResult.message.Substring(1, 79));
 
-                                    //   (new CInterbancario()).CabActulizaEstado(NroLote, 1, oStringOperationResult.message, UserName);
+                                    (new CInterbancario()).CabActulizaEstado(NroLote, 1, oStringOperationResult.message, UserName);
                                     strOperacionBE = "{Id:91,Mensaje:" + cmll + "Espera para volver a leer" + cmll + "}";
                                 }
                                 //Crea Una Tarea en el paquete rigth

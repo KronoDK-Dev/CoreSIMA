@@ -91,8 +91,6 @@
     <Compile Include="GestionReportes\ObjetoMapeoExportBE.cs" />
     <Compile Include="GestionReportes\ObjetoPrivilegioBE.cs" />
     <Compile Include="GestionReportes\ObjetoReporteCompartidoBE.cs" />
-    <Compile Include="GestionSeguridadIndustrial\AntecedenteAnexoBE.cs" />
-    <Compile Include="GestionSeguridadIndustrial\AntecedenteTrabajadorContratistaBE.cs" />
     <Compile Include="HelpDesk\ActividadAtendidaBE.cs" />
     <Compile Include="HelpDesk\AprobadorBE.cs" />
     <Compile Include="HelpDesk\ArchivoAdjuntoBE.cs" />
@@ -123,12 +121,6 @@
     <Compile Include="SeguridadPlanta\MensajeResultBE.cs" />
     <Compile Include="SeguridadPlanta\personal.cs" />
     <Compile Include="Seguridad\UsuarioBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\AutorizaIngFeriadoBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\CCTT_ProgramacionBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\CCTT_ProgramacionTrabajadoresContratistaBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\CCTT_Programacion_CtrlEquiposBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\CCTT_TrabajadorBE.cs" />
-    <Compile Include="SIMANET\SeguridadPlanta\ProveedorClienteBE.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utilitario\Utilitario.csproj">

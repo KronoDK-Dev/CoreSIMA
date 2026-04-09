@@ -166,6 +166,41 @@ namespace WSCore.GestionCostos
             }
         }
 
+        [WebMethod(Description = "Listar áreas usuarias con sus centro de costos")]
+        public string Listar_AreasUsuarias_CC(string V_Centro_Operativo, string UserName)
+        {
+            try
+            {
+                DataTable dt = (new CCostos()).Listar_AreasUsuarias_CC(V_Centro_Operativo, UserName);
+
+                if (dt != null)
+                {
+                    DataTable dtCopy = dt.Copy();
+                    dtCopy.TableName = "SP_AreasUsuarias_CC";
+
+                    DataSet dset = new DataSet();
+                    dset.Tables.Add(dtCopy);
+
+                    using (StringWriter sw = new StringWriter())
+                    {
+                        using (XmlWriter writer = XmlWriter.Create(sw))
+                        {
+                            dset.WriteXml(writer, XmlWriteMode.IgnoreSchema);
+                            return sw.ToString();
+                        }
+                    }
+                }
+                else
+                {
+                    return "NULL";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(500, "Error interno del servidor", ex);
+            }
+        }
+
         #endregion
 
         #region Procedimientos almacenados de clasificacion: Pagos

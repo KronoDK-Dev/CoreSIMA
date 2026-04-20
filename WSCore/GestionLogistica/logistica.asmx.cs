@@ -62,10 +62,10 @@ namespace WSCore.GestionLogistica
 
         [WebMethod(Description = "ORDENES DE COMPRAS EMITIDAS(Solicitado para proporcionar información a Contraloría)")]
         public DataTable Listar_OcoEmiLogi(string Centro_Operativo, string Procedencia, string Tipo, string Estado,
-            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string UserName)
+            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string Proveedor, string UserName)
         {
             return (new cOrdenes()).Listar_OcoEmiLogi(Centro_Operativo, Procedencia, Tipo, Estado, Fecha_Emision_Inicial,
-                Fecha_Emision_Final, Cotizador, UserName);
+                Fecha_Emision_Final, Cotizador, Proveedor, UserName);
         }
 
         [WebMethod(Description = "Muestra la ordenes de servicio atendidas en un rango de fechas de atenci¿n")]

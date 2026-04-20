@@ -44,10 +44,10 @@ namespace Controladora.GestionLogistica
         }
 
         public DataTable Listar_OcoEmiLogi(string Centro_Operativo, string Procedencia, string Tipo, string Estado,
-            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string UserName)
+            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string Proveeedor, string UserName)
         {
             return (new OrdenesNTAD()).Listar_OcoEmiLogi(Centro_Operativo, Procedencia, Tipo, Estado, Fecha_Emision_Inicial,
-                Fecha_Emision_Final, Cotizador, UserName);
+                Fecha_Emision_Final, Cotizador, Proveeedor, UserName);
         }
 
         public DataTable Listar_AVANCE_OSE_VALJDE(string D_FECHAINI, string D_FECHAFIN, string UserName)

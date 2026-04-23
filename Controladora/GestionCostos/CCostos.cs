@@ -90,5 +90,11 @@ namespace Controladora.GestionCostos
         {
             return (new CostosNTAD()).Listar_Materiales_en_Proyectos(V_Centro_Operativo, v_materiales, UserName);
         }
+
+
+        public DataTable Listar_AreasUsuarias_CC(string V_Centro_Operativo, string UserName)
+        {
+            return (new CostosNTAD()).Listar_AreasUsuarias_CC(V_Centro_Operativo,  UserName);
+        }
     }
 }

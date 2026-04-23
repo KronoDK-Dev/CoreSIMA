@@ -868,5 +868,78 @@ namespace AccesoDatos.NoTransaccional.GestionCostos
                 return null;
             }
         }
+
+
+        public DataTable Listar_AreasUsuarias_CC(string V_Centro_Operativo, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo);
+                string PackageName = sConsulta + ".Pkg_Costos.SP_AreasUsuarias_CC";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , oInfoMetodoBE.VoidParams
+                    , ""
+                    , Helper.MensajesIngresarMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                OracleParameter[] Param = new OracleParameter[2];
+                Param[0] = new OracleParameter("V_Centro_Operativo", OracleDbType.Varchar2);
+                Param[0].Direction = ParameterDirection.Input;
+                Param[0].Value = V_Centro_Operativo;
+
+                Param[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                Param[1].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
+
+                int rstCount = 0;
+
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0)
+                {
+                    rstCount = ds.Tables[0].Rows.Count;
+                }
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , ""
+                    , "rstCount:" + rstCount.ToString()
+                    , Helper.MensajesSalirMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                if (ds != null && ds.Tables != null && ds.Tables.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+            catch (OracleException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+
+
     }
 }

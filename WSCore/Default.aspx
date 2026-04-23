@@ -134,9 +134,10 @@
      <div class="content">
          <h2 class="title">Seguridad Planta</h2>
          <p class="copy">Métodos del Servicio Seguridad Planta</p>
-         <a class="btn" href="SeguridadPlanta/SeguridadIndustrial.asmx" target="_blank">Datos Generales</a>
-         <a class="btn" href="SeguridadPlanta/Visitas.asmx" target="_blank">Programacion Visitas</a>
-         <a class="btn" href="SeguridadPlanta/Comercial.asmx" target="_blank">Comercial</a>
+         <a class="btn" href="GestionSeguridadIndustrial/SeguridadIndustrial.asmx"  target="_blank">Datos Generales</a>
+         <a class="btn" href="GestionSeguridadPlanta/Visitas.asmx"                  target="_blank">Prog. Visitas</a>
+         <a class="btn" href="SIMANET/SeguridadPlanta/Contratista.asmx"             target="_blank">Contratista</a>
+         <a class="btn" href="SIMANET/SeguridadPlanta/SeguridadIndustrial.asmx"     target="_blank">Comercial</a>
      </div>
  </div>
 

@@ -366,7 +366,7 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
         }
 
         public DataTable Listar_OcoEmiLogi(string Centro_Operativo, string Procedencia, string Tipo, string Estado,
-            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string UserName)
+            string Fecha_Emision_Inicial, string Fecha_Emision_Final, string Cotizador, string Proveeedor,string UserName)
         {
             try
             {
@@ -387,7 +387,7 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
                 );
 
-                OracleParameter[] Param = new OracleParameter[8];
+                OracleParameter[] Param = new OracleParameter[9];
                 Param[0] = new OracleParameter("Centro_Operativo", OracleDbType.Varchar2);
                 Param[0].Direction = ParameterDirection.Input;
                 Param[0].Value = Centro_Operativo;
@@ -416,8 +416,12 @@ namespace AccesoDatos.NoTransaccional.GestionLogistica
                 Param[6].Direction = ParameterDirection.Input;
                 Param[6].Value = Cotizador;
 
-                Param[7] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
-                Param[7].Direction = ParameterDirection.Output;
+                Param[7] = new OracleParameter("Cotizador", OracleDbType.Varchar2);
+                Param[7].Direction = ParameterDirection.Input;
+                Param[7].Value = Proveeedor;
+
+                Param[8] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                Param[8].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName

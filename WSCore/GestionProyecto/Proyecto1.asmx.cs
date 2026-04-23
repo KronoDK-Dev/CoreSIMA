@@ -246,7 +246,7 @@ namespace WSCore.GestionProyecto
             }
         }
 
-   
+
         #endregion
 
         #region Procedimientos almacenados de clasificacion: Ot

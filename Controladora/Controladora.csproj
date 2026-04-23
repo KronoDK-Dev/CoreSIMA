@@ -189,11 +189,13 @@
     <Compile Include="SIMANET\SeguridadPlanta\CAutorizaFeriado.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CCalendario.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\Ccontratista.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CCsctrDetalle.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CInduccion.cs" />
     <Compile Include="Seguridad\CUsuario.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProgramacionEquipos.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProgramacionTrabajador.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProveedorCliente.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\Csctr.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CTrabajador.cs" />
   </ItemGroup>
   <ItemGroup>

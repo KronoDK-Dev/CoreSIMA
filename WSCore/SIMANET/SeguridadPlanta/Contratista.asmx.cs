@@ -62,6 +62,8 @@ namespace WSCore.SIMANET.SeguridadPlanta
                                                     , int IdCIASeguros
                                                     , string FechaInicioPoliza
                                                     , string FechaTerminoPoliza
+                                                    , string FechaInicioPolizaS
+                                                    , string FechaTerminoPolizaS
                                                     , string NroPensionPoliza
                                                     , string NroSaludPoliza
                                                     , string TrabajosARealizar
@@ -88,7 +90,9 @@ namespace WSCore.SIMANET.SeguridadPlanta
 			oCCTT_ProgramacionBE.NroPoliza = "S/N";
 			oCCTT_ProgramacionBE.FechaInicioPoliza = Convert.ToDateTime(FechaInicioPoliza);
 			oCCTT_ProgramacionBE.FechaTerminoPoliza = Convert.ToDateTime(FechaTerminoPoliza);
-			oCCTT_ProgramacionBE.NroPensionPoliza = NroPensionPoliza;
+            oCCTT_ProgramacionBE.FechaInicioPolizaS = Convert.ToDateTime(FechaInicioPolizaS);
+            oCCTT_ProgramacionBE.FechaTerminoPolizaS = Convert.ToDateTime(FechaTerminoPolizaS);
+            oCCTT_ProgramacionBE.NroPensionPoliza = NroPensionPoliza;
 			oCCTT_ProgramacionBE.NroSaludPoliza = NroSaludPoliza;
 			oCCTT_ProgramacionBE.TrabajosARealizar = TrabajosARealizar;
 			oCCTT_ProgramacionBE.IdLugardeTrabajo = IdLugardeTrabajo;
@@ -152,6 +156,8 @@ namespace WSCore.SIMANET.SeguridadPlanta
                                                 , int IdCIASeguros
                                                 , string FechaInicioPoliza
                                                 , string FechaTerminoPoliza
+                                                , string FechaInicioPolizaS
+                                                , string FechaTerminoPolizaS
                                                 , string NroPensionPoliza
                                                 , string NroSaludPoliza
                                                 , string TrabajosARealizar
@@ -176,6 +182,8 @@ namespace WSCore.SIMANET.SeguridadPlanta
                             oCCTT_ProgramacionBE.NroPoliza = "S/N";
                             oCCTT_ProgramacionBE.FechaInicioPoliza = Convert.ToDateTime(FechaInicioPoliza);
                             oCCTT_ProgramacionBE.FechaTerminoPoliza = Convert.ToDateTime(FechaTerminoPoliza);
+                            oCCTT_ProgramacionBE.FechaInicioPolizaS = Convert.ToDateTime(FechaInicioPolizaS);
+                            oCCTT_ProgramacionBE.FechaTerminoPolizaS = Convert.ToDateTime(FechaTerminoPolizaS);
                             oCCTT_ProgramacionBE.NroPensionPoliza = NroPensionPoliza;
                             oCCTT_ProgramacionBE.NroSaludPoliza = NroSaludPoliza;
                             oCCTT_ProgramacionBE.TrabajosARealizar = TrabajosARealizar;
@@ -396,7 +404,55 @@ namespace WSCore.SIMANET.SeguridadPlanta
 
             return (new CTrabajador()).Insertar(oCCTT_TrabajadorBE);
         }
+        
+        [WebMethod]
+        public DataTable SCTR_lst(string IdEntidad,int Periodo,int NroProg,  string UserName)
+        {
+            return (new Csctr()).ListarTodos(IdEntidad, Periodo, NroProg, UserName);
+        }
 
+        [WebMethod]
+        public string SCTR_ins(string NroSCTR,int IdEntidad,int Periodo,int NroProg, string FechaIni,string FechaFin, int IdTipo,int IdUsuario, string UserName)
+        {
+            CCTT_SctrBE oCCTT_SctrBE = new CCTT_SctrBE();
+            oCCTT_SctrBE.IdSCTR = "0";
+            oCCTT_SctrBE.NroSCTR = NroSCTR;
+            oCCTT_SctrBE.FechaInicio = Convert.ToDateTime(FechaIni);
+            oCCTT_SctrBE.FechaVence = Convert.ToDateTime(FechaFin);
+            oCCTT_SctrBE.IdTipoSCTR = IdTipo;
+            oCCTT_SctrBE.IdEntidad = IdEntidad;
+            oCCTT_SctrBE.Periodo = Periodo;
+            oCCTT_SctrBE.NroProg = NroProg;
+            oCCTT_SctrBE.IdUsuario = IdUsuario;
+            oCCTT_SctrBE.UserName = UserName;
 
+            return (new Csctr()).Inserta(oCCTT_SctrBE);
+        }
+        [WebMethod]
+        public int SCTR_Eli(string IdSCTR, int IdUsuario, string UserName)
+        {
+            return (new Csctr()).Eliminar(IdSCTR, IdUsuario, UserName);
+        }
+        [WebMethod]
+        public string SCTR_Detalle_ins(string IdSCTR,string IdDetalleSCTR, string  NroDNI, int IdEstado,int IdUsuario, string UserName)
+        {
+            CCTT_SctrDetalleBE oCCTT_SctrDetalleBE = new CCTT_SctrDetalleBE();
+
+            oCCTT_SctrDetalleBE.IdSCTR = IdSCTR;
+            oCCTT_SctrDetalleBE.IdDetalleSCTR = IdDetalleSCTR;
+            oCCTT_SctrDetalleBE.NroDNI = NroDNI;
+            oCCTT_SctrDetalleBE.IdEstado = IdEstado;
+            oCCTT_SctrDetalleBE.IdUsuario = IdUsuario;
+            oCCTT_SctrDetalleBE.UserName= UserName;
+         
+            return (new CCsctrDetalle()).Inserta(oCCTT_SctrDetalleBE);
+        }
+
+        [WebMethod]
+        //Lista los SCTR Activos
+        public DataTable SCTR_lstAct(int Periodo, int NroProg,string UserName)
+        {
+            return (new Csctr()).ListarTodosAct(Periodo, NroProg, UserName);
+        }
     }
 }

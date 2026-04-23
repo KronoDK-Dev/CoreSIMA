@@ -206,7 +206,10 @@ namespace AccesoDatos.NoTransaccional.SIMANET.SeguridadPlanta
 
                     oCCTT_ProgramacionBE.FechaInicioPoliza = Convert.ToDateTime(dr["FechaInicioPoliza"].ToString());
                     oCCTT_ProgramacionBE.FechaTerminoPoliza = Convert.ToDateTime(dr["FechaTerminoPoliza"].ToString());
-                    oCCTT_ProgramacionBE.FechaTerminoPoliza = Convert.ToDateTime(dr["FechaTerminoPoliza"].ToString());
+
+                    oCCTT_ProgramacionBE.FechaInicioPolizaS = Convert.ToDateTime(dr["FechaInicioPolizaS"].ToString());
+                    oCCTT_ProgramacionBE.FechaTerminoPolizaS = Convert.ToDateTime(dr["FechaTerminoPolizaS"].ToString());
+
                     oCCTT_ProgramacionBE.NroPensionPoliza = dr["NroPensionPoliza"].ToString();
                     oCCTT_ProgramacionBE.NroSaludPoliza = dr["NroSaludPoliza"].ToString();
                     oCCTT_ProgramacionBE.TrabajosARealizar = dr["TrabajosARealizar"].ToString();

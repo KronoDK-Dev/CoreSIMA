@@ -38,6 +38,9 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
 
         private DateTime fechaInicioPoliza;
         private DateTime fechaTerminoPoliza;
+        private DateTime fechaInicioPolizaS;
+        private DateTime fechaTerminoPolizaS;
+
         private string nroPensionPoliza;
         private string nroSaludPoliza;
         private string trabajosARealizar;
@@ -165,6 +168,19 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.fechaTerminoPoliza; }
             set { this.fechaTerminoPoliza = value; }
         }
+        public DateTime FechaInicioPolizaS
+        {
+            get { return this.fechaInicioPolizaS; }
+            set { this.fechaInicioPolizaS = value; }
+        }
+
+        public DateTime FechaTerminoPolizaS
+        {
+            get { return this.fechaTerminoPolizaS; }
+            set { this.fechaTerminoPolizaS = value; }
+        }
+
+
         public string NroPensionPoliza
         {
             get { return this.nroPensionPoliza; }

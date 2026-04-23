@@ -14,6 +14,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Web;
 using System.Web.Services;
 using Controladora.GestionCalidad;
+using CResponsableArea = Controladora.GestionGobernanza.CResponsableArea;
 
 namespace WSCore.GestionGobernanza
 {
@@ -246,7 +247,7 @@ namespace WSCore.GestionGobernanza
         [WebMethod]
         public DataTable ResponsablePorArea_Lst(string CodArea, string UserName)
         {
-            return (new CResponsableArea()).ListarTodos(CodArea, UserName);
+            return (new Controladora.GestionGobernanza.CResponsableArea()).ListarTodos(CodArea, UserName);
         }
 
         [WebMethod]

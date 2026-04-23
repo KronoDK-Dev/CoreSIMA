@@ -242,6 +242,8 @@ namespace AccesoDatos.Transaccional.SIMANET.SeguridadPlanta
                                                                                 , oCCTT_ProgramacionBE.NroPoliza
                                                                                 , oCCTT_ProgramacionBE.FechaInicioPoliza
                                                                                 , oCCTT_ProgramacionBE.FechaTerminoPoliza
+                                                                                , oCCTT_ProgramacionBE.FechaInicioPolizaS
+                                                                                , oCCTT_ProgramacionBE.FechaTerminoPolizaS
                                                                                 , oCCTT_ProgramacionBE.NroPensionPoliza
                                                                                 , oCCTT_ProgramacionBE.NroSaludPoliza
                                                                                 , oCCTT_ProgramacionBE.TrabajosARealizar

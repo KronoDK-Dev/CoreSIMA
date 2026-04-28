@@ -63,7 +63,7 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
         private int tipoProgramacion;
 
         private int noProgramado;
-
+        private int idUsuarioAprobacion;
         #endregion
 
         #region Propiedades
@@ -294,9 +294,13 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return noProgramado; }
             set { this.noProgramado = value; }
         }
-
+        public int IdUsuarioAprobacion
+        {
+            get { return idUsuarioAprobacion; }
+            set { this.idUsuarioAprobacion = value; }
+        }
         #endregion
-      
+
 
     }
 }

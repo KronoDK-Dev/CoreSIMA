@@ -11,6 +11,7 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using System.Xml;
 using static Utilitario.Constante.Formato;
+using EntidadNegocio.SIMANET.SeguridadPlanta;
 
 namespace WSCore.SeguridadPlanta
 {

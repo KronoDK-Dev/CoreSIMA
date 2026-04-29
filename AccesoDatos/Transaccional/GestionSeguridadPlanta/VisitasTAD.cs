@@ -147,7 +147,7 @@ namespace AccesoDatos.Transaccional.GestionSeguridadPlanta
                                 //----- INSERCCION DE CORREOS ----
 
                                 PackagName = "CCTT_uspNTADinsactEMailConocimiento";
-                                object idResult2 = db.ExecuteScalar(tran, PackagName,
+                                int idResult2 = db.ExecuteNonQuery(tran, PackagName,
                                       oCCTT_ProgramacionBE.PERIODO,
                                       oCCTT_EMailConocimientoBE.NroProgramacion,
                                       oCCTT_EMailConocimientoBE.IdPersonal,
@@ -155,12 +155,8 @@ namespace AccesoDatos.Transaccional.GestionSeguridadPlanta
                                       oCCTT_EMailConocimientoBE.IdEstado,
                                       oCCTT_ProgramacionBE.IdUsuario
                                        );
-                                // en caso falle:
+                                    // en caso falle:
 
-                                if (idResult2 == null || idResult2 == DBNull.Value)
-                                {
-                                    throw new Exception("Error al insertar correo de conocimiento");
-                                }
 
                                     LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oCCTT_ProgramacionBE.UserName
                                                                     , oInfoMetodoBE.FullName

@@ -1,4 +1,6 @@
 ﻿using Controladora.SeguridadPlanta;
+using Controladora.SIMANET.SeguridadPlanta;
+using EntidadNegocio.SIMANET.SeguridadPlanta;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,13 +28,13 @@ namespace WSCore.SeguridadPlanta
     // [System.Web.Script.Services.ScriptService]
     public class Visitas : System.Web.Services.WebService
     {
-      
+
         [WebMethod(Description = "Lista la Programacion de visitas")]
-        public string ListarTodos( string S_PROGRAMACION, string S_PERIODO, string S_TIPOPROGRA, string UserName)
+        public string ListarTodos(string S_PROGRAMACION, string S_PERIODO, string S_TIPOPROGRA, string UserName)
         {
             try
             {
-                DataTable dt = (new CVisitas()).ListarTodos(S_PROGRAMACION, S_PERIODO, S_TIPOPROGRA,  UserName);
+                DataTable dt = (new CVisita()).ListarTodos(S_PROGRAMACION, S_PERIODO, S_TIPOPROGRA, UserName);
                 // PARAMETROS: @NroProgramacion=0,@Periodo=2026,@idUsuario=86,@TipoProgramacion=1
                 DataTable dtCopy = dt.Copy();
                 dtCopy.TableName = "uspNTADConsultarProgramacionVisita_CVST";
@@ -68,9 +70,9 @@ namespace WSCore.SeguridadPlanta
                 @idUsuario         int,
                 @TipoProgramacion  int = 0
                 */
-                
+
                 Context.Response.ContentType = "application/json; charset=utf-8";
-                var data = new CVisitas().ListarTodos_JSON(Id1, Id2, Id3, UserName);
+                var data = new CVisita().ListarTodos_JSON(Id1, Id2, Id3, UserName);
 
                 return (data == null)
                     ? JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = "Ocurrió un error al consultar los datos." } })
@@ -83,18 +85,18 @@ namespace WSCore.SeguridadPlanta
         }
 
 
-
         [WebMethod(Description = "Insertar Programación de Visita (cabecera) ")]
         public string ProgramacionVisita_Ins(
-           string IdTipoVisita , string IdEntidad , string IdArea        , string FechaInicio  , string FechaTermino  , string HoraInicio, string HoraTermino
-         , string IdCIASeguros , string NroPoliza , string Observaciones , string IdUsuarioRegistro , string TipoProgramacion , string IdUsuarioAprobacion
-         , string IdEstado     , string UserName)
+           string IdTipoVisita, string IdEntidad, string IdArea, string FechaInicio, string FechaTermino, string HoraInicio, string HoraTermino
+         , string IdCIASeguros, string NroPoliza, string Observaciones, string IdUsuarioRegistro, string TipoProgramacion, string IdUsuarioAprobacion
+         , string IdEstado, string UserName)
 
         {
             // =========================
             // VALIDACIONES Y PARSEO
             // =========================
 
+            #region "Validaciones"
             // NUMERICAS
             if (!int.TryParse(IdTipoVisita, out int idTipoVisita))
                 throw new Exception($"\"{nameof(IdTipoVisita)}\" es obligatorio.");
@@ -153,7 +155,7 @@ namespace WSCore.SeguridadPlanta
             if (string.IsNullOrWhiteSpace(UserName))
                 throw new Exception($"\"{nameof(UserName)}\" es obligatorio.");
 
-
+            #endregion
 
             // =========================
             // MAPEO CORRECTO AL BE
@@ -233,7 +235,7 @@ namespace WSCore.SeguridadPlanta
                 throw new Exception("\"ID_ESTADO\" es obligatorio.");
 
 
-            if (oProgramacionBE.PERIODO  <= 0)
+            if (oProgramacionBE.PERIODO <= 0)
                 throw new Exception("\"PERIODO\" es obligatorio.");
 
             // FECHAS
@@ -257,7 +259,7 @@ namespace WSCore.SeguridadPlanta
             if (!string.IsNullOrWhiteSpace(oProgramacionBE.HORA_TERMINO) &&
                 oProgramacionBE.HORA_TERMINO != "0")
             {
-                oProgramacionBE.HORA_TERMINO= horaTerminoFinal;
+                oProgramacionBE.HORA_TERMINO = horaTerminoFinal;
             }
 
 
@@ -274,6 +276,5 @@ namespace WSCore.SeguridadPlanta
             // =========================
             return new CVisita().Insertar(oProgramacionBE, LstCorreos, LstAnexos);
         }
-
     }
 }

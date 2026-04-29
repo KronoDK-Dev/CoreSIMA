@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EntidadNegocio.SIMANET.SeguridadPlanta
 {
-    public class CCTT_ProgramacionBE:BaseBE
+    public class CCTT_ProgramacionBE : BaseBE
     {
         public CCTT_ProgramacionBE()
         { }
@@ -49,19 +49,14 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
         //private NullableTypes.NullableString lugardeTrabajo;
         private int idlugardeTrabajo;
         private string nombreLugarTrabajo;
-
-
         private string nombreNave;
         //private NullableTypes.NullableInt32 idContacto;
         private string nombreContacto;
-
         private string observaciones;
         private int idEstado;
-
         private string nroOrdenServicio;
         private string idOrdenServicio;
         private int tipoProgramacion;
-
         private int noProgramado;
         private int idUsuarioAprobacion;
         #endregion
@@ -98,15 +93,11 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.nroRuc; }
             set { this.nroRuc = value; }
         }
-
         public string RazonSocial
         {
             get { return this.razonSocial; }
             set { this.razonSocial = value; }
         }
-
-
-
         public int IdJefeProyecto
         {
             get { return this.idJefeProyecto; }
@@ -117,51 +108,41 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.apellidosyNombres; }
             set { this.apellidosyNombres = value; }
         }
-
-
         public string NroRegistroIngreso
         {
             get { return this.nroRegistroIngreso; }
             set { this.nroRegistroIngreso = value; }
         }
-
         public string NroDocumentodeRef
         {
             get { return this.nroDocumentodeRef; }
             set { this.nroDocumentodeRef = value; }
         }
-
         public DateTime FechaInicio
         {
             get { return this.fechaInicio; }
             set { this.fechaInicio = value; }
         }
-
         public DateTime FechaTermino
         {
             get { return this.fechaTermino; }
             set { this.fechaTermino = value; }
         }
-
         public string HoraInicio
         {
             get { return this.horaInicio; }
             set { this.horaInicio = value; }
         }
-
         public string HoraTermino
         {
             get { return this.horaTermino; }
             set { this.horaTermino = value; }
         }
-
         public int IdtablaCIASeguros
         {
             get { return this.idtablaCIASeguros; }
             set { this.idtablaCIASeguros = value; }
         }
-
-
         public int IdCIASeguros
         {
             get { return this.idCIASeguros; }
@@ -177,14 +158,11 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.nroPoliza; }
             set { this.nroPoliza = value; }
         }
-
-
         public DateTime FechaInicioPoliza
         {
             get { return this.fechaInicioPoliza; }
             set { this.fechaInicioPoliza = value; }
         }
-
         public DateTime FechaTerminoPoliza
         {
             get { return this.fechaTerminoPoliza; }
@@ -208,20 +186,16 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.nroPensionPoliza; }
             set { this.nroPensionPoliza = value; }
         }
-
         public string NroSaludPoliza
         {
             get { return this.nroSaludPoliza; }
             set { this.nroSaludPoliza = value; }
         }
-
         public string TrabajosARealizar
         {
             get { return this.trabajosARealizar; }
             set { this.trabajosARealizar = value; }
         }
-
-
         public int IdArea
         {
             get { return this.idArea; }
@@ -232,7 +206,6 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.nombreArea; }
             set { this.nombreArea = value; }
         }
-
         public int IdLugardeTrabajo
         {
             get { return this.idlugardeTrabajo; }
@@ -243,22 +216,16 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return this.nombreLugarTrabajo; }
             set { this.nombreLugarTrabajo = value; }
         }
-
-
-
         public string NombreNave
         {
             get { return this.nombreNave; }
             set { this.nombreNave = value; }
         }
-
         public string NombreContacto
         {
             get { return this.nombreContacto; }
             set { this.nombreContacto = value; }
         }
-
-
         public string Observaciones
         {
             get { return this.observaciones; }
@@ -276,19 +243,16 @@ namespace EntidadNegocio.SIMANET.SeguridadPlanta
             get { return nroOrdenServicio; }
             set { this.nroOrdenServicio = value; }
         }
-
         public string IdOrdenServicio
         {
             get { return idOrdenServicio; }
             set { this.idOrdenServicio = value; }
         }
-
         public int TipoProgramacion
         {
             get { return tipoProgramacion; }
             set { this.tipoProgramacion = value; }
         }
-
         public int NoProgramado
         {
             get { return noProgramado; }

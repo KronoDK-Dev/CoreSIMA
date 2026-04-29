@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Xml;
+using static Utilitario.Constante.Formato;
 
 namespace WSCore.SeguridadPlanta
 {
@@ -59,6 +61,13 @@ namespace WSCore.SeguridadPlanta
         {
             try
             {
+                /*
+                @NroProgramacion varchar(100), -- campo busca multiple: num / fecha / texto
+                @Periodo           int,
+                @idUsuario         int,
+                @TipoProgramacion  int = 0
+                */
+                
                 Context.Response.ContentType = "application/json; charset=utf-8";
                 var data = new CVisitas().ListarTodos_JSON(Id1, Id2, Id3, UserName);
 
@@ -70,6 +79,199 @@ namespace WSCore.SeguridadPlanta
             {
                 return JsonConvert.SerializeObject(new { success = false, error = new { code = "SERVER_ERROR", message = ex.Message } });
             }
+        }
+
+
+
+        [WebMethod(Description = "Insertar Programación de Visita (cabecera) ")]
+        public string ProgramacionVisita_Ins(
+           string IdTipoVisita , string IdEntidad , string IdArea        , string FechaInicio  , string FechaTermino  , string HoraInicio, string HoraTermino
+         , string IdCIASeguros , string NroPoliza , string Observaciones , string IdUsuarioRegistro , string TipoProgramacion , string IdUsuarioAprobacion
+         , string IdEstado     , string UserName)
+
+        {
+            // =========================
+            // VALIDACIONES Y PARSEO
+            // =========================
+
+            // NUMERICAS
+            if (!int.TryParse(IdTipoVisita, out int idTipoVisita))
+                throw new Exception($"\"{nameof(IdTipoVisita)}\" es obligatorio.");
+
+            if (!int.TryParse(IdEntidad, out int idEntidad))
+                throw new Exception($"\"{nameof(IdEntidad)}\" es obligatorio.");
+
+            if (!int.TryParse(IdArea, out int idArea))
+                throw new Exception($"\"{nameof(IdArea)}\" es obligatorio.");
+
+
+            int idCia = 99; // valor por defecto
+
+            if (int.TryParse(IdCIASeguros, out int tmpIdCia) && tmpIdCia > 0)
+            {
+                idCia = tmpIdCia;
+            }
+
+            if (!int.TryParse(IdUsuarioRegistro, out int idUsuarioRegistro))
+                throw new Exception($"\"{nameof(IdUsuarioRegistro)}\" es obligatorio.");
+
+            if (!int.TryParse(TipoProgramacion, out int tipoProgramacion))
+                throw new Exception($"\"{nameof(TipoProgramacion)}\" es obligatorio.");
+
+            if (!int.TryParse(IdUsuarioAprobacion, out int idUsuarioAprobacion))
+                throw new Exception($"\"{nameof(IdUsuarioAprobacion)}\" es obligatorio.");
+
+            if (!int.TryParse(IdEstado, out int idEstado))
+                throw new Exception($"\"{nameof(IdEstado)}\" es obligatorio.");
+            // FECHAS
+            if (!DateTime.TryParse(FechaInicio, out DateTime dtInicio))
+                throw new Exception($"\"{nameof(FechaInicio)}\" tiene formato inválido.");
+
+            if (!DateTime.TryParse(FechaTermino, out DateTime dtTermino))
+                throw new Exception($"\"{nameof(FechaTermino)}\" tiene formato inválido.");
+
+            if (dtTermino < dtInicio)
+                throw new Exception("La FechaTermino no puede ser menor que la FechaInicio.");
+
+            // TEXTOS
+            if (string.IsNullOrWhiteSpace(HoraInicio))
+                throw new Exception($"\"{nameof(HoraInicio)}\" es obligatorio.");
+
+            // 6 PM por defecto → "1800"
+            string horaTerminoFinal = "1800";
+
+            if (!string.IsNullOrWhiteSpace(HoraTermino) && HoraTermino != "0")
+            {
+                horaTerminoFinal = HoraTermino;
+            }
+
+
+            if (string.IsNullOrWhiteSpace(Observaciones))
+                throw new Exception($"\"{nameof(Observaciones)}\" es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(UserName))
+                throw new Exception($"\"{nameof(UserName)}\" es obligatorio.");
+
+
+
+            // =========================
+            // MAPEO CORRECTO AL BE
+            // =========================
+
+            CCTT_ProgramacionBE oBE = new CCTT_ProgramacionBE
+            {
+                IdTipoEntidad = idTipoVisita,
+                IdEntidad = idEntidad,
+                IdArea = idArea,
+                FechaInicio = dtInicio,
+                FechaTermino = dtTermino,
+                HoraInicio = HoraInicio,
+                HoraTermino = horaTerminoFinal,
+                IdCIASeguros = idCia,
+                NroPoliza = string.IsNullOrWhiteSpace(NroPoliza) ? "S/N" : NroPoliza,
+                Observaciones = Observaciones,
+                IdUsuario = idUsuarioRegistro,
+                TipoProgramacion = tipoProgramacion,
+                IdUsuarioAprobacion = idUsuarioAprobacion,
+                IdEstado = idEstado,
+                UserName = UserName
+            };
+
+            // =========================
+            // PERSISTENCIA
+            // =========================
+            return new CVisita().Insertar(oBE);
+        }
+
+
+        [WebMethod(Description = "Insertar Programación de Visitas (cabecera) - Parámetros: pase de clases Entidad ")]
+        public string ProgramacionVisitas_Ins(ProgramacionBE oProgramacionBE, string LstCorreos = "", string LstAnexos = "")
+
+
+        {
+            // =========================
+            // VALIDACIONES Y PARSEO
+            // =========================
+            #region Validaciones
+            // NUMERICAS
+
+            if (oProgramacionBE.ID_TIPO_VISITA <= 0)
+                throw new Exception("\"ID_TIPO_VISITA\" es obligatorio.");
+
+
+            if (oProgramacionBE.ID_ENTIDAD < 0)
+                throw new Exception("\"ID_ENTIDAD\" es obligatorio.");
+
+
+            if (!oProgramacionBE.ID_LUGAR_TRABAJO.HasValue || oProgramacionBE.ID_LUGAR_TRABAJO <= 0)
+                throw new Exception("\"ID_LUGAR_TRABAJO\" es obligatorio.");
+
+
+            int idCia = 99; // valor por defecto
+
+
+            if (oProgramacionBE.ID_CIA_SEGUROS > 0)
+            {
+                idCia = oProgramacionBE.ID_CIA_SEGUROS;
+            }
+
+
+            if (oProgramacionBE.ID_USUARIO_REGISTRO <= 0)
+                throw new Exception("\"ID_USUARIO_REGISTRO\" es obligatorio.");
+
+
+            if (oProgramacionBE.TIPO_PROGRAMACION <= 0)
+                throw new Exception("\"TIPO_PROGRAMACION\" es obligatorio.");
+
+
+            if (!oProgramacionBE.ID_USUARIO_APROBACION.HasValue || oProgramacionBE.ID_USUARIO_APROBACION < 0)
+                throw new Exception("\"ID_USUARIO_APROBACION\" es obligatorio.");
+
+
+            if (oProgramacionBE.ID_ESTADO < 0)
+                throw new Exception("\"ID_ESTADO\" es obligatorio.");
+
+
+            if (oProgramacionBE.PERIODO  <= 0)
+                throw new Exception("\"PERIODO\" es obligatorio.");
+
+            // FECHAS
+
+            DateTime dtInicio = oProgramacionBE.FECHA_INICIO;
+            DateTime dtTermino = oProgramacionBE.FECHA_TERMINO;
+
+            // Validación de rango
+            if (dtTermino < dtInicio)
+                throw new Exception("La FECHA_TERMINO no puede ser menor que la FECHA_INICIO.");
+
+            // TEXTOS
+
+            if (string.IsNullOrWhiteSpace(oProgramacionBE.HORA_INICIO))
+                throw new Exception("\"HORA_INICIO\" es obligatorio.");
+
+            // 6 PM por defecto → "1800"
+            string horaTerminoFinal = "18:00:00";
+
+
+            if (!string.IsNullOrWhiteSpace(oProgramacionBE.HORA_TERMINO) &&
+                oProgramacionBE.HORA_TERMINO != "0")
+            {
+                oProgramacionBE.HORA_TERMINO= horaTerminoFinal;
+            }
+
+
+            if (string.IsNullOrWhiteSpace(oProgramacionBE.OBSERVACIONES))
+                throw new Exception("\"OBSERVACIONES\" es obligatorio.");
+
+
+            if (string.IsNullOrWhiteSpace(oProgramacionBE.UserName))
+                throw new Exception("\"UserName\" es obligatorio.");
+            #endregion
+
+            // =========================
+            // PERSISTENCIA
+            // =========================
+            return new CVisita().Insertar(oProgramacionBE, LstCorreos, LstAnexos);
         }
 
     }

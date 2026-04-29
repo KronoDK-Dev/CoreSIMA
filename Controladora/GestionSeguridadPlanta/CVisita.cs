@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Controladora.GestionSeguridadPlanta
+namespace Controladora.SeguridadPlanta
 {
     public class CVisita
     {
@@ -22,7 +22,7 @@ namespace Controladora.GestionSeguridadPlanta
             return (new VisitasNTAD()).ListarTodos(Id1, Id2, Id3, UserName);
         }
 
-        public string Insertar(BaseBE oBaseBE)
+        public string Insertar(BaseBE oBaseBE, string LstCorreos = "", string LstAnexos = "")
         {
             return (new VisitasTAD()).Inserta(oBaseBE);
         }
@@ -33,5 +33,6 @@ namespace Controladora.GestionSeguridadPlanta
         {
             return (new VisitasNTAD()).ListarTodos_JSON(Id1, Id2, Id3, UserName);
         }
+
     }
 }

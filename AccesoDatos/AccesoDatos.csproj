@@ -315,6 +315,7 @@
     <Compile Include="Transaccional\GestionReportes\ObjetoPrivilegioTAD.cs" />
     <Compile Include="Transaccional\GestionReportes\ObjetoTAD.cs" />
     <Compile Include="Transaccional\GestionSeguridadIndustrial\CCTT_TrabajadorAntecedenteTAD.cs" />
+    <Compile Include="Transaccional\GestionSeguridadPlanta\VisitasTAD.cs" />
     <Compile Include="Transaccional\HelpDesk\ActividadesAtendidasTAD.cs" />
     <Compile Include="Transaccional\HelpDesk\AprobadorTAD.cs" />
     <Compile Include="Transaccional\HelpDesk\ArchivoAdjuntoTAD.cs" />
@@ -365,5 +366,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

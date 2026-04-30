@@ -194,6 +194,7 @@
     <Compile Include="SIMANET\SeguridadPlanta\CInduccion.cs" />
     <Compile Include="Seguridad\CUsuario.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProgramacionEquipos.cs" />
+    <Compile Include="SIMANET\SeguridadPlanta\CProgramacionPermanencia.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProgramacionTrabajador.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\CProveedorCliente.cs" />
     <Compile Include="SIMANET\SeguridadPlanta\Csctr.cs" />

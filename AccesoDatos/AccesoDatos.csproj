@@ -267,6 +267,7 @@
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ContratistaNTAD.cs" />
     <Compile Include="NoTransaccional\Seguridad\AD.cs" />
     <Compile Include="NoTransaccional\Seguridad\UsuarioNTAD.cs" />
+    <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionPermanenciaNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionEquiposNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\ProgramacionTrabajadorNTAD.cs" />
     <Compile Include="NoTransaccional\SIMANET\SeguridadPlanta\sctrNTAD.cs" />

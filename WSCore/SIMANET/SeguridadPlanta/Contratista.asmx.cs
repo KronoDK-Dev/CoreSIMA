@@ -454,5 +454,12 @@ namespace WSCore.SIMANET.SeguridadPlanta
         {
             return (new Csctr()).ListarTodosAct(Periodo, NroProg, UserName);
         }
+
+        [WebMethod]
+        public int ProgramacionPermanencia_count(int Periodo, int NroProg, string UserName)
+        {
+            return (new CProgramacionPermanencia()).ContarIngreso(Periodo, NroProg, UserName);
+        }
+
     }
 }

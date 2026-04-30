@@ -215,7 +215,7 @@ namespace AccesoDatos.Transaccional.SIMANET.SeguridadPlanta
                 string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
 
                 InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oCCTT_ProgramacionBE.ToString(true));
-                string PackagName = "CCTTuspTADactProgramacion";
+                string PackagName = "CCTTuspTADactProgramacion_ns";
                                      
 
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(oCCTT_ProgramacionBE.UserName

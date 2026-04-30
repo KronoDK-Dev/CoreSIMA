@@ -1,6 +1,6 @@
-﻿using Controladora.SeguridadPlanta;
-using Controladora.SIMANET.SeguridadPlanta;
+﻿
 using EntidadNegocio.SIMANET.SeguridadPlanta;
+using Controladora.GestionSeguridadPlanta;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Web.Script.Services;
 using System.Web.Services;
 using System.Xml;
 using static Utilitario.Constante.Formato;
-using EntidadNegocio.SIMANET.SeguridadPlanta;
+
 
 namespace WSCore.SeguridadPlanta
 {
@@ -86,10 +86,11 @@ namespace WSCore.SeguridadPlanta
 
 
         [WebMethod(Description = "Insertar Programación de Visita (cabecera) ")]
-        public string ProgramacionVisita_Ins(
+        public string ProgramacionVisita_Ins(int sPeriodo,
            string IdTipoVisita, string IdEntidad, string IdArea, string FechaInicio, string FechaTermino, string HoraInicio, string HoraTermino
          , string IdCIASeguros, string NroPoliza, string Observaciones, string IdUsuarioRegistro, string TipoProgramacion, string IdUsuarioAprobacion
-         , string IdEstado, string UserName)
+         , string IdEstado, string UserName
+         , string LstCorreos = "", string LstAnexos = "")
 
         {
             // =========================
@@ -161,29 +162,30 @@ namespace WSCore.SeguridadPlanta
             // MAPEO CORRECTO AL BE
             // =========================
 
-            CCTT_ProgramacionBE oBE = new CCTT_ProgramacionBE
+            ProgramacionBE oBE = new ProgramacionBE
             {
-                IdTipoEntidad = idTipoVisita,
-                IdEntidad = idEntidad,
-                IdArea = idArea,
-                FechaInicio = dtInicio,
-                FechaTermino = dtTermino,
-                HoraInicio = HoraInicio,
-                HoraTermino = horaTerminoFinal,
-                IdCIASeguros = idCia,
-                NroPoliza = string.IsNullOrWhiteSpace(NroPoliza) ? "S/N" : NroPoliza,
-                Observaciones = Observaciones,
-                IdUsuario = idUsuarioRegistro,
-                TipoProgramacion = tipoProgramacion,
-                IdUsuarioAprobacion = idUsuarioAprobacion,
-                IdEstado = idEstado,
-                UserName = UserName
+                PERIODO = sPeriodo,
+                ID_TIPO_VISITA = idTipoVisita,          // antes: IdTipoEntidad
+                ID_ENTIDAD = idEntidad,              // OK
+                ID_LUGAR_TRABAJO = idArea,                 // antes: IdArea
+                FECHA_INICIO = dtInicio,               // antes: FechaInicio
+                FECHA_TERMINO = dtTermino,              // antes: FechaTermino
+                HORA_INICIO = HoraInicio,             // OK (string)
+                HORA_TERMINO = horaTerminoFinal,       // antes: HoraTermino
+                ID_CIA_SEGUROS = idCia,                  // antes: IdCIASeguros
+                NRO_POLIZA = string.IsNullOrWhiteSpace(NroPoliza) ? "S/N" : NroPoliza,
+                OBSERVACIONES = Observaciones,
+                ID_USUARIO_REGISTRO = idUsuarioRegistro,      // antes: IdUsuario
+                TIPO_PROGRAMACION = tipoProgramacion,
+                ID_USUARIO_APROBACION = idUsuarioAprobacion,
+                ID_ESTADO = idEstado,
+                UserName = UserName                // viene de BaseBE ✅
             };
 
             // =========================
             // PERSISTENCIA
             // =========================
-            return new CVisita().Insertar(oBE);
+            return new CVisita().Insertar(oBE, LstCorreos, LstAnexos);
         }
 
 

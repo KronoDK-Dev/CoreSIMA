@@ -90,9 +90,9 @@ namespace AccesoDatos.Transaccional.GestionSeguridadPlanta
                                         oCCTT_ProgramacionBE.ID_CIA_SEGUROS,
                                         oCCTT_ProgramacionBE.NRO_POLIZA,
                                         oCCTT_ProgramacionBE.OBSERVACIONES,
-                                        oCCTT_ProgramacionBE.IdUsuario,
+                                        oCCTT_ProgramacionBE.ID_USUARIO_REGISTRO,
                                         oCCTT_ProgramacionBE.TIPO_PROGRAMACION,
-                                        oCCTT_ProgramacionBE.IdUsuario,
+                                        oCCTT_ProgramacionBE.ID_USUARIO_APROBACION,
                                         oCCTT_ProgramacionBE.IdEstado
                                          );
 

@@ -15,7 +15,7 @@ namespace AccesoDatos.NoTransaccional.GestionProyecto
     public class MobNTAD : BaseAD
     {
         readonly string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
-
+        int iTotal = 0;
         public DataTable Listar_det_gasto_pry_ot_mob(string D_FECHA_DE_TRABAJO_DESDE, string D_FECHA_DE_TRABAJO_HASTA,
             string V_CENTRO_OPERATIVO, string V_DIVISION, string V_PROYECTO, string UserName)
         {
@@ -67,17 +67,25 @@ namespace AccesoDatos.NoTransaccional.GestionProyecto
                 Param[6].Direction = ParameterDirection.Output;
 
                 DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, Param);
+                if (ds != null)
+                {
+                    iTotal = ds.Tables[0].Rows.Count;
+                }
+                
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                     , oInfoMetodoBE.FullName
                     , NombreMetodo
                     , PackageName
                     , ""
-                    , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                    , "rstCount:" + iTotal.ToString()
                     , Helper.MensajesSalirMetodo()
                     , Convert.ToString(Enumerados.NivelesErrorLog.I))
                 );
 
-                return ds.Tables[0];
+                return (ds != null && ds.Tables.Count > 0)
+                    ? ds.Tables[0]
+                    : new DataTable("SP_DET_GASTO_PRY_OT_MOB");
+
             }
             catch (OracleException oracleException)
             {

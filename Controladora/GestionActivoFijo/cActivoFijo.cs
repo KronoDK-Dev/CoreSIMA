@@ -93,5 +93,10 @@ namespace Controladora.GestionActivoFijo
         {
             return (new ActivoFijoNTAD()).Lista_Inventario_ActivosxCC(CCOSTO1, CCOSTO2, COD_EMPE, COD_PANOL, TIPOACTV, UserName);
         }
+        public DataTable Listar_BienesxNombre(string sNombre, string UserName)
+        {
+            return (new ActivoFijoNTAD()).Listar_BienesxNombre(sNombre, UserName);
+        }
+
     }
 }

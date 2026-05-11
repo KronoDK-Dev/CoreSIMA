@@ -18,7 +18,7 @@ namespace AccesoDatos.NoTransaccional.GestionPersonal
     public class PersonalNTAD : BaseAD, IMantenimientoNTAD
     {
         readonly string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
-
+        int iTotal = 0;
         public DataTable ListarTodos()
         {
             throw new NotImplementedException();
@@ -61,16 +61,25 @@ namespace AccesoDatos.NoTransaccional.GestionPersonal
 
                 DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, "NOMBRESYAPELLIDOS", TextFind);
 
+                if (ds != null)
+                { 
+                    iTotal = ds.Tables[0].Rows.Count;
+                }
+
                 LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
                                                                                      , oInfoMetodoBE.FullName
                                                                                      , NombreMetodo
                                                                                      , PackagName
                                                                                      , ""
-                                                                                     , "rstCount:" + ds.Tables[0].Rows.Count.ToString()
+                                                                                     , "rstCount:" + iTotal.ToString()
                                                                                      , Helper.MensajesSalirMetodo()
                                                                                      , Convert.ToString(Enumerados.NivelesErrorLog.I)));
 
-                return ds.Tables[0];
+                return (ds != null && ds.Tables.Count > 0)
+                 ? ds.Tables[0]
+                 : new DataTable("SEGuspNTADBuscarPersonal");
+
+                
             }
             catch (SqlException oracleException)
             {
@@ -335,5 +344,97 @@ namespace AccesoDatos.NoTransaccional.GestionPersonal
         {
             throw new NotImplementedException();
         }
+
+        public DataTable BuscarObjetivosxDescripcion(string V_DESCRIPCION, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(
+                    NombreMetodo, V_DESCRIPCION, UserName
+                );
+
+                string PackagName = "RRHHevaluacion.sp_BuscarObjetivosxDescripcion";
+
+                // LOG INICIO
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(
+                        UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackagName,
+                        oInfoMetodoBE.VoidParams,
+                        "",
+                        Helper.MensajesIngresarMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I)
+                    )
+                );
+
+                DataSet ds = Sql(SQLVersion.sqlSIMANET).ExecuteDataSet(PackagName, V_DESCRIPCION);
+
+            
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    iTotal = ds.Tables[0].Rows.Count;
+                }
+
+                // LOG SALIDA
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(
+                        UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackagName,
+                        "",
+                        "rstCount:" + iTotal.ToString(),
+                        Helper.MensajesSalirMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I)
+                    )
+                );
+
+                // RETORNO SEGURO
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    return ds.Tables[0];
+                }
+                else
+                {
+                    return new DataTable(); //  estructura vacía
+                }
+            }
+            catch (SqlException sqlException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    UserName,
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString()
+                    + Helper.Cadena.CortarTextoDerecha(5,
+                      Utilitario.Constante.LogCtrl.CEROS + sqlException.Number.ToString()),
+                    "Código de Error:" + sqlException.Number.ToString()
+                    + Utilitario.Constante.Caracteres.SeperadorSimple
+                    + sqlException.Message
+                );
+
+                return new DataTable(); // 👈 nunca null (mejor práctica)
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    UserName,
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(),
+                    exception.Message
+                );
+
+                return new DataTable(); // 👈 consistente
+            }
+        }
+
+
+
     }
 }

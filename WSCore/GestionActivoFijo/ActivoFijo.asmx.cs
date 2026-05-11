@@ -208,5 +208,12 @@ namespace WSCore.GestionActivoFijo
         {
             return (new cActivoFijo()).Lista_Inventario_ActivosxCC(CCOSTO1, CCOSTO2, COD_EMPE, COD_PANOL, TIPOACTV, UserName);
         }
+
+        [WebMethod(Description = "Listar los Bienes (activos y ctas de orden) x Nombre")]
+        public DataTable Listar_BienesxNombre(string sNombre, string UserName)
+        {
+            return (new cActivoFijo()).Listar_BienesxNombre(sNombre, UserName);
+        }
+
     }
 }

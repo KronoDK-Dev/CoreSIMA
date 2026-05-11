@@ -42,7 +42,8 @@
         <div class="content">
             <h2 class="title">Personal</h2>
             <p class="copy">Métodos del Servicio de Personal del Core Sima</p>
-            <a class="btn" href="RecursosHumanos/Personal.asmx" target="_blank">Ver</a>
+            <a class="btn" href="GestionPersonal/Personal.asmx" target="_blank">Personal</a>
+            <a class="btn" href="GestionPersonal/EvaluacionDesem/EvaluacionDesempenio.asmx" target="_blank">EvaluacionDesem</a>
         </div>
     </div>
     <div class="card">

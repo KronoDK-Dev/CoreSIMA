@@ -16,7 +16,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
     public class ActivoFijoNTAD : BaseAD
     {
         string sConsulta = ConfigurationManager.AppSettings["CONSULTA"];
-
+        int iTotal = 0;
         public DataTable Listar_actfijo_cons_inv(string UserName)
         {
             try
@@ -126,8 +126,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Listar_invent_actxgrupoysubgrsmn(string COD_EMPE, string GRUPOBN, string SUBGRUPOBN,
-            string TIPOACTV, string UserName)
+        public DataTable Listar_invent_actxgrupoysubgrsmn(string COD_EMPE, string GRUPOBN, string SUBGRUPOBN,  string TIPOACTV, string UserName)
         {
             try
             {
@@ -193,8 +192,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Listar_inventario_activosxcc(string CCOSTO1, string CCOSTO2, string COD_EMPE, string COD_PANOL,
-            string TIPOACTV, string UserName)
+        public DataTable Listar_inventario_activosxcc(string CCOSTO1, string CCOSTO2, string COD_EMPE, string COD_PANOL, string TIPOACTV, string UserName)
         {
             try
             {
@@ -264,8 +262,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Listar_inventario_activosxccrsm(string CCOSTO1, string CCOSTO2, string COD_EMPE,
-            string TIPOACTV, string UserName)
+        public DataTable Listar_inventario_activosxccrsm(string CCOSTO1, string CCOSTO2, string COD_EMPE, string TIPOACTV, string UserName)
         {
             try
             {
@@ -331,8 +328,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Listar_inventario_activosxcustod(string COD_EMPE, string COD_ROL, string TIPOACTV,
-            string UserName)
+        public DataTable Listar_inventario_activosxcustod(string COD_EMPE, string COD_ROL, string TIPOACTV, string UserName)
         {
             try
             {
@@ -394,8 +390,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Listar_inventario_actsgrup_sub(string COD_EMP, string EST_BIEN, string GRUPO, string SUBGRUPO,
-            string TIPO_BIEN, string UserName)
+        public DataTable Listar_inventario_actsgrup_sub(string COD_EMP, string EST_BIEN, string GRUPO, string SUBGRUPO, string TIPO_BIEN, string UserName)
         {
             try
             {
@@ -465,8 +460,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Lista_Bienes_toma_inventario(string CODEMP, string NRO_PR, string CCO_INI, string CCO_FIN,
-            string UserName)
+        public DataTable Lista_Bienes_toma_inventario(string CODEMP, string NRO_PR, string CCO_INI, string CCO_FIN,  string UserName)
         {
             try
             {
@@ -698,8 +692,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Lista_Inventario_ActsGrup_Sub(string COD_EMP, string EST_BIEN, string TIPO_BIEN,
-            string sGRUPO, string sSUBGRUPO, string UserName)
+        public DataTable Lista_Inventario_ActsGrup_Sub(string COD_EMP, string EST_BIEN, string TIPO_BIEN, string sGRUPO, string sSUBGRUPO, string UserName)
         {
             try
             {
@@ -769,8 +762,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Lista_Inventario_ActsGrup_Sub2(string COD_EMP, string EST_BIEN, string TIPO_BIEN,
-            string sGRUPO, string sSUBGRUPO, string UserName)
+        public DataTable Lista_Inventario_ActsGrup_Sub2(string COD_EMP, string EST_BIEN, string TIPO_BIEN, string sGRUPO, string sSUBGRUPO, string UserName)
         {
             try
             {
@@ -840,8 +832,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Lista_Invent_ActxGrupoySubGRSMN(string COD_EMP, string TIPOACTV, string GRUPOBN,
-            string SUBGRUPOBN, string UserName)
+        public DataTable Lista_Invent_ActxGrupoySubGRSMN(string COD_EMP, string TIPOACTV, string GRUPOBN, string SUBGRUPOBN, string UserName)
         {
             try
             {
@@ -907,8 +898,7 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
             }
         }
 
-        public DataTable Lista_Inventario_ActivosxCC(string CCOSTO1, string CCOSTO2, string COD_EMPE, string COD_PANOL,
-            string TIPOACTV, string UserName)
+        public DataTable Lista_Inventario_ActivosxCC(string CCOSTO1, string CCOSTO2, string COD_EMPE, string COD_PANOL, string TIPOACTV, string UserName)
         {
             try
             {
@@ -977,5 +967,72 @@ namespace AccesoDatos.NoTransaccional.GestionActivoFijo
                 return null;
             }
         }
+
+        public DataTable Listar_BienesxNombre(string sNombre, string UserName)
+        {
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, sNombre, UserName);
+                string PackageName = sConsulta + ".Pkg_GENERAL.SP_Lista_BienesxNombre";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , oInfoMetodoBE.VoidParams
+                    , ""
+                    , Helper.MensajesIngresarMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                OracleParameter[] oParam = new OracleParameter[2];
+                oParam[0] = new OracleParameter("V_NOMBRE", OracleDbType.Varchar2);
+                oParam[0].Direction = ParameterDirection.Input;
+                oParam[0].Value = sNombre;
+
+                oParam[1] = new OracleParameter("cRegistros", OracleDbType.RefCursor);
+                oParam[1].Direction = ParameterDirection.Output;
+
+                DataSet ds = Oracle(ORACLEVersion.oJDE).ExecuteDataSet(true, PackageName, oParam);
+
+                if (ds!=null)
+                {
+                    iTotal = ds.Tables[0].Rows.Count;
+                }
+                
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(new LogTransaccional(UserName
+                    , oInfoMetodoBE.FullName
+                    , NombreMetodo
+                    , PackageName
+                    , ""
+                    , "rstCount:" + iTotal.ToString()
+                    , Helper.MensajesSalirMetodo()
+                    , Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return (ds != null && ds.Tables.Count > 0)
+                  ? ds.Tables[0]
+                 : new DataTable();
+
+                
+            }
+            catch (OracleException oracleException)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD.ToString() + Helper.Cadena.CortarTextoDerecha(5, Utilitario.Constante.LogCtrl.CEROS + oracleException.Number.ToString()), "Código de Error:" + oracleException.Number.ToString() + Utilitario.Constante.Caracteres.SeperadorSimple + "Número de Línea:" + "1" + Utilitario.Constante.Caracteres.SeperadorSimple + oracleException.Message);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(UserName, this.GetType().Name, Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(), Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(), exception.Message);
+                return null;
+            }
+        }
+
+
+
     }
 }

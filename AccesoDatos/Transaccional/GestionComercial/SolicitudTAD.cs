@@ -20,56 +20,7 @@ namespace AccesoDatos.Transaccional.GestionComercial
     {
         readonly string sComercial = ConfigurationManager.AppSettings["E_COMERCIAL"];
 
-        public int Eliminar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Eliminar(string Id1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Eliminar(string Id1, string Id2)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Eliminar(string Id1, string Id2, string Id3)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Modificar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Modifica(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ModificaInserta(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int ModificarInsertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Insertar(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Inserta(BaseBE oBaseBE)
-        {
-            throw new NotImplementedException();
-        }
-
+     
         public string InsertarSolicitud(BaseBE oBaseBE, string sAmbiente = "T")
         {
             SolicitudBE oSolicitudBE = (SolicitudBE)oBaseBE;
@@ -374,5 +325,152 @@ namespace AccesoDatos.Transaccional.GestionComercial
                 return "FALLO EN PROCESAMIENTO";
             }
         }
+
+        // 15.05.2026 
+        public string CopiarSolicitud(BaseBE oBaseBE)
+        {
+            SolicitudBE oSolicitudBE = (SolicitudBE)oBaseBE;
+
+            
+            try
+            {
+                StackTrace stack = new StackTrace();
+                string NombreMetodo = stack.GetFrame(0).GetMethod().Name;
+
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oSolicitudBE.ToString(true));
+
+                string PackageName = sComercial + ".pkg_comercial.SP_COPIAR_SOLICITUD";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(
+                        oSolicitudBE.UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackageName,
+                        oInfoMetodoBE.VoidParams,
+                        "",
+                        Helper.MensajesIngresarMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                OracleParameter[] Params = new OracleParameter[5];
+
+                // 1. DIVISION
+                Params[0] = new OracleParameter("v_cod_div", OracleDbType.Varchar2);
+                Params[0].Direction = ParameterDirection.Input;
+                Params[0].Value = (object)oSolicitudBE.X_COD_DIV;
+
+                // 2. CEO
+                Params[1] = new OracleParameter("v_cod_ceo", OracleDbType.Varchar2);
+                Params[1].Direction = ParameterDirection.Input;
+                Params[1].Value = (object)oSolicitudBE.X_COD_CEO;
+
+                // 3. NRO VAL (SOLICITUD ORIGEN)
+                Params[2] = new OracleParameter("n_nro_val", OracleDbType.Int32);
+                Params[2].Direction = ParameterDirection.Input;
+                Params[2].Value = (object)oSolicitudBE.X_NRO_VAL;
+
+                // 4. USUARIO
+                Params[3] = new OracleParameter("v_usr_reg", OracleDbType.Varchar2);
+                Params[3].Direction = ParameterDirection.Input;
+                Params[3].Value = (object)oSolicitudBE.UserName;
+
+                // 5. RESULTADO
+                Params[4] = new OracleParameter("w_resultado", OracleDbType.Varchar2);
+                Params[4].Direction = ParameterDirection.Output;
+                Params[4].Size = 200;
+
+                string result;
+
+                string response = (string)Oracle(ORACLEVersion.oJDE)
+                    .ExecuteNonQuery(true, PackageName, Params);
+
+                if (string.IsNullOrWhiteSpace(response))
+                {
+                    result = "0";
+                }
+                else
+                {
+                    JObject json = JObject.Parse(response);
+                    result = (string)json["w_resultado"];
+                }
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(
+                        oSolicitudBE.UserName,
+                        oInfoMetodoBE.FullName,
+                        NombreMetodo,
+                        PackageName,
+                        "",
+                        "Return Resultado:" + result,
+                        Helper.MensajesSalirMetodo(),
+                        Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oSolicitudBE.UserName,
+                    this.GetType().Name,
+                    Utilitario.Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Utilitario.Constante.LogCtrl.CODIGOERRORGENERICONTAD.ToString(),
+                    ex.Message
+                );
+
+                return "FALLO EN PROCESAMIENTO";
+            }
+        }
+        public int Eliminar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Eliminar(string Id1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Eliminar(string Id1, string Id2)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Eliminar(string Id1, string Id2, string Id3)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Modificar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Modifica(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ModificaInserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ModificarInsertar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Insertar(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Inserta(BaseBE oBaseBE)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

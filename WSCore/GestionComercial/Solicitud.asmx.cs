@@ -290,7 +290,53 @@ namespace WSCore.GestionComercial
             return (new cSolicitud()).Lista_Lineas_Usuario(sUsuario, UserName);
         }
 
+        [WebMethod(Description = "Copia de Solicitud de Trabajo | con entidad")] // 14.05.2026
+        public string CopiarSolicitud2(SolicitudBE oSolicitudBE)
+        {
+            try
+            {
+                string result = (new cSolicitud()).CopiarSolicitud(oSolicitudBE);
 
+                if (result.Contains('-') && result.Length > 4)
+                    result = (new cGeneral()).LISTA_DESCRIP_ERRORES(result, oSolicitudBE.UserName);
+
+                result = result.Replace("S0", "\n S0");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "CopiarSolicitud | FALLO EN PROCESAMIENTO...\r\n" + ex.Message;
+            }
+        }
+
+        [WebMethod(Description = "Copia de Solicitud de Trabajo ")] // 14.05.2026
+        public string CopiarSolicitud( string v_cod_div, string v_cod_ceo, string v_nro_val, string v_usr_reg) // 14.05.2026
+        {
+            SolicitudBE osolicitud = new SolicitudBE
+            {
+                X_COD_DIV = v_cod_div,
+                X_COD_CEO = v_cod_ceo,
+                X_NRO_VAL = string.IsNullOrEmpty(v_nro_val) ? 0 : Convert.ToInt32(v_nro_val),
+                UserName = v_usr_reg
+            };
+
+            try
+            {
+                string result = (new cSolicitud()).CopiarSolicitud(osolicitud);
+
+                if (result.Contains('-') && result.Length > 4)
+                    result = (new cGeneral()).LISTA_DESCRIP_ERRORES(result, v_usr_reg);
+
+                result = result.Replace("S0", "\n S0");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "CopiarSolicitud | FALLO EN PROCESAMIENTO...\r\n" + ex.Message;
+            }
+        }
         #region VERIFICA_ERROR
 
         private static bool EsErrorDeConectividad(Exception ex)

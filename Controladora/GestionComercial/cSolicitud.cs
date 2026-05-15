@@ -40,12 +40,18 @@ namespace Controladora.GestionComercial
 
         public string InsertarSolicitud(BaseBE oBaseBE, string v_ambiente = "T")
         {
-            return (new          SolicitudTAD()).InsertarSolicitud(oBaseBE, v_ambiente);
+            return (new SolicitudTAD()).InsertarSolicitud(oBaseBE, v_ambiente);
         }
 
         public DataTable Lista_Lineas_Usuario(string s_USUARIO, string UserName)
         {
             return (new SolicitudNTAD()).Lista_Lineas_Usuario(s_USUARIO, UserName);
         }
+
+        public string CopiarSolicitud(BaseBE oBaseBE)
+        {
+            return (new SolicitudTAD()).CopiarSolicitud(oBaseBE);
+        }
+
     }
 }

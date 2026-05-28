@@ -104,9 +104,6 @@ namespace WSCore.SIMANET.SeguridadPlanta
 
 
 
-
-
-
     public class ParametroBE {
         public ParametroBE() { }
 

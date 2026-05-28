@@ -278,5 +278,268 @@ namespace WSCore.SeguridadPlanta
             // =========================
             return new CVisita().Insertar(oProgramacionBE, LstCorreos, LstAnexos);
         }
+
+        [WebMethod(Description = "Insertar Visitante (parámetros simples)")]
+        public int Visitante_Ins(string NroProgramacion,string Periodo,string NroDNI,string IdNivelEspecialidad, string IdEstado,
+                                 string idUsuarioRegistro, string SCTRSalud,string SCTRPension, string UserName)
+
+        {
+            // VALIDACIONES
+            if (!int.TryParse(NroProgramacion, out int nroProgramacion))
+                throw new Exception($"\"{nameof(NroProgramacion)}\" es obligatorio.");
+
+            if (!int.TryParse(Periodo, out int periodo))
+                throw new Exception($"\"{nameof(Periodo)}\" es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(NroDNI))
+                throw new Exception($"\"{nameof(NroDNI)}\" es obligatorio.");
+
+  
+            if (!int.TryParse(IdEstado, out int idEstado))
+                throw new Exception($"\"{nameof(IdEstado)}\" es obligatorio.");
+
+            if (!int.TryParse(idUsuarioRegistro, out int IdUsuarioRegistro))
+                throw new Exception($"\"{nameof(idUsuarioRegistro)}\" es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(UserName))
+                throw new Exception($"\"{nameof(UserName)}\" es obligatorio.");
+
+            CCTT_ProgramacionTrabajadoresContratistaBE oBE =
+                new CCTT_ProgramacionTrabajadoresContratistaBE
+                {
+                    NroProgramacion = nroProgramacion,
+                    Periodo = periodo,
+                    NroDNI = NroDNI,
+               
+                    IdEstado = idEstado,
+                    IdUsuarioRegistro = IdUsuarioRegistro,
+                    SCTRSalud = SCTRSalud,
+                    SCTRPension = SCTRPension,
+                    UserName = UserName
+                };
+
+            return new CVisita().InsertarVisitante(oBE);
+        }
+
+        [WebMethod(Description = "Insertar Visitante (BE)")]
+        public int Visitantes_Ins(CCTT_ProgramacionTrabajadoresContratistaBE oBE)
+        {
+            if (oBE.NroProgramacion <= 0)
+                throw new Exception("\"NroProgramacion\" es obligatorio.");
+
+            if (oBE.Periodo <= 0)
+                throw new Exception("\"Periodo\" es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(oBE.NroDNI))
+                throw new Exception("\"NroDNI\" es obligatorio.");
+
+         
+            if (oBE.IdEstado <= 0)
+                throw new Exception("\"IdEstado\" es obligatorio.");
+
+            if (oBE.IdUsuario <= 0)
+                throw new Exception("\"IdUsuario\" es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(oBE.UserName))
+                throw new Exception("\"UserName\" es obligatorio.");
+
+            return new CVisita().InsertarVisitante(oBE);
+        }
+
+        [WebMethod(Description = "Eliminar Visitante (parámetros simples)")]
+        public int Visitante_Del(string NroProgramacion,string Periodo, string NroDNI, string IdTablaEstado, string IdEstado,
+                                string IdUsuarioEliminacion,  string IdUsuario,string UserName)
+        {
+            if (!int.TryParse(NroProgramacion, out int nroProgramacion))
+                throw new Exception("NroProgramacion inválido");
+
+            if (!int.TryParse(Periodo, out int periodo))
+                throw new Exception("Periodo inválido");
+
+            if (string.IsNullOrWhiteSpace(NroDNI))
+                throw new Exception("NroDNI obligatorio");
+
+            if (!int.TryParse(IdTablaEstado, out int idTablaEstado))
+                throw new Exception("IdTablaEstado inválido");
+
+            if (!int.TryParse(IdEstado, out int idEstado))
+                throw new Exception("IdEstado inválido");
+
+            if (!int.TryParse(IdUsuarioEliminacion, out int idUsuarioEliminacion))
+                throw new Exception("IdUsuarioEliminacion inválido");
+
+
+            if (string.IsNullOrWhiteSpace(UserName))
+                throw new Exception("UserName obligatorio");
+
+            var oBE = new CCTT_ProgramacionTrabajadoresContratistaBE
+            {
+                NroProgramacion = nroProgramacion,
+                Periodo = periodo,
+                NroDNI = NroDNI,
+                IdTablaEstado = idTablaEstado,
+                IdEstado = idEstado,
+                IdUsuarioRegistro = idUsuarioEliminacion,
+                UserName = UserName
+            };
+
+            return new CVisita().EliminarVisitante(oBE);
+        }
+
+
+        [WebMethod(Description = "Eliminar Visitante (BE)")]
+        public int Visitantes_Del(CCTT_ProgramacionTrabajadoresContratistaBE oBE)
+        {
+            if (oBE.NroProgramacion <= 0)
+                throw new Exception("NroProgramacion obligatorio");
+
+            if (oBE.Periodo <= 0)
+                throw new Exception("Periodo obligatorio");
+
+            if (string.IsNullOrWhiteSpace(oBE.NroDNI))
+                throw new Exception("NroDNI obligatorio");
+
+            if (oBE.IdUsuarioRegistro <= 0)
+                throw new Exception("IdUsuario obligatorio");
+
+            if (string.IsNullOrWhiteSpace(oBE.UserName))
+                throw new Exception("UserName obligatorio");
+
+            return new CVisita().EliminarVisitante(oBE);
+        }
+
+
+        [WebMethod(Description = "Modificar Visitante (parámetros simples)")]
+        public int Visitante_Upd(string NroProgramacion,string Periodo,string NroDNI,string Observacion,
+                                string IdEstado,string IdUsuario,string UserName)
+        {
+            if (!int.TryParse(NroProgramacion, out int nroProgramacion))
+                throw new Exception("NroProgramacion inválido");
+
+            if (!int.TryParse(Periodo, out int periodo))
+                throw new Exception("Periodo inválido");
+
+            if (string.IsNullOrWhiteSpace(NroDNI))
+                throw new Exception("NroDNI obligatorio");
+
+            if (!int.TryParse(IdEstado, out int idEstado))
+                throw new Exception("IdEstado inválido");
+
+            if (!int.TryParse(IdUsuario, out int idUsuario))
+                throw new Exception("IdUsuario inválido");
+
+            if (string.IsNullOrWhiteSpace(UserName))
+                throw new Exception("UserName obligatorio");
+
+            var oBE = new CCTT_ProgramacionTrabajadoresContratistaBE
+            {
+                NroProgramacion = nroProgramacion,
+                Periodo = periodo,
+                NroDNI = NroDNI,
+                Observacion = Observacion,
+                IdEstado = idEstado,
+                IdUsuarioRegistro = idUsuario,
+                UserName = UserName
+            };
+
+            return new CVisita().ModificarVisitante(oBE);
+        }
+
+
+        [WebMethod(Description = "Modificar Visitante (BE)")]
+        public int Visitantes_Upd(CCTT_ProgramacionTrabajadoresContratistaBE oBE)
+        {
+            if (oBE.NroProgramacion <= 0)
+                throw new Exception("NroProgramacion obligatorio");
+
+            if (oBE.Periodo <= 0)
+                throw new Exception("Periodo obligatorio");
+
+            if (string.IsNullOrWhiteSpace(oBE.NroDNI))
+                throw new Exception("NroDNI obligatorio");
+
+            if (oBE.IdEstado <= 0)
+                throw new Exception("IdEstado obligatorio");
+
+            if (oBE.IdUsuarioRegistro <= 0)
+                throw new Exception("IdUsuario obligatorio");
+
+            if (string.IsNullOrWhiteSpace(oBE.UserName))
+                throw new Exception("UserName obligatorio");
+
+            return new CVisita().ModificarVisitante(oBE);
+        }
+
+        [WebMethod(Description = "Listar Visitantes")]
+        public DataTable ListarVisitantes(string Periodo, string NroProgramacion, string UserName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(UserName))
+                    throw new Exception("UserName obligatorio");
+
+                DataTable dt = new CVisita().ListarVisitantes(Periodo, NroProgramacion, UserName);
+
+                if (dt == null)
+                    return new DataTable();
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpException(500, "Error interno del servidor", ex);
+            }
+        }
+
+        [WebMethod(Description = "Listar Visitantes (JSON)")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = false)]
+        public string ListarVisitantes_JSON(string Periodo, string NroProgramacion, string UserName)
+        {
+            try
+            {
+                /*
+                 @Periodo int
+                 @NroProgramacion int
+                */
+
+                Context.Response.ContentType = "application/json; charset=utf-8";
+
+                var data = new CVisita().ListarVisitantes(Periodo, NroProgramacion, UserName);
+
+                return (data == null)
+                    ? JsonConvert.SerializeObject(new
+                    {
+                        success = false,
+                        error = new
+                        {
+                            code = "SERVER_ERROR",
+                            message = "Ocurrió un error al consultar los datos."
+                        }
+                    })
+                    : JsonConvert.SerializeObject(new
+                    {
+                        success = true,
+                        data
+                    });
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    success = false,
+                    error = new
+                    {
+                        code = "SERVER_ERROR",
+                        message = ex.Message
+                    }
+                });
+            }
+        }
+
+        [WebMethod(Description = "Busca trabajadores Externos registrados por DNI o Apellidos")]
+        public DataTable BuscarTrabajadorExterno(string sValor, string UserName)
+        {
+            return new CVisita().BuscarTrabajadorExterno(sValor, UserName);
+        }
     }
 }

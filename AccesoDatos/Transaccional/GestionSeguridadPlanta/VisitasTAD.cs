@@ -289,7 +289,200 @@ namespace AccesoDatos.Transaccional.GestionSeguridadPlanta
         }
 
 
+        public int InsertarVisitante(BaseBE oBaseBE)
+        {
+            int retorno = -1;
+            var oBE = (CCTT_ProgramacionTrabajadoresContratistaBE)oBaseBE;
+            Database db = Sql(SQLVersion.sqlSIMANET);
+
+            try
+            {
+                string NombreMetodo = nameof(InsertarVisitante);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oBE.ToString());
+
+                string PackagName = "seg_planta.CCTTuspTADInsProgramacionTrabajadoresContratista2";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, "",
+                    Helper.MensajesIngresarMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                retorno = db.ExecuteNonQuery(
+                    PackagName,
+                    oBE.NroProgramacion,
+                    oBE.Periodo,
+                    oBE.NroDNI,
+                    oBE.IdNivelEspecialidad,
+                    oBE.IdEstado,
+                    oBE.IdUsuarioRegistro,
+                    oBE.SCTRSalud,
+                    oBE.SCTRPension
+                );
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, retorno.ToString(),
+                    Helper.MensajesSalirMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return retorno;
+            }
+            catch (SqlException ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD +
+                    Helper.Cadena.CortarTextoDerecha(5, Constante.LogCtrl.CEROS + ex.Number.ToString()),
+                    "Código de Error:" + ex.Number + Constante.Caracteres.SeperadorSimple + ex.Message
+                );
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.LogCtrl.CODIGOERRORGENERICONTAD,
+                    ex.Message
+                );
+                return -1;
+            }
+        }
+        public int EliminarVisitante(BaseBE oBaseBE)
+        {
+            int retorno = -1;
+            var oBE = (CCTT_ProgramacionTrabajadoresContratistaBE)oBaseBE;
+            Database db = Sql(SQLVersion.sqlSIMANET);
+
+            try
+            {
+                string NombreMetodo = nameof(EliminarVisitante);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oBE.ToString());
+
+                string PackagName = "CCTTuspTADEliProgramacionTrabajadoresContratista";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, "",
+                    Helper.MensajesIngresarMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                retorno = db.ExecuteNonQuery(
+                    PackagName,
+                    oBE.NroProgramacion,
+                    oBE.Periodo,
+                    oBE.NroDNI,
+                    oBE.IdTablaEstado,
+                    oBE.IdEstado,
+                    oBE.IdUsuarioRegistro
+                );
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, retorno.ToString(),
+                    Helper.MensajesSalirMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return retorno;
+            }
+            catch (SqlException ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD +
+                    Helper.Cadena.CortarTextoDerecha(5, Constante.LogCtrl.CEROS + ex.Number.ToString()),
+                    ex.Message
+                );
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.LogCtrl.CODIGOERRORGENERICONTAD,
+                    ex.Message
+                );
+                return -1;
+            }
+        }
+        public int ModificarVisitante(BaseBE oBaseBE)
+        {
+            int retorno = -1;
+            var oBE = (CCTT_ProgramacionTrabajadoresContratistaBE)oBaseBE;
+            Database db = Sql(SQLVersion.sqlSIMANET);
+
+            try
+            {
+                string NombreMetodo = nameof(ModificarVisitante);
+                InfoMetodoBE oInfoMetodoBE = (InfoMetodoBE)this.MetodoInfo(NombreMetodo, oBE.ToString());
+
+                string PackagName = "CCTTuspTADActProgramacionTrabajadoresContratista";
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, "",
+                    Helper.MensajesIngresarMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                retorno = db.ExecuteNonQuery(
+                    PackagName,
+                    oBE.NroProgramacion,
+                    oBE.Periodo,
+                    oBE.NroDNI,
+                    oBE.Observacion,
+                    oBE.IdEstado,
+                    oBE.IdUsuarioRegistro
+                );
+
+                LogTransaccional.GrabarLogTransaccionalArchivo(
+                    new LogTransaccional(oBE.UserName, oInfoMetodoBE.FullName, NombreMetodo,
+                    PackagName, oInfoMetodoBE.VoidParams, retorno.ToString(),
+                    Helper.MensajesSalirMetodo(),
+                    Convert.ToString(Enumerados.NivelesErrorLog.I))
+                );
+
+                return retorno;
+            }
+            catch (SqlException ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.Archivo.Prefijo.PREFIJOCODIGOERRORNTAD +
+                    Helper.Cadena.CortarTextoDerecha(5, Constante.LogCtrl.CEROS + ex.Number.ToString()),
+                    ex.Message
+                );
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                LogTransaccional.LanzarSIMAExcepcionDominio(
+                    oBE.UserName,
+                    this.GetType().Name,
+                    Enumerados.LogCtrl.OrigenError.AccesoDatos.ToString(),
+                    Constante.LogCtrl.CODIGOERRORGENERICONTAD,
+                    ex.Message
+                );
+                return -1;
+            }
+        }
 
 
+
+        //--------------------------------------
     }
 }

@@ -37,6 +37,28 @@ namespace Controladora.GestionSeguridadPlanta
         {
             return (new VisitasTAD()).Inserta(oBaseBE, LstCorreos, LstAnexos);
         }
+        public int InsertarVisitante(BaseBE oBaseBE)
+        {
+            return (new VisitasTAD()).InsertarVisitante(oBaseBE);
+        }
+        public int ModificarVisitante(BaseBE oBaseBE)
+        {
+            return (new VisitasTAD()).ModificarVisitante(oBaseBE);
+        }
 
+        public int EliminarVisitante(BaseBE oBaseBE)
+        {
+            return (new VisitasTAD()).EliminarVisitante(oBaseBE);
+        }
+
+        public DataTable ListarVisitantes(string Periodo, string NroProgramacion, string UserName)
+        {
+            return (new VisitasNTAD()).ListarVisitantes(Periodo, NroProgramacion, UserName);
+        }
+
+        public DataTable BuscarTrabajadorExterno(string sValor, string UserName)
+        {
+            return (new VisitasNTAD()).BuscarTrabajadorExterno(sValor,  UserName);
+        }
     }
 }

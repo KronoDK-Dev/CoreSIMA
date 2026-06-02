@@ -173,6 +173,8 @@
     <Compile Include="NoTransaccional\GestionCostos\VentasNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Reportes.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\AnticipoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ChequeDiseñoNTAD.cs" />
+    <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ChequeEmitidoNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributoObligatorioNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7AtributosNTAD.cs" />
     <Compile Include="NoTransaccional\GestionFinanciera\Tesoreria\ComponenteO7CatalogoNTAD.cs" />
@@ -284,6 +286,7 @@
     <Compile Include="Transaccional\GestionCalidad\ResponsableAreaTAD.cs" />
     <Compile Include="Transaccional\GestionComercial\ClienteTAD.cs" />
     <Compile Include="Transaccional\GestionComercial\SolicitudTAD.cs" />
+    <Compile Include="Transaccional\GestionFinanciera\Tesoreria\ChequeEmitidoTAD.cs" />
     <Compile Include="Transaccional\GestionFinanciera\Tesoreria\ComprobanteTAD.cs" />
     <Compile Include="Transaccional\GestionFinanciera\Tesoreria\ControlTAD.cs" />
     <Compile Include="Transaccional\GestionFinanciera\Tesoreria\InterbancarioTAD.cs" />

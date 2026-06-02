@@ -12,9 +12,9 @@ namespace Controladora.SIMANET.SeguridadPlanta
 {
     public  class Csctr
     {
-        public DataTable ListarTodosAct(int Periodo, int NroProg, string UserName)
+        public DataTable ListarTodosAct(int Periodo, int NroProg, string SCTRP, string SCTRS, string UserName)
         {
-            return (new sctrNTAD()).ListarTodosAct(Periodo, NroProg, UserName);
+            return (new sctrNTAD()).ListarTodosAct(Periodo, NroProg, SCTRP, SCTRS, UserName);
         }
         public DataTable ListarTodos(string IdEntidad, int Periodo, int NroProg, string UserName)
         {

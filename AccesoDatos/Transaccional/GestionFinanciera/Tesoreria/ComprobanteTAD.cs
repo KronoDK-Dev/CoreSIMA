@@ -39,7 +39,8 @@ namespace AccesoDatos.Transaccional.GestionFinanciera.Tesoreria
                    
                     object id = Oracle(ORACLEVersion.O7).ExecuteScalar(true, PackagName, Param);
                 }
-                else if ((CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))|| (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaIquitos)))
+                //else if ((CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote))|| (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaIquitos)))
+                else if (CentroOperativo == Convert.ToInt32(Enumerados.CentroOperativo.SimaChimbote)) 
                 {
                     PackagName = "sp_FECComprobanteEst_Tra";
                     int idResult = Convert.ToInt32(Sql(SQLVersion.sqlDBSimaCH).ExecuteNonQuery(PackagName, TipoDoc, NroSer, Estado));

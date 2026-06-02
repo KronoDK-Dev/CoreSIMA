@@ -28,9 +28,9 @@ namespace Controladora.SIMANET.SeguridadPlanta
         {
             return (new ProgramacionTrabajadorTAD()).ModificaInserta(oBaseBE);
         }
-        public DataTable ListarTodos(string IdProgramacion , string Periodo, string NroDNI, string UserName)
+        public DataTable ListarTodos(string IdProgramacion , string Periodo, string NroDNI, string IdSCTRP, string IdSCTRS, string UserName)
         {
-            return (new ProgramacionTrabajadorNTAD()).ListarTodos(IdProgramacion,  Periodo, NroDNI, UserName);
+            return (new ProgramacionTrabajadorNTAD()).ListarTodos(IdProgramacion,  Periodo, NroDNI, IdSCTRP, IdSCTRS, UserName);
         }
         public DataTable ListarValidaSCTREXAM(string NroDNI, string UserName)
         {

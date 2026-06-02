@@ -276,9 +276,9 @@ namespace WSCore.SIMANET.SeguridadPlanta
             return (new CProgramacionTrabajador()).Eliminar(oCCTT_ProgramacionTrabajadoresContratistaBE);
         }
         [WebMethod]
-        public DataTable ProgramacionTrabajador_lst(int Periodo, int IdProgramacion, string NroDNI, string UserName)
+        public DataTable ProgramacionTrabajador_lst(int Periodo, int IdProgramacion, string NroDNI, string IdSCTRP, string IdSCTRS, string UserName)
         {
-            return (new CProgramacionTrabajador()).ListarTodos(IdProgramacion.ToString(), Periodo.ToString(), NroDNI, UserName);
+            return (new CProgramacionTrabajador()).ListarTodos(IdProgramacion.ToString(), Periodo.ToString(), NroDNI, IdSCTRP, IdSCTRS, UserName);
         }
 
         [WebMethod]
@@ -450,9 +450,9 @@ namespace WSCore.SIMANET.SeguridadPlanta
 
         [WebMethod]
         //Lista los SCTR Activos
-        public DataTable SCTR_lstAct(int Periodo, int NroProg,string UserName)
+        public DataTable SCTR_lstAct(int Periodo, int NroProg, string SCTRP,string SCTRS, string UserName)
         {
-            return (new Csctr()).ListarTodosAct(Periodo, NroProg, UserName);
+            return (new Csctr()).ListarTodosAct(Periodo, NroProg, SCTRP, SCTRS, UserName);
         }
 
         [WebMethod]

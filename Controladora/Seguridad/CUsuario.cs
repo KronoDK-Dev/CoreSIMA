@@ -57,6 +57,7 @@ namespace Controladora.Seguridad
         public UsuarioBE GetDatosUsuario(int idUsuario)
         {
             // 1) Datos base del usuario (si esto falla, sí es crítico)
+            
             var oUBE = (new UsuarioNTAD()).GetDatosUsuario(idUsuario);
             if (oUBE == null) return null;
 

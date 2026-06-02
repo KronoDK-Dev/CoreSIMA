@@ -14,7 +14,7 @@
     <RootNamespace>WSCore</RootNamespace>
     <AssemblyName>WSCore</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44354</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
@@ -113,6 +113,7 @@
     <Content Include="GestionContabilidad\Contabilidad.asmx" />
     <Content Include="GestionCostos\Costos.asmx" />
     <Content Include="GestionFinanciera\Reportes.asmx" />
+    <Content Include="GestionFinanciera\Tesoreria\Cheques.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronica.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\FactElectronicaR.asmx" />
     <Content Include="GestionFinanciera\Tesoreria\Interbancario.asmx" />
@@ -202,6 +203,10 @@
     </Compile>
     <Compile Include="GestionFinanciera\Reportes.asmx.cs">
       <DependentUpon>Reportes.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GestionFinanciera\Tesoreria\Cheques.asmx.cs">
+      <DependentUpon>Cheques.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GestionFinanciera\Tesoreria\FactElectronica.asmx.cs">
